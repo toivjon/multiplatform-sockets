@@ -5,9 +5,9 @@
 
 #if MPS_SOCKET_API == MPS_SOCKET_API_WSA
 #include <winsock2.h>
-#define HANDLE SOCKET
+#define MPS_SOCKET_HANDLE SOCKET
 #else
-#define HANDLE int
+#define MPS_SOCKET_HANDLE int
 #endif
 
 namespace mps {
@@ -22,7 +22,7 @@ namespace mps {
 
     virtual ~Socket();
   private:
-    HANDLE mHandle;
+    MPS_SOCKET_HANDLE mHandle;
   };
 }
 

@@ -3,7 +3,7 @@
 
 using namespace mps;
 
-Socket::Socket() : mHandle((HANDLE)0) {
+Socket::Socket() : mHandle((MPS_SOCKET_HANDLE)0) {
   #if MPS_SOCKET_API == MPS_SOCKET_API_WSA
   // TODO build WSA or/and increment ref counter
   #endif
