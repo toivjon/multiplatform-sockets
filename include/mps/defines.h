@@ -1,0 +1,12 @@
+#ifndef MPS_DEFINES_H
+#define MPS_DEFINES_H
+
+// the set of supported socket API types
+#define MPS_SOCKET_API_WSA  1 // windows & xbox one
+#define MPS_SOCKET_API_UNIX 2 // unix based systems
+
+#if defined(_WIN32)
+#define MPS_SOCKET_API MPS_SOCKET_API_WSA
+#else
+#define MPS_SOCKET_API MPS_SOCKET_API_UNIX
+#endif

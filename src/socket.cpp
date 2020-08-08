@@ -3,7 +3,8 @@
 using namespace mps;
 
 Socket::Socket() {
-  // TODO
+  // TODO build WSA or/and increment ref counter
+  // TODO build socket
 }
 
 Socket::Socket(Socket&& other) noexcept {
@@ -16,5 +17,6 @@ Socket& Socket::operator=(Socket&& other) noexcept {
 }
 
 Socket::~Socket() {
-  // TODO
+  // TODO close socket
+  // release WSA or decrement ref counter
 }

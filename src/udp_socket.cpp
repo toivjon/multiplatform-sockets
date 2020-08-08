@@ -3,7 +3,6 @@
 using namespace mps;
 
 UDPSocket::UDPSocket() : Socket() {
-  // TODO
 }
 
 UDPSocket::UDPSocket(UDPSocket&& other) noexcept {
@@ -16,5 +15,4 @@ UDPSocket& UDPSocket::operator=(UDPSocket&& other) noexcept {
 }
 
 UDPSocket::~UDPSocket() {
-  // TODO
 }

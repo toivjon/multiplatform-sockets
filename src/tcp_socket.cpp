@@ -3,7 +3,6 @@
 using namespace mps;
 
 TCPSocket::TCPSocket() : Socket() {
-  // TODO
 }
 
 TCPSocket::TCPSocket(TCPSocket&& other) noexcept {
@@ -16,5 +15,4 @@ TCPSocket& TCPSocket::operator=(TCPSocket&& other) noexcept {
 }
 
 TCPSocket::~TCPSocket() {
-  // TODO
 }
