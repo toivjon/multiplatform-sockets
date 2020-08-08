@@ -1,0 +1,8 @@
+# exclude auto-generated Visual Studio folder
+/.vs
+
+# exclude auto-generated Visual Studio Code folder
+/.vscode
+
+# exclude default compilation result folder
+/out
