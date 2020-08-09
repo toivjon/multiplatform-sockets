@@ -25,11 +25,11 @@ Socket::Socket() : mHandle(MPS_INVALID_HANDLE) {
 }
 
 Socket::Socket(Socket&& other) noexcept : Socket() {
-  // TODO
+  Swap(other);
 }
 
 Socket& Socket::operator=(Socket&& other) noexcept {
-  // TODO
+  Swap(other);
   return *this;
 }
 
@@ -41,4 +41,9 @@ Socket::~Socket() {
     close(mHandle);
     #endif
   }
+}
+
+void Socket::Swap(Socket& other) noexcept {
+  other.mHandle = mHandle;
+  mHandle = MPS_INVALID_HANDLE;
 }

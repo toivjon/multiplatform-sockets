@@ -23,6 +23,9 @@ namespace mps {
     Socket& operator=(Socket&& other) noexcept;
 
     virtual ~Socket();
+
+    // Swaps the encapsulated socket handle with other.
+    void Swap(Socket& other) noexcept;
   private:
     MPS_SOCKET_HANDLE mHandle;
   };
