@@ -1,4 +1,5 @@
 #include "mps/address.h"
+#include "mps/exception.h"
 
 #include <algorithm>
 #if MPS_SOCKET_API == MPS_SOCKET_API_WSA
@@ -24,7 +25,8 @@ Address::Address(const std::string& host, unsigned short port) {
     sockaddr->sin6_family = AF_INET6;
     sockaddr->sin6_port = htons(port);
     if (!inet_pton(AF_INET6, host.c_str(), &sockaddr->sin6_addr)) {
-      // TODO throw exception
+      throw InvalidAddressFormatException(host);
+
     }
   } else {
     // build as IPv4 address
@@ -32,7 +34,7 @@ Address::Address(const std::string& host, unsigned short port) {
     sockaddr->sin_family = AF_INET;
     sockaddr->sin_port = htons(port);
     if (!inet_pton(AF_INET, host.c_str(), &sockaddr->sin_addr)) {
-      // TODO throw exception
+      throw InvalidAddressFormatException(host);
     }
   }
 }
