@@ -64,14 +64,21 @@ void Address::swap(Address& address) noexcept {
 }
 
 size_t Address::getSize() const {
-  return isIPv4() ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
+  if (isIPv4()) {
+    return sizeof(sockaddr_in);
+  } else {
+    return sizeof(sockaddr_in6);
+  }
 }
 
 unsigned short Address::getPort() const {
-  return ntohs(isIPv4()
-    ? reinterpret_cast<const sockaddr_in*>(&mSockAddr)->sin_port
-    : reinterpret_cast<const sockaddr_in6*>(&mSockAddr)->sin6_port
-  );
+  if (isIPv4()) {
+    const auto& sockaddr = reinterpret_cast<const sockaddr_in*>(&mSockAddr);
+    return ntohs(sockaddr->sin_port);
+  } else {
+    const auto& sockaddr = reinterpret_cast<const sockaddr_in6*>(&mSockAddr);
+    return ntohs(sockaddr->sin6_port);
+  }
 }
 
 std::string Address::getIPAddress() const {
