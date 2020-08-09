@@ -7,8 +7,13 @@
 
 #if defined(_WIN32)
 #define MPS_SOCKET_API MPS_SOCKET_API_WSA
+#include <winsock2.h>
+#define MPS_SOCKET_HANDLE  SOCKET
+#define MPS_INVALID_HANDLE INVALID_SOCKET
 #else
 #define MPS_SOCKET_API MPS_SOCKET_API_UNIX
+#define MPS_SOCKET_HANDLE  int
+#define MPS_INVALID_HANDLE -1
 #endif
 
 #endif
