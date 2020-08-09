@@ -16,7 +16,20 @@ Address::Address() : Address(DefaultHost, DefaultPort) {
 }
 
 Address::Address(const std::string& host, unsigned short port) {
-  mSockAddr = {}; // TODO
+  mSockAddr = {};
+  if (host.find(":") != std::string::npos) {
+    // build as IPv6 address
+    auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
+    sockaddr->sin6_family = AF_INET6;
+    sockaddr->sin6_port = htons(port);
+    inet_pton(AF_INET6, host.c_str(), &sockaddr->sin6_addr);
+  } else {
+    // build as IPv4 address
+    auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
+    sockaddr->sin_family = AF_INET;
+    sockaddr->sin_port = htons(port);
+    inet_pton(AF_INET, host.c_str(), &sockaddr->sin_addr);
+  }
 }
 
 Address::Address(const Address& other) : mSockAddr(other.mSockAddr) {
