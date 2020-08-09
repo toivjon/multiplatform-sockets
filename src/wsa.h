@@ -1,9 +1,7 @@
 #ifndef MPS_WSA_H
 #define MPS_WSA_H
 
-#include "mps/defines.h"
-
-#if MPS_SOCKET_API == MPS_SOCKET_API_WSA
+#if defined(_WIN32)
 namespace mps {
   class WSA final {
   public:

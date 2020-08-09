@@ -1,18 +1,21 @@
 #include "mps/socket.h"
-#include "mps/defines.h"
 
-#if MPS_SOCKET_API == MPS_SOCKET_API_WSA
+#if defined(_WIN32)
+// Windows and Xbox use Winsock 2 API for sockets.
 #include "wsa.h"
+constexpr SocketHandle InvalidHandle = INVALID_SOCKET;
 #else
+// Unix based variants use Unix API for sockets.
 #include <sys/types.h>
 #include <sys/socket.h>
+consexpr SocketHandle InvalidHandle = -1;
 #endif
 
 using namespace mps;
 
-Socket::Socket() : mHandle(MPS_INVALID_HANDLE) {
+Socket::Socket() : mHandle(InvalidHandle) {
   // WSA needs explicit initialization and shutdown.
-  #if MPS_SOCKET_API == MPS_SOCKET_API_WSA
+  #if defined(_WIN32)
   static WSA wsa;
   #endif
 
@@ -34,8 +37,8 @@ Socket& Socket::operator=(Socket&& other) noexcept {
 }
 
 Socket::~Socket() {
-  if (mHandle != MPS_INVALID_HANDLE) {
-    #if MPS_SOCKET_API == MPS_SOCKET_API_WSA
+  if (mHandle != InvalidHandle) {
+    #if defined(_WIN32)
     closesocket(mHandle);
     #else
     close(mHandle);

@@ -1,6 +1,6 @@
 #include "wsa.h"
 
-#if MPS_SOCKET_API == MPS_SOCKET_API_WSA
+#if defined(_WIN32)
 #include <winsock2.h>
 
 #pragma comment(lib, "ws2_32.lib")
