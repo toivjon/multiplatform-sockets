@@ -3,14 +3,14 @@
 
 using namespace mps;
 
-Socket::Socket() : mHandle((MPS_SOCKET_HANDLE)0) {
+Socket::Socket() : mHandle(MPS_INVALID_HANDLE) {
   #if MPS_SOCKET_API == MPS_SOCKET_API_WSA
   // TODO build WSA or/and increment ref counter
   #endif
   // TODO build socket
 }
 
-Socket::Socket(Socket&& other) noexcept {
+Socket::Socket(Socket&& other) noexcept : Socket() {
   // TODO
 }
 
