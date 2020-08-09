@@ -4,6 +4,7 @@
 #if MPS_SOCKET_API == MPS_SOCKET_API_WSA
 #include <ws2tcpip.h>
 #else
+#include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #endif
