@@ -1,9 +1,10 @@
-#include "mps/socket.h"
+#include "mps/tcp_socket.h"
+#include "mps/udp_socket.h"
 
 using namespace mps;
 
 int main() {
-  Socket socket1;
-  Socket socket2;
+  TCPSocket tcpSocket;
+  UDPSocket udpSocket;
 	return 0;
 }
