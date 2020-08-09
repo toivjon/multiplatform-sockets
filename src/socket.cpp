@@ -44,6 +44,7 @@ Socket::~Socket() {
 }
 
 void Socket::Swap(Socket& other) noexcept {
-  other.mHandle = mHandle;
-  mHandle = MPS_INVALID_HANDLE;
+  auto oldHandle = mHandle;
+  mHandle = other.mHandle;
+  other.mHandle = oldHandle;
 }
