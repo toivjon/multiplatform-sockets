@@ -24,18 +24,24 @@ namespace mps {
 
     virtual ~Address();
 
+    // Swap the contents of the address with the target address.
     void swap(Address& address) noexcept;
 
+    // Check whether the address is an IPv4 address.
     bool isIPv4() const { return mSockAddr.ss_family == AF_INET; }
+    // Check whether the address is an IPv6 address.
     bool isIPv6() const { return mSockAddr.ss_family == AF_INET6; }
 
           sockaddr* asSockaddr()       { return reinterpret_cast<sockaddr*>(&mSockAddr);        }
     const sockaddr* asSockaddr() const { return reinterpret_cast<const sockaddr*>(&mSockAddr);  }
 
+    // Get the size of the stored address definition (sockaddr).
     size_t getSize() const;
 
+    // Get the port of the address.
     unsigned short getPort() const;
 
+    // Get the IP address of the address.
     std::string getIPAddress() const;
   protected:
     sockaddr_storage mSockAddr;

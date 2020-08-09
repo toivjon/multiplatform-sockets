@@ -12,19 +12,21 @@
 
 using namespace mps;
 
-Address::Address(const std::string& ipAddress, unsigned short port) {
-  mSockAddr = {};
-  if (ipAddress.find(":") != std::string::npos) {
-    // build as IPv6 address
+namespace {
+  inline bool isIPv6Address(const std::string& ipAddress) {
+    return ipAddress.find(":") != std::string::npos;
+  }
+}
+
+Address::Address(const std::string& ipAddress, unsigned short port) : mSockAddr({}) {
+  if (isIPv6Address(ipAddress)) {
     auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
     sockaddr->sin6_family = AF_INET6;
     sockaddr->sin6_port = htons(port);
     if (!inet_pton(AF_INET6, ipAddress.c_str(), &sockaddr->sin6_addr)) {
       throw InvalidAddressFormatException(ipAddress);
-
     }
   } else {
-    // build as IPv4 address
     auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
     sockaddr->sin_family = AF_INET;
     sockaddr->sin_port = htons(port);
