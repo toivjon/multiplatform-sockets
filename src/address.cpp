@@ -23,13 +23,17 @@ Address::Address(const std::string& host, unsigned short port) {
     auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
     sockaddr->sin6_family = AF_INET6;
     sockaddr->sin6_port = htons(port);
-    inet_pton(AF_INET6, host.c_str(), &sockaddr->sin6_addr);
+    if (!inet_pton(AF_INET6, host.c_str(), &sockaddr->sin6_addr)) {
+      // TODO throw exception
+    }
   } else {
     // build as IPv4 address
     auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
     sockaddr->sin_family = AF_INET;
     sockaddr->sin_port = htons(port);
-    inet_pton(AF_INET, host.c_str(), &sockaddr->sin_addr);
+    if (!inet_pton(AF_INET, host.c_str(), &sockaddr->sin_addr)) {
+      // TODO throw exception
+    }
   }
 }
 
@@ -62,8 +66,8 @@ size_t Address::getSize() const {
 }
 
 unsigned short Address::getPort() const {
-  if (isIPv4()) {
-    return reinterpret_cast<const sockaddr_in*>(&mSockAddr)->sin_port;
-  }
-  return reinterpret_cast<const sockaddr_in6*>(&mSockAddr)->sin6_port;
+  return ntohs(isIPv4()
+    ? reinterpret_cast<const sockaddr_in*>(&mSockAddr)->sin_port
+    : reinterpret_cast<const sockaddr_in6*>(&mSockAddr)->sin6_port
+  );
 }
