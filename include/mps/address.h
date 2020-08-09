@@ -1,12 +1,12 @@
 #ifndef MPS_ADDRESS_H
 #define MPS_ADDRESS_H
 
-#include "defines.h"
-
 #include <string>
-#if MPS_SOCKET_API == MPS_SOCKET_API_WSA
+#if defined(_WIN32)
+// Windows and Xbox use Winsock 2 API for sockets.
 #include <winsock2.h>
 #else
+// Unix based variants use Unix API for sockets.
 #include <sys/types.h>
 #include <sys/socket.h>
 #endif
@@ -14,12 +14,7 @@
 namespace mps {
   class Address {
   public:
-    // The default host used when built with default constructor.
-    static const std::string DefaultHost;
-    // The default port used when built with default constructor.
-    static const unsigned short DefaultPort = 5555;
-
-    Address();
+    Address() = delete;
     Address(const std::string& ipAddress, unsigned short port);
     Address(const Address& other);
     Address(Address&& other) noexcept;

@@ -2,20 +2,15 @@
 #include "mps/exception.h"
 
 #include <algorithm>
-#if MPS_SOCKET_API == MPS_SOCKET_API_WSA
+#if defined(_WIN32)
+// Windows and Xbox use Winsock 2 API for sockets.
 #include <ws2tcpip.h>
 #else
+// Unix based variants use Unix API for sockets.
 #include <arpa/inet.h>
-#include <sys/types.h>
-#include <sys/socket.h>
 #endif
 
 using namespace mps;
-
-const std::string Address::DefaultHost = "127.0.0.1";
-
-Address::Address() : Address(DefaultHost, DefaultPort) {
-}
 
 Address::Address(const std::string& ipAddress, unsigned short port) {
   mSockAddr = {};
