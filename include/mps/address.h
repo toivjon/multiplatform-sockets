@@ -4,6 +4,12 @@
 #include "defines.h"
 
 #include <string>
+#if MPS_SOCKET_API == MPS_SOCKET_API_WSA
+#include <winsock2.h>
+#else
+#include <sys/types.h>
+#include <sys/socket.h>
+#endif
 
 namespace mps {
   class Address {
