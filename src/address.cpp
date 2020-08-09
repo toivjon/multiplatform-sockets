@@ -17,15 +17,15 @@ const std::string Address::DefaultHost = "127.0.0.1";
 Address::Address() : Address(DefaultHost, DefaultPort) {
 }
 
-Address::Address(const std::string& host, unsigned short port) {
+Address::Address(const std::string& ipAddress, unsigned short port) {
   mSockAddr = {};
-  if (host.find(":") != std::string::npos) {
+  if (ipAddress.find(":") != std::string::npos) {
     // build as IPv6 address
     auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
     sockaddr->sin6_family = AF_INET6;
     sockaddr->sin6_port = htons(port);
-    if (!inet_pton(AF_INET6, host.c_str(), &sockaddr->sin6_addr)) {
-      throw InvalidAddressFormatException(host);
+    if (!inet_pton(AF_INET6, ipAddress.c_str(), &sockaddr->sin6_addr)) {
+      throw InvalidAddressFormatException(ipAddress);
 
     }
   } else {
@@ -33,8 +33,8 @@ Address::Address(const std::string& host, unsigned short port) {
     auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
     sockaddr->sin_family = AF_INET;
     sockaddr->sin_port = htons(port);
-    if (!inet_pton(AF_INET, host.c_str(), &sockaddr->sin_addr)) {
-      throw InvalidAddressFormatException(host);
+    if (!inet_pton(AF_INET, ipAddress.c_str(), &sockaddr->sin_addr)) {
+      throw InvalidAddressFormatException(ipAddress);
     }
   }
 }
@@ -72,4 +72,18 @@ unsigned short Address::getPort() const {
     ? reinterpret_cast<const sockaddr_in*>(&mSockAddr)->sin_port
     : reinterpret_cast<const sockaddr_in6*>(&mSockAddr)->sin6_port
   );
+}
+
+std::string Address::getIPAddress() const {
+  if (isIPv4()) {
+    char buffer[16];
+    auto addr = reinterpret_cast<const sockaddr_in*>(&mSockAddr);
+    inet_ntop(AF_INET, &addr->sin_addr, buffer, sizeof(buffer));
+    return buffer;
+  } else {
+    char buffer[46];
+    auto addr = reinterpret_cast<const sockaddr_in6*>(&mSockAddr);
+    inet_ntop(AF_INET6, &addr->sin6_addr, buffer, sizeof(buffer));
+    return buffer;
+  }
 }

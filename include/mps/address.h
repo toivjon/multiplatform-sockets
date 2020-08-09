@@ -14,7 +14,7 @@ namespace mps {
     static const unsigned short DefaultPort = 5555;
 
     Address();
-    Address(const std::string& host, unsigned short port);
+    Address(const std::string& ipAddress, unsigned short port);
     Address(const Address& other);
     Address(Address&& other) noexcept;
 
@@ -28,11 +28,14 @@ namespace mps {
     bool isIPv4() const { return mSockAddr.ss_family == AF_INET; }
     bool isIPv6() const { return mSockAddr.ss_family == AF_INET6; }
 
-    sockaddr* asSockaddr() { return reinterpret_cast<sockaddr*>(&mSockAddr); }
+          sockaddr* asSockaddr()       { return reinterpret_cast<sockaddr*>(&mSockAddr);        }
+    const sockaddr* asSockaddr() const { return reinterpret_cast<const sockaddr*>(&mSockAddr);  }
 
     size_t getSize() const;
 
     unsigned short getPort() const;
+
+    std::string getIPAddress() const;
   protected:
     sockaddr_storage mSockAddr;
   };
