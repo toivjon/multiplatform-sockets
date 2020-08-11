@@ -7,6 +7,6 @@ InvalidAddressFormatException::InvalidAddressFormatException(const std::string& 
   mMessage = "The string '" + address + "' is not a valid IPv4 or IPv6 address.";
 }
 
-const char* InvalidAddressFormatException::what() const {
+const char* InvalidAddressFormatException::what() const noexcept {
   return mMessage.c_str();
 }

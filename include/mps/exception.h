@@ -8,7 +8,7 @@ namespace mps {
   class InvalidAddressFormatException : std::exception {
   public:
     InvalidAddressFormatException(const std::string& address);
-    const char* what() const override;
+    const char* what() const noexcept override;
     const std::string& getAddress() const { return mAddress; }
   private:
     std::string mMessage;
