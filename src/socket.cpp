@@ -6,9 +6,10 @@
 constexpr SocketHandle InvalidHandle = INVALID_SOCKET;
 #else
 // Unix based variants use Unix API for sockets.
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-consexpr SocketHandle InvalidHandle = -1;
+constexpr SocketHandle InvalidHandle = -1;
 #endif
 
 using namespace mps;
@@ -20,7 +21,7 @@ Socket::Socket() : mHandle(InvalidHandle) {
   #endif
 
   auto mHandle = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  if (mHandle == INVALID_SOCKET) {
+  if (mHandle == InvalidHandle) {
 
   }
 
