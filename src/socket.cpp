@@ -1,5 +1,6 @@
 #include "mps/socket.h"
 
+constexpr int DefaultProtocol = 0;
 #if defined(_WIN32)
 // Windows and Xbox use Winsock 2 API for sockets.
 #include "wsa.h"
@@ -20,7 +21,7 @@ Socket::Socket() : mHandle(InvalidHandle) {
   static WSA wsa;
   #endif
 
-  auto mHandle = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+  auto mHandle = socket(AF_INET, SOCK_STREAM, DefaultProtocol);
   if (mHandle == InvalidHandle) {
 
   }
