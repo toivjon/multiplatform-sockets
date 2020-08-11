@@ -1,14 +1,15 @@
 #ifndef MPS_UDP_SOCKET_H
 #define MPS_UDP_SOCKET_H
 
+#include "address_family.h"
 #include "socket.h"
 
 namespace mps {
   class UDPSocket : public Socket {
   public:
-    UDPSocket();
+    UDPSocket(AddressFamily addressFamily);
     UDPSocket(const UDPSocket& other) = delete;
-    UDPSocket(UDPSocket&& other) noexcept;
+    UDPSocket(UDPSocket&& other) noexcept = default;
 
     UDPSocket& operator=(const UDPSocket& other) = delete;
     UDPSocket& operator=(UDPSocket&& other) noexcept;

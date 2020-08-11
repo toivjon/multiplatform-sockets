@@ -4,7 +4,7 @@
 using namespace mps;
 
 int main() {
-  TCPSocket tcpSocket;
-  UDPSocket udpSocket;
+  TCPSocket tcpSocket(AddressFamily::IPv4);
+  UDPSocket udpSocket(AddressFamily::IPv6);
 	return 0;
 }

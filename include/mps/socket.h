@@ -1,6 +1,8 @@
 #ifndef MPS_SOCKET_H
 #define MPS_SOCKET_H
 
+#include "address_family.h"
+
 #if defined(_WIN32)
 // Windows and Xbox use Winsock 2 API for sockets.
 #include <winsock2.h>
@@ -13,7 +15,7 @@ typedef int SocketHandle;
 namespace mps {
   class Socket {
   public:
-    Socket();
+    Socket(AddressFamily addressFamily);
     Socket(const Socket& other) = delete;
     Socket(Socket&& other) noexcept;
 

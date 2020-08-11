@@ -2,11 +2,7 @@
 
 using namespace mps;
 
-UDPSocket::UDPSocket() : Socket() {
-}
-
-UDPSocket::UDPSocket(UDPSocket&& other) noexcept {
-  // TODO
+UDPSocket::UDPSocket(AddressFamily addressFamily) : Socket(addressFamily) {
 }
 
 UDPSocket& UDPSocket::operator=(UDPSocket&& other) noexcept {

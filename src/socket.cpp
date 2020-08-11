@@ -15,13 +15,14 @@ constexpr SocketHandle InvalidHandle = -1;
 
 using namespace mps;
 
-Socket::Socket() : mHandle(InvalidHandle) {
+Socket::Socket(AddressFamily addressFamily) : mHandle(InvalidHandle) {
   // WSA needs explicit initialization and shutdown.
   #if defined(_WIN32)
   static WSA wsa;
   #endif
 
-  auto mHandle = socket(AF_INET, SOCK_STREAM, DefaultProtocol);
+  auto domain = (addressFamily == AddressFamily::IPv4 ? AF_INET : AF_INET6);
+  auto mHandle = socket(domain, SOCK_STREAM, DefaultProtocol);
   if (mHandle == InvalidHandle) {
 
   }
@@ -29,7 +30,7 @@ Socket::Socket() : mHandle(InvalidHandle) {
   // TODO build socket
 }
 
-Socket::Socket(Socket&& other) noexcept : Socket() {
+Socket::Socket(Socket&& other) noexcept : Socket(AddressFamily::IPv4) { // TODO
   Swap(other);
 }
 
