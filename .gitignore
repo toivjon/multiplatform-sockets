@@ -6,3 +6,6 @@
 
 # exclude default compilation result folder
 /out
+
+# exclude defaut Visual Studio Code CMake compilation folder
+/build
