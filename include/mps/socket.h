@@ -1,6 +1,7 @@
 #ifndef MPS_SOCKET_H
 #define MPS_SOCKET_H
 
+#include "address.h"
 #include "address_family.h"
 #include "protocol.h"
 
@@ -27,6 +28,8 @@ namespace mps {
 
     // Swaps the encapsulated socket handle with other.
     void Swap(Socket& other) noexcept;
+
+    void bind(const Address& address);
 
     AddressFamily getAddressFamily() const { return mAddressFamily; }
     Protocol getProtocol() const { return mProtocol; }

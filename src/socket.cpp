@@ -7,12 +7,14 @@ constexpr int DefaultProtocol = 0;
 // Windows and Xbox use Winsock 2 API for sockets.
 #include "wsa.h"
 constexpr SocketHandle InvalidHandle = INVALID_SOCKET;
+constexpr int SocketError = SOCKET_ERROR;
 #else
 // Unix based variants use Unix API for sockets.
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 constexpr SocketHandle InvalidHandle = -1;
+constexpr int SocketError = -1;
 #endif
 
 using namespace mps;
@@ -28,9 +30,9 @@ Socket::Socket(AddressFamily addressFamily, Protocol protocol) :
 
   auto domain = (addressFamily == AddressFamily::IPv4 ? AF_INET : AF_INET6);
   auto type = (protocol == Protocol::TCP ? SOCK_STREAM : SOCK_DGRAM);
-  auto mHandle = socket(domain, type, DefaultProtocol);
+  mHandle = socket(domain, type, DefaultProtocol);
   if (mHandle == InvalidHandle) {
-    // TODO handle error by throwing and exception
+    // TODO handle error by throwing an exception
   }
 }
 
@@ -57,4 +59,11 @@ void Socket::Swap(Socket& other) noexcept {
   std::swap(mHandle, other.mHandle);
   std::swap(mAddressFamily, other.mAddressFamily);
   std::swap(mProtocol, other.mProtocol);
+}
+
+void Socket::bind(const Address& address) {
+  auto result = ::bind(mHandle, address.asSockaddr(), address.getSize());
+  if (result == SocketError) {
+    // TODO handle error by throwing an exception
+  }
 }
