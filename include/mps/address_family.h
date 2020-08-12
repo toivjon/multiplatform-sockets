@@ -2,10 +2,10 @@
 #define MPS_ADDRESS_FAMILY_H
 
 namespace mps {
-    enum class AddressFamily {
-        IPv4,
-        IPv6
-    };
+  enum class AddressFamily {
+    IPv4,
+    IPv6
+  };
 }
 
 #endif

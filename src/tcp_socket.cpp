@@ -2,7 +2,7 @@
 
 using namespace mps;
 
-TCPSocket::TCPSocket(AddressFamily addressFamily) : Socket(addressFamily) {
+TCPSocket::TCPSocket(AddressFamily addressFamily) : Socket(addressFamily, Protocol::TCP) {
 }
 
 TCPSocket& TCPSocket::operator=(TCPSocket&& other) noexcept {
