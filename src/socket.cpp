@@ -1,5 +1,7 @@
 #include "mps/socket.h"
 
+#include <algorithm>
+
 constexpr int DefaultProtocol = 0;
 #if defined(_WIN32)
 // Windows and Xbox use Winsock 2 API for sockets.
@@ -15,7 +17,10 @@ constexpr SocketHandle InvalidHandle = -1;
 
 using namespace mps;
 
-Socket::Socket(AddressFamily addressFamily, Protocol protocol) : mHandle(InvalidHandle) {
+Socket::Socket(AddressFamily addressFamily, Protocol protocol) :
+  mHandle(InvalidHandle),
+  mAddressFamily(addressFamily),
+  mProtocol(protocol) {
   // WSA needs explicit initialization and shutdown.
   #if defined(_WIN32)
   static WSA wsa;
@@ -49,7 +54,7 @@ Socket::~Socket() {
 }
 
 void Socket::Swap(Socket& other) noexcept {
-  auto oldHandle = mHandle;
-  mHandle = other.mHandle;
-  other.mHandle = oldHandle;
+  std::swap(mHandle, other.mHandle);
+  std::swap(mAddressFamily, other.mAddressFamily);
+  std::swap(mProtocol, other.mProtocol);
 }

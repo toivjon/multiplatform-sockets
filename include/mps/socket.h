@@ -27,8 +27,13 @@ namespace mps {
 
     // Swaps the encapsulated socket handle with other.
     void Swap(Socket& other) noexcept;
+
+    AddressFamily getAddressFamily() const { return mAddressFamily; }
+    Protocol getProtocol() const { return mProtocol; }
   private:
-    SocketHandle mHandle;
+    SocketHandle  mHandle;
+    AddressFamily mAddressFamily;
+    Protocol      mProtocol;
   };
 }
 
