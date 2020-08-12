@@ -63,7 +63,7 @@ void Socket::Swap(Socket& other) noexcept {
 
 void Socket::bind(const Address& address) {
   // TODO some kind of sanity check so we're not rebinding this socket?
-  auto result = ::bind(mHandle, address.asSockaddr(), address.getSize());
+  auto result = ::bind(mHandle, address.asSockaddr(), static_cast<int>(address.getSize()));
   if (result == SocketError) {
     // TODO handle error by throwing an exception
   }

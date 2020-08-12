@@ -15,6 +15,9 @@ namespace mps {
     TCPSocket& operator=(TCPSocket&& other) noexcept;
 
     virtual ~TCPSocket();
+
+    void listen(int backlog);
+    Address accept();
   };
 }
 

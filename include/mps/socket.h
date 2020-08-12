@@ -17,6 +17,7 @@ typedef int SocketHandle;
 namespace mps {
   class Socket {
   public:
+    Socket(SocketHandle handle, Address address);
     Socket(AddressFamily addressFamily, Protocol protocol);
     Socket(const Socket& other) = delete;
     Socket(Socket&& other) noexcept;
@@ -33,7 +34,7 @@ namespace mps {
 
     AddressFamily getAddressFamily() const { return mAddressFamily; }
     Protocol getProtocol() const { return mProtocol; }
-  private:
+  protected:
     SocketHandle  mHandle;
     AddressFamily mAddressFamily;
     Protocol      mProtocol;
