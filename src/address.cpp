@@ -36,6 +36,10 @@ Address::Address(const std::string& ipAddress, unsigned short port) : mSockAddr(
   }
 }
 
+Address::Address(const sockaddr& sockaddr, int sockaddrSize) {
+  std::memcpy(&mSockAddr, &sockaddr, sockaddrSize);
+}
+
 Address::Address(const Address& other) : mSockAddr(other.mSockAddr) {
 }
 
