@@ -37,7 +37,7 @@ void TCPSocket::listen(int backlog) {
 Address TCPSocket::accept() {
   // TODO sanity check that socket has been bound?
   sockaddr address = {};
-  int addressSize = 0;
+  socklen_t addressSize = 0;
   auto result = ::accept(mHandle, &address, &addressSize);
   if (result == InvalidHandle) {
     // TODO handle error by throwing an exception
