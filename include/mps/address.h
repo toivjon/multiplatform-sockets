@@ -17,6 +17,7 @@ namespace mps {
     Address() = delete;
     Address(const std::string& ipAddress, unsigned short port);
     Address(const sockaddr& sockaddr, int sockaddrSize);
+    Address(const sockaddr_storage& sockaddr);
     Address(const Address& other);
     Address(Address&& other) noexcept;
 

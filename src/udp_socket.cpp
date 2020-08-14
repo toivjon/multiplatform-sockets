@@ -25,3 +25,13 @@ void UDPSocket::sendTo(const Address& address, const void* data, size_t dataSize
     // TODO handle error by throwing an exception 
   }
 }
+
+Address UDPSocket::recvFrom(void* data, size_t maxDataSize) {
+  sockaddr_storage addr = {};
+  socklen_t addrSize = 0;
+  auto result = ::recvfrom(mHandle, data, maxDataSize, 0, reinterpret_cast<sockaddr*>(&addr), &addrSize);
+  if (result == SocketError) {
+    // TODO handle error by throwing an exception
+  }
+  return Address(addr);
+}

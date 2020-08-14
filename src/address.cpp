@@ -41,6 +41,10 @@ Address::Address(const sockaddr& sockaddr, int sockaddrSize) {
   std::memcpy(&mSockAddr, &sockaddr, sockaddrSize);
 }
 
+Address::Address(const sockaddr_storage& sockaddr) {
+  mSockAddr = sockaddr;
+}
+
 Address::Address(const Address& other) : mSockAddr(other.mSockAddr) {
 }
 
