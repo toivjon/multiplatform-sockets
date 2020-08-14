@@ -15,6 +15,8 @@ namespace mps {
     UDPSocket& operator=(UDPSocket&& other) noexcept;
 
     virtual ~UDPSocket();
+
+    void sendTo(const Address& address, const void* data, size_t dataSize);
   };
 }
 
