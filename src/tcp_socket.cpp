@@ -7,6 +7,7 @@ using namespace mps;
 #include "wsa.h"
 constexpr SocketHandle InvalidHandle = INVALID_SOCKET;
 constexpr int SocketError = SOCKET_ERROR;
+typedef int socklen_t;
 #else
 // Unix based variants use Unix API for sockets.
 #include <sys/types.h>
