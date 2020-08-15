@@ -14,6 +14,14 @@ namespace mps {
     std::string mMessage;
     std::string mAddress;
   };
+
+  class SocketException : std::exception {
+  public:
+    SocketException(const std::string& message);
+    const char* what() const noexcept override;
+  private:
+    std::string mMessage;
+  };
 }
 
 #endif

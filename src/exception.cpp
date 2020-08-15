@@ -10,3 +10,10 @@ InvalidAddressFormatException::InvalidAddressFormatException(const std::string& 
 const char* InvalidAddressFormatException::what() const noexcept {
   return mMessage.c_str();
 }
+
+SocketException::SocketException(const std::string& message) : mMessage(message) {
+}
+
+const char* SocketException::what() const noexcept {
+  return mMessage.c_str();
+}
