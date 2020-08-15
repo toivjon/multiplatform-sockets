@@ -1,4 +1,5 @@
 #include "mps/socket.h"
+#include "mps/exception.h"
 
 #include <algorithm>
 
@@ -32,7 +33,7 @@ Socket::Socket(AddressFamily addressFamily, Protocol protocol) :
   auto type = (protocol == Protocol::TCP ? SOCK_STREAM : SOCK_DGRAM);
   mHandle = socket(domain, type, DefaultProtocol);
   if (mHandle == InvalidHandle) {
-    // TODO handle error by throwing an exception
+    throw SocketException("Failed to create a new socket"); // TODO describe error
   }
 }
 
@@ -65,6 +66,6 @@ void Socket::bind(const Address& address) {
   // TODO some kind of sanity check so we're not rebinding this socket?
   auto result = ::bind(mHandle, address.asSockaddr(), static_cast<int>(address.getSize()));
   if (result == SocketError) {
-    // TODO handle error by throwing an exception
+    throw SocketException("Failed to bind socket"); // TODO describe error
   }
 }
