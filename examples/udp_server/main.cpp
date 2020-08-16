@@ -22,7 +22,6 @@ int main() {
 
       std::cout << "Sending a 'thx!' message to client" << std::endl;
       socket.sendTo(senderAddress, reinterpret_cast<const void*>("thx!"), 4);
-      socket.recvFrom(buffer, BufferSize);
     } catch (SocketException& e) {
       std::cout << e.what() << std::endl;
     }
