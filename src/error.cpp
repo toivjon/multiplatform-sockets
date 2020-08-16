@@ -5,6 +5,7 @@
 #endif
 
 std::string mps::GetErrorMessage() {
+  #if defined(_WIN32)
   LPTSTR errorText = nullptr;
   FormatMessage(
     FORMAT_MESSAGE_FROM_SYSTEM
@@ -21,5 +22,6 @@ std::string mps::GetErrorMessage() {
     LocalFree(errorText);
     return result;
   }
+  #endif
   return "Unknown error";
 }
