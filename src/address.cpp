@@ -19,6 +19,28 @@ namespace {
   }
 }
 
+Address::Address(AddressFamily addressFamily, unsigned short port) : mSockAddr({}) {
+  switch (addressFamily) {
+  case AddressFamily::IPv6: {
+    auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
+    sockaddr->sin6_family = AF_INET6;
+    sockaddr->sin6_port = htons(port);
+    sockaddr->sin6_addr = in6addr_any;
+    break;
+  }
+  case AddressFamily::IPv4: {
+    auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
+    sockaddr->sin_family = AF_INET;
+    sockaddr->sin_port = htons(port);
+    sockaddr->sin_addr.S_un.S_addr = INADDR_ANY;
+    break;
+  }
+  default:
+    // TODO throw exception?
+    break;
+  }
+}
+
 Address::Address(const std::string& ipAddress, unsigned short port) : mSockAddr({}) {
   if (isIPv6Address(ipAddress)) {
     auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);

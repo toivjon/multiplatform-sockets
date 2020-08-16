@@ -1,6 +1,8 @@
 #ifndef MPS_ADDRESS_H
 #define MPS_ADDRESS_H
 
+#include "address_family.h"
+
 #include <string>
 #if defined(_WIN32)
 // Windows and Xbox use Winsock 2 API for sockets.
@@ -15,6 +17,7 @@ namespace mps {
   class Address {
   public:
     Address() = delete;
+    Address(AddressFamily addressFamily, unsigned short port);
     Address(const std::string& ipAddress, unsigned short port);
     Address(const sockaddr& sockaddr, int sockaddrSize);
     Address(const sockaddr_storage& sockaddr);
