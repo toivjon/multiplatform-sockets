@@ -10,21 +10,19 @@ constexpr auto Port = 5555;
 constexpr auto IPAddress = "127.0.0.1";
 
 int main() {
-    char buffer[BufferSize];
-    try {
-      UDPSocket socket(AddressFamily::IPv4);
-      socket.bind(Address(IPAddress, Port));
-
-      std::cout << "Listening for incoming messages on port " << Port << std::endl;
-      auto senderAddress = socket.recvFrom(buffer, BufferSize);
-      buffer[5] = '\0';
-      std::cout << "Message from the client: " << buffer << std::endl;
-
-      std::cout << "Sending a 'thx!' message to client" << std::endl;
-      socket.sendTo(senderAddress, reinterpret_cast<const void*>("thx!"), 4);
-    } catch (SocketException& e) {
-      std::cout << e.what() << std::endl;
-    }
-    
-    return 0;
+  char buffer[BufferSize];
+  std::string message = "thx!";
+  try {
+    UDPSocket socket(AddressFamily::IPv4);
+    socket.bind(Address(IPAddress, Port));
+    std::cout << "Listening for incoming messages on port " << Port << std::endl;
+    auto senderAddress = socket.recvFrom(buffer, BufferSize);
+    buffer[5] = '\0';
+    std::cout << "Received message '" << buffer << "' from the client" << std::endl;
+    std::cout << "Sending a '" << message << "' message to client" << std::endl;
+    socket.sendTo(senderAddress, message);
+  } catch (SocketException& e) {
+    std::cerr << e.what() << std::endl;
+  }
+  return 0;
 }
