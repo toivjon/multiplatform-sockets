@@ -33,7 +33,7 @@ void UDPSocket::sendTo(const Address& address, const void* data, size_t dataSize
 
 Address UDPSocket::recvFrom(void* data, size_t maxDataSize) {
   sockaddr_storage addr = {};
-  socklen_t addrSize = 0;
+  socklen_t addrSize = sizeof(addr);
   auto result = ::recvfrom(mHandle, reinterpret_cast<Data*>(data), maxDataSize, 0, reinterpret_cast<sockaddr*>(&addr), &addrSize);
   if (result == SocketError) {
       throw SocketException("recvfrom", GetErrorMessage());
