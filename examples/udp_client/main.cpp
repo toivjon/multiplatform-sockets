@@ -1,4 +1,5 @@
 #include "mps/udp_socket.h"
+#include "mps/exception.h"
 
 #include <iostream>
 
@@ -10,14 +11,18 @@ constexpr auto IPAddress = "127.0.0.1";
 
 int main() {
     char buffer[BufferSize];
-
-    UDPSocket socket(AddressFamily::IPv4);
-    
-    std::cout << "Sending 'hello' message to server..." << std::endl;
-    socket.sendTo(Address(IPAddress, Port), reinterpret_cast<const void*>("hello"), 5);
-    
-    socket.recvFrom(buffer, BufferSize);
-    buffer[5] = '\0';
-    std::cout << "Message from the server: " << buffer << std::endl; 
+    std::string message = "hello";
+    auto serverAddress = Address(IPAddress, Port);
+    try {
+      UDPSocket socket(AddressFamily::IPv4);
+      std::cout << "Sending '" + message + "' to server..." << std::endl;
+      socket.sendTo(serverAddress, message);
+      std::cout << "Waiting for server to respond..." << std::endl;
+      socket.recvFrom(buffer, BufferSize);
+      buffer[4] = '\0';
+      std::cout << "Received message '" + std::string(buffer) + "' from the server" << std::endl;
+    } catch (SocketException& e) {
+      std::cerr << e.what() << std::endl;
+    }
     return 0;
 }

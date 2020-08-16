@@ -17,6 +17,7 @@ namespace mps {
     virtual ~UDPSocket();
 
     void sendTo(const Address& address, const void* data, size_t dataSize);
+    void sendTo(const Address& address, const std::string& data);
     Address recvFrom(void* data, size_t maxDataSize);
   };
 }
