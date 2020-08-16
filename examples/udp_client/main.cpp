@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
   char buffer[BufferSize];
   std::string message = "hello";
   try {
-    UDPSocket socket(AddressFamily::IPv4);
+    UDPSocket socket(addr.getAddressFamily());
     std::cout << "Sending '" << message << "' to server..." << std::endl;
     socket.sendTo(addr, message);
     std::cout << "Waiting for server to respond..." << std::endl;

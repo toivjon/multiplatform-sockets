@@ -48,6 +48,8 @@ namespace mps {
 
     // Get the IP address of the address.
     std::string getIPAddress() const;
+
+    AddressFamily getAddressFamily() const;
   protected:
     sockaddr_storage mSockAddr;
   };

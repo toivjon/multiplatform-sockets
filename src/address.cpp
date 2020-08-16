@@ -122,3 +122,7 @@ std::string Address::getIPAddress() const {
     return buffer;
   }
 }
+
+AddressFamily Address::getAddressFamily() const {
+  return isIPv4() ? AddressFamily::IPv4 : AddressFamily::IPv6;
+}
