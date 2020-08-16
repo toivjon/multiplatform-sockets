@@ -1,4 +1,5 @@
 #include "mps/udp_socket.h"
+#include "error.h"
 #include "mps/exception.h"
 
 #if defined(_WIN32)
@@ -26,7 +27,7 @@ UDPSocket::~UDPSocket() {
 void UDPSocket::sendTo(const Address& address, const void* data, size_t dataSize) {
   auto result = ::sendto(mHandle, reinterpret_cast<const Data*>(data), dataSize, 0, address.asSockaddr(), address.getSize());
   if (result == SocketError) {
-    throw SocketException("Failed to send data via socket"); // TODO
+    throw SocketException("sendto", GetErrorMessage());
   }
 }
 
@@ -35,7 +36,7 @@ Address UDPSocket::recvFrom(void* data, size_t maxDataSize) {
   socklen_t addrSize = 0;
   auto result = ::recvfrom(mHandle, reinterpret_cast<Data*>(data), maxDataSize, 0, reinterpret_cast<sockaddr*>(&addr), &addrSize);
   if (result == SocketError) {
-    throw SocketException("Failed to receive data via socket"); // TODO
+      throw SocketException("recvfrom", GetErrorMessage());
   }
   return Address(addr);
 }

@@ -11,7 +11,8 @@ const char* InvalidAddressFormatException::what() const noexcept {
   return mMessage.c_str();
 }
 
-SocketException::SocketException(const std::string& message) : mMessage(message) {
+SocketException::SocketException(const std::string& operation, const std::string& message)
+  : mMessage(operation + ": " + message) {
 }
 
 const char* SocketException::what() const noexcept {

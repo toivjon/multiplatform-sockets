@@ -1,5 +1,6 @@
 #include "mps/tcp_socket.h"
 #include "mps/exception.h"
+#include "error.h"
 
 using namespace mps;
 
@@ -32,7 +33,7 @@ void TCPSocket::listen(int backlog) {
   // TODO sanity check that socket has been bound?
   auto result = ::listen(mHandle, backlog);
   if (result == SocketError) {
-    throw SocketException("Failed to start listen on socket"); // TODO
+    throw SocketException("listen", GetErrorMessage());
   }
 }
 
@@ -42,7 +43,7 @@ Address TCPSocket::accept() {
   socklen_t addressSize = 0;
   auto result = ::accept(mHandle, &address, &addressSize);
   if (result == InvalidHandle) {
-    throw SocketException("Failed to accept incoming connection"); // TODO
+    throw SocketException("accept", GetErrorMessage());
   }
   return Address(address, addressSize);
 }
