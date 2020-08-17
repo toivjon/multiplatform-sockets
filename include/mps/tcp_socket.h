@@ -7,7 +7,12 @@
 namespace mps {
   class TCPSocket : public Socket {
   public:
+    struct Connection {
+      SocketHandle handle;
+      Address      address;
+    };
     TCPSocket(AddressFamily addressFamily);
+    TCPSocket(SocketHandle handle, AddressFamily addressFamily);
     TCPSocket(const TCPSocket& other) = delete;
     TCPSocket(TCPSocket&& other) noexcept = default;
 
@@ -17,7 +22,11 @@ namespace mps {
     virtual ~TCPSocket();
 
     void listen(int backlog);
-    Address accept();
+    Connection accept();
+    void connect(const Address& address);
+    void send(const void* data, size_t dataSize);
+    void send(const std::string& message);
+    void recv(void* data, size_t maxDataSize);
   };
 }
 

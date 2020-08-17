@@ -38,6 +38,12 @@ Socket::Socket(AddressFamily addressFamily, Protocol protocol) :
   }
 }
 
+Socket::Socket(SocketHandle handle, AddressFamily addressFamily, Protocol protocol) :
+  mHandle(handle),
+  mAddressFamily(addressFamily),
+  mProtocol(protocol) {
+}
+
 Socket::Socket(Socket&& other) noexcept : Socket(AddressFamily::IPv4, Protocol::TCP) { // TODO
   Swap(other);
 }

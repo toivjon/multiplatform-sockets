@@ -19,6 +19,7 @@ namespace mps {
   public:
     Socket(SocketHandle handle, Address address);
     Socket(AddressFamily addressFamily, Protocol protocol);
+    Socket(SocketHandle handle, AddressFamily addressFamily, Protocol protocol);
     Socket(const Socket& other) = delete;
     Socket(Socket&& other) noexcept;
 
