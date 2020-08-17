@@ -5,6 +5,8 @@
 #include "address_family.h"
 #include "protocol.h"
 
+#include <cstdint>
+
 #if defined(_WIN32)
 // Windows and Xbox use Winsock 2 API for sockets.
 #include <winsock2.h>
@@ -32,6 +34,7 @@ namespace mps {
     void Swap(Socket& other) noexcept;
 
     void bind(const Address& address);
+    void bind(uint16_t port);
 
     AddressFamily getAddressFamily() const { return mAddressFamily; }
     Protocol getProtocol() const { return mProtocol; }

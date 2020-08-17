@@ -12,10 +12,9 @@ constexpr auto IPAddress = "127.0.0.1";
 int main() {
   char buffer[BufferSize];
   std::string message = "thx!";
-  auto bindAddress = Address(AddressFamily::IPv4, Port);
   try {
     TCPSocket socket(AddressFamily::IPv4);
-    socket.bind(bindAddress);
+    socket.bind(Port);
     socket.listen(1);
     std::cout << "Listening for incoming messages on port " << Port << std::endl;
     auto conn = socket.accept();

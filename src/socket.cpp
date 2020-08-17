@@ -76,3 +76,7 @@ void Socket::bind(const Address& address) {
     throw SocketException("bind", GetErrorMessage());
   }
 }
+
+void Socket::bind(uint16_t port) {
+  bind(Address(mAddressFamily, port));
+}

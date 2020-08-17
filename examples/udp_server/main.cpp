@@ -13,7 +13,7 @@ int main() {
   std::string message = "thx!";
   try {
     UDPSocket socket(AddressFamily::IPv4);
-    socket.bind(Address(AddressFamily::IPv4, Port));
+    socket.bind(Port);
     std::cout << "Listening for incoming messages on port " << Port << std::endl;
     auto senderAddress = socket.recvFrom(buffer, BufferSize);
     buffer[5] = '\0';
