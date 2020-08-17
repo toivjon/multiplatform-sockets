@@ -75,10 +75,11 @@ void TCPSocket::send(const std::string& message) {
   send(message.c_str(), message.size());
 }
 
-void TCPSocket::recv(void* data, size_t maxDataSize) {
+int TCPSocket::recv(void* data, size_t maxDataSize) {
   // TODO sanity check that socket has been connected?
   auto result = ::recv(mHandle, reinterpret_cast<Data*>(data), maxDataSize, 0);
   if (result == SocketError) {
     throw SocketException("recv", GetErrorMessage());
   }
+  return result;
 }

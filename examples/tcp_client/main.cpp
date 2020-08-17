@@ -19,8 +19,8 @@ int main() {
     std::cout << "Sending '" << message << "' to server..." << std::endl;
     socket.send(message);
     std::cout << "Waiting for server to respond..." << std::endl;
-    socket.recv(buffer, BufferSize);
-    buffer[4] = '\0';
+    auto byteCount = socket.recv(buffer, BufferSize);
+    buffer[byteCount] = '\0';
     std::cout << "Received message '" << buffer << "' from the server" << std::endl;
   } catch (const SocketException& e) {
     std::cerr << e.what() << std::endl;

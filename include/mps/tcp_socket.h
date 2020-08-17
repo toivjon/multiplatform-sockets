@@ -26,7 +26,7 @@ namespace mps {
     void connect(const Address& address);
     void send(const void* data, size_t dataSize);
     void send(const std::string& message);
-    void recv(void* data, size_t maxDataSize);
+    int recv(void* data, size_t maxDataSize);
   };
 }
 

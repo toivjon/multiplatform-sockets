@@ -20,8 +20,8 @@ int main() {
     std::cout << "Listening for incoming messages on port " << Port << std::endl;
     auto conn = socket.accept();
     TCPSocket client(conn.handle, conn.address.getAddressFamily());
-    client.recv(buffer, BufferSize);
-    buffer[5] = '\0';
+    auto byteCount = client.recv(buffer, BufferSize);
+    buffer[byteCount] = '\0';
     std::cout << "Received message '" << buffer << "' from the client" << std::endl;
     std::cout << "Sending a '" << message << "' message to client" << std::endl;
     client.send(message);
