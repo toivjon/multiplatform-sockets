@@ -38,10 +38,14 @@ namespace mps {
 
     AddressFamily getAddressFamily() const { return mAddressFamily; }
     Protocol getProtocol() const { return mProtocol; }
+
+    void setBlocking(bool blocking);
+    bool isBlocking() const { return mBlocking; }
   protected:
     SocketHandle  mHandle;
     AddressFamily mAddressFamily;
     Protocol      mProtocol;
+    bool          mBlocking;
   };
 }
 

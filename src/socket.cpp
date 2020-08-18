@@ -24,7 +24,8 @@ using namespace mps;
 Socket::Socket(AddressFamily addressFamily, Protocol protocol) :
   mHandle(InvalidHandle),
   mAddressFamily(addressFamily),
-  mProtocol(protocol) {
+  mProtocol(protocol),
+  mBlocking(true) {
   // WSA needs explicit initialization and shutdown.
   #if defined(_WIN32)
   static WSA wsa;
@@ -41,7 +42,8 @@ Socket::Socket(AddressFamily addressFamily, Protocol protocol) :
 Socket::Socket(SocketHandle handle, AddressFamily addressFamily, Protocol protocol) :
   mHandle(handle),
   mAddressFamily(addressFamily),
-  mProtocol(protocol) {
+  mProtocol(protocol),
+  mBlocking(true) {
 }
 
 Socket::Socket(Socket&& other) noexcept : Socket(AddressFamily::IPv4, Protocol::TCP) { // TODO
@@ -79,4 +81,20 @@ void Socket::bind(const Address& address) {
 
 void Socket::bind(uint16_t port) {
   bind(Address(mAddressFamily, port));
+}
+
+void Socket::setBlocking(bool blocking) {
+  #if defined(_WIN32)
+  u_long arg = blocking ? 0 : 1;
+  if (ioctlsocket(mHandle, FIONBIO, &arg) == SocketError) {
+    throw SocketException("ioctlsocket", GetErrorMessage());
+  }
+  #else
+  int flags = fcntl(mHandle, F_GETFL, 0);
+  flags = blocking ? (flags | O_NONBLOCK) : (flags & ~O_NONBLOCK);
+  if (fcntl(mHandle, F_SETFL, flags) == SocketError) {
+    throw SocketException("fcntl", GetErrorMessage());
+  }
+  #endif
+  mBlocking = blocking;
 }
