@@ -3,18 +3,8 @@
 
 #include "address.h"
 #include "address_family.h"
+#include "mps.h"
 #include "protocol.h"
-
-#include <cstdint>
-
-#if defined(_WIN32)
-// Windows and Xbox use Winsock 2 API for sockets.
-#include <winsock2.h>
-typedef SOCKET SocketHandle;
-#else
-// Unix based variants use Unix API for sockets.
-typedef int SocketHandle;
-#endif
 
 namespace mps {
   class Socket {
@@ -34,7 +24,7 @@ namespace mps {
     void Swap(Socket& other) noexcept;
 
     void bind(const Address& address);
-    void bind(uint16_t port);
+    void bind(Port port);
 
     AddressFamily getAddressFamily() const { return mAddressFamily; }
     Protocol getProtocol() const { return mProtocol; }

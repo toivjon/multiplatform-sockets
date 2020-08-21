@@ -4,6 +4,8 @@
 
 #include <algorithm>
 
+using namespace mps;
+
 constexpr int DefaultProtocol = 0;
 #if defined(_WIN32)
 // Windows and Xbox use Winsock 2 API for sockets.
@@ -18,8 +20,6 @@ constexpr int SocketError = SOCKET_ERROR;
 constexpr SocketHandle InvalidHandle = -1;
 constexpr int SocketError = -1;
 #endif
-
-using namespace mps;
 
 Socket::Socket(AddressFamily addressFamily, Protocol protocol) :
   mHandle(InvalidHandle),
@@ -79,7 +79,7 @@ void Socket::bind(const Address& address) {
   }
 }
 
-void Socket::bind(uint16_t port) {
+void Socket::bind(Port port) {
   bind(Address(mAddressFamily, port));
 }
 
