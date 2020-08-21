@@ -6,7 +6,7 @@
 using namespace mps;
 
 constexpr auto BufferSize = 1024;
-constexpr auto Port = 5555;
+constexpr auto SocketPort = 5555;
 constexpr auto IPAddress = "127.0.0.1";
 
 int main() {
@@ -14,9 +14,9 @@ int main() {
   std::string message = "thx!";
   try {
     TCPSocket socket(AddressFamily::IPv4);
-    socket.bind(Port);
+    socket.bind(SocketPort);
     socket.listen(1);
-    std::cout << "Listening for incoming messages on port " << Port << std::endl;
+    std::cout << "Listening for incoming messages on port " << SocketPort << std::endl;
     auto conn = socket.accept();
     TCPSocket client(conn.handle, conn.address.getAddressFamily());
     auto byteCount = client.recv(buffer, BufferSize);

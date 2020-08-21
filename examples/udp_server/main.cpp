@@ -6,15 +6,15 @@
 using namespace mps;
 
 constexpr auto BufferSize = 1024;
-constexpr auto Port = 5555;
+constexpr auto SocketPort = 5555;
 
 int main() {
   char buffer[BufferSize];
   std::string message = "thx!";
   try {
     UDPSocket socket(AddressFamily::IPv4);
-    socket.bind(Port);
-    std::cout << "Listening for incoming messages on port " << Port << std::endl;
+    socket.bind(SocketPort);
+    std::cout << "Listening for incoming messages on port " << SocketPort << std::endl;
     auto senderAddress = socket.recvFrom(buffer, BufferSize);
     buffer[5] = '\0';
     std::cout << "Received message '" << buffer << "' from the client" << std::endl;

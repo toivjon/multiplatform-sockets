@@ -2,16 +2,9 @@
 #define MPS_ADDRESS_H
 
 #include "address_family.h"
+#include "mps.h"
 
 #include <string>
-#if defined(_WIN32)
-// Windows and Xbox use Winsock 2 API for sockets.
-#include <winsock2.h>
-#else
-// Unix based variants use Unix API for sockets.
-#include <sys/types.h>
-#include <sys/socket.h>
-#endif
 
 namespace mps {
   class Address {
@@ -44,7 +37,7 @@ namespace mps {
     size_t getSize() const;
 
     // Get the port of the address.
-    unsigned short getPort() const;
+    Port getPort() const;
 
     // Get the IP address of the address.
     std::string getIPAddress() const;
