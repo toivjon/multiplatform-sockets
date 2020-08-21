@@ -9,7 +9,7 @@
 namespace mps {
   class Address {
   public:
-    Address() = default;
+    Address();
     Address(AddressFamily addressFamily, unsigned short port);
     Address(const std::string& ipAddress, unsigned short port);
     Address(const sockaddr& sockaddr, int sockaddrSize);

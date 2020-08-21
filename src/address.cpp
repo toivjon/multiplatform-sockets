@@ -19,6 +19,9 @@ namespace {
   }
 }
 
+Address::Address() : mSockAddr({}) {
+}
+
 Address::Address(AddressFamily addressFamily, unsigned short port) : mSockAddr({}) {
   switch (addressFamily) {
   case AddressFamily::IPv6: {
