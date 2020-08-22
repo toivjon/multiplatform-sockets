@@ -22,7 +22,7 @@ namespace mps {
     UDPSocket& operator=(const UDPSocket&) = delete;
     UDPSocket& operator=(UDPSocket&& rhs) noexcept;
 
-    virtual ~UDPSocket();
+    virtual ~UDPSocket() = default;
 
     void send(UDPPacket& packet);
 

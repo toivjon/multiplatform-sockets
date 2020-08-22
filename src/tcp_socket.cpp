@@ -57,13 +57,3 @@ TCPSocket::TCPSocket(const Address& address, const std::set<Flag>& flags) : mAdd
   }
   #endif
 }
-
-TCPSocket::~TCPSocket() {
-  if (mHandle != InvalidHandle) {
-    #if _WIN32
-    closesocket(mHandle);
-    #else
-    close(mHandle);
-    #endif
-  }
-}

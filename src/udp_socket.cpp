@@ -89,16 +89,6 @@ UDPSocket& UDPSocket::operator=(UDPSocket&& rhs) noexcept {
   return *this;
 }
 
-UDPSocket::~UDPSocket() {
-  if (mHandle != InvalidHandle) {
-    #if _WIN32
-    closesocket(mHandle);
-    #else
-    close(mHandle);
-    #endif
-  }
-}
-
 void UDPSocket::send(UDPPacket& packet) {
   const auto& addr = packet.getAddress();
   const auto& data = packet.getData();

@@ -19,7 +19,7 @@ namespace mps {
     TCPSocket& operator=(const TCPSocket& rhs) = delete;
     TCPSocket& operator=(TCPSocket&& rhs) noexcept = default;
 
-    virtual ~TCPSocket();
+    virtual ~TCPSocket() = default;
 
     // Get the details about the bound address.
     const Address& getAddress() const { return mAddress; }
