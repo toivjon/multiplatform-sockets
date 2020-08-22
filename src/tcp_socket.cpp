@@ -35,6 +35,12 @@ TCPSocket::TCPSocket(const Address& address, const std::set<Flag>& flags) : mAdd
     throw SocketException("socket", GetErrorMessage());
   }
 
+  // disable Nagle's algorithm if the corresponding flag is set.
+  auto value = (flags.find(Flag::NoNagle) == flags.end() ? '0' : '1');
+  if (setsockopt(mHandle, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value)) == SocketError) {
+    throw SocketException("setsockopt", GetErrorMessage());
+  }
+
   #if _WIN32
   // enable non-blocking mode if the non-block flag has been set.
   auto isNonBlocking = flags.find(Flag::NonBlock) == flags.end() ? 0lu : 1lu;
@@ -60,4 +66,4 @@ TCPSocket::~TCPSocket() {
     close(mHandle);
     #endif
   }
-  }
+}

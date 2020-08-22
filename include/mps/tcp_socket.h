@@ -10,7 +10,7 @@
 namespace mps {
   class TCPSocket {
   public:
-    enum class Flag { IPv6, NonBlock };
+    enum class Flag { IPv6, NonBlock, NoNagle };
 
     TCPSocket(const Address& address, SocketHandle handle);
     TCPSocket(const Address& address, const std::set<Flag>& flags);
