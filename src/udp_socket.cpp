@@ -115,7 +115,7 @@ void UDPSocket::send(UDPPacket& packet) {
 }
 
 UDPPacket UDPSocket::recv() {
-  return recv(DefaultRecvMaxDataSize);
+  return recv(DefaultMaxReceiveDataLength);
 }
 
 UDPPacket UDPSocket::recv(int maxDataSize) {

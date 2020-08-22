@@ -10,9 +10,6 @@
 namespace mps {
   class UDPSocket {
   public:
-    // The default maximum amount of bytes to receive.
-    static const auto DefaultRecvMaxDataSize = 1024;
-
     enum class Flag { IPv6, Broadcast, NonBlock };
 
     UDPSocket();

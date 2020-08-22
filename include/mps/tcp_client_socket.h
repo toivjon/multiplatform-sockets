@@ -6,9 +6,6 @@
 namespace mps {
   class TCPClientSocket : public TCPSocket {
   public:
-    // The default maximum amount of bytes to receive.
-    static const auto DefaultRecvMaxDataSize = 1024;
-
     TCPClientSocket(const Address& address, SocketHandle handle);
     TCPClientSocket(const Address& address);
     TCPClientSocket(const Address& address, const std::set<Flag>& flags);

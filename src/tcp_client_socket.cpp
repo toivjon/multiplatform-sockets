@@ -38,7 +38,7 @@ void TCPClientSocket::send(const std::vector<Byte>& bytes) {
 }
 
 std::vector<Byte> TCPClientSocket::recv() {
-  return recv(DefaultRecvMaxDataSize);
+  return recv(DefaultMaxReceiveDataLength);
 }
 
 std::vector<Byte> TCPClientSocket::recv(int maxDataSize) {

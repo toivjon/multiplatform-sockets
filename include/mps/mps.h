@@ -24,6 +24,9 @@ namespace mps {
   // Handle for underlying UNIX socket handle.
   typedef int SocketHandle;
   #endif
+
+  // The default maximum amount of bytes to receive on a receive call.
+  constexpr auto DefaultMaxReceiveDataLength = 1024;
 }
 
 #endif
