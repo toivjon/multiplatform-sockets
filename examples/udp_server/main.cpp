@@ -1,4 +1,4 @@
-#include "mps/udp_socket.h"
+#include "mps/new_udp_socket.h"
 #include "mps/exception.h"
 
 #include <iostream>
@@ -6,21 +6,15 @@
 using namespace mps;
 
 constexpr auto BufferSize = 1024;
-constexpr auto SocketPort = 5555;
+constexpr auto SocketPort = 56789;
 
 int main() {
-  char buffer[BufferSize];
-  std::string message = "thx!";
   try {
-    UDPSocket socket(AddressFamily::IPv4);
-    socket.bind(SocketPort);
-    std::cout << "Listening for incoming messages on port " << SocketPort << std::endl;
-    auto senderAddress = socket.recvFrom(buffer, BufferSize);
-    buffer[5] = '\0';
-    std::cout << "Received message '" << buffer << "' from the client" << std::endl;
-    std::cout << "Sending a '" << message << "' message to client" << std::endl;
-    socket.sendTo(senderAddress, message);
-  } catch (SocketException& e) {
+    UDPSocket socket(SocketPort);
+    auto packet = socket.recv(BufferSize);
+    std::cout << "echoing packet: " << packet.toString() << std::endl;
+    socket.send(packet);
+  } catch (const SocketException& e) {
     std::cerr << e.what() << std::endl;
   }
   return 0;

@@ -1,4 +1,4 @@
-#include "mps/udp_socket.h"
+#include "mps/new_udp_socket.h"
 #include "mps/exception.h"
 
 #include <iostream>
@@ -19,17 +19,12 @@ int main(int argc, char* argv[]) {
   auto port = std::stoi(argv[2]);
   auto addr = Address(host, port);
 
-  char buffer[BufferSize];
-  std::string message = "hello";
   try {
-    UDPSocket socket(addr.getAddressFamily());
-    std::cout << "Sending '" << message << "' to server..." << std::endl;
-    socket.sendTo(addr, message);
-    std::cout << "Waiting for server to respond..." << std::endl;
-    socket.recvFrom(buffer, BufferSize);
-    buffer[4] = '\0';
-    std::cout << "Received message '" << buffer << "' from the server" << std::endl;
-  } catch (SocketException& e) {
+    UDPSocket socket;
+    socket.send(UDPPacket{ addr, { 'h','e','l','l','o' } });
+    auto packet = socket.recv(BufferSize);
+    std::cout << "response packet: " << packet.toString() << std::endl;
+  } catch (const SocketException& e) {
     std::cerr << e.what() << std::endl;
   }
   return 0;

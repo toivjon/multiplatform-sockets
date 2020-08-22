@@ -4,6 +4,7 @@
 #include "address_family.h"
 #include "socket.h"
 
+/*
 namespace mps {
   class UDPSocket : public Socket {
   public:
@@ -21,5 +22,6 @@ namespace mps {
     Address recvFrom(void* data, size_t maxDataSize);
   };
 }
+*/
 
 #endif
