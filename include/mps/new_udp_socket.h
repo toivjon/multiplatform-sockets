@@ -33,7 +33,7 @@ namespace mps {
     UDPPacket recv();
     UDPPacket recv(int maxDataSize);
 
-    // Get the details about the socket bound address.
+    // Get the details about the bound address.
     const Address& getAddress() const { return mAddress; }
   private:
     SocketHandle  mHandle;
