@@ -2,13 +2,13 @@
 #define MPS_UDP_SOCKET_H
 
 #include "address.h"
-#include "mps.h"
+#include "socket.h"
 #include "udp_packet.h"
 
 #include <set>
 
 namespace mps {
-  class UDPSocket {
+  class UDPSocket : public Socket {
   public:
     enum class Flag { IPv6, Broadcast, NonBlock };
 
@@ -32,7 +32,6 @@ namespace mps {
     // Get the details about the bound address.
     const Address& getAddress() const { return mAddress; }
   private:
-    SocketHandle  mHandle;
     Address       mAddress;
   };
 }

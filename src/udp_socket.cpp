@@ -28,7 +28,7 @@ UDPSocket::UDPSocket(Port port) : UDPSocket(port, {}) {
 UDPSocket::UDPSocket(const std::set<Flag>& flags) : UDPSocket(AnyPort, flags) {
 }
 
-UDPSocket::UDPSocket(Port port, const std::set<Flag>& flags) : mHandle(InvalidHandle) {
+UDPSocket::UDPSocket(Port port, const std::set<Flag>& flags) : Socket() {
   auto isIPv6 = flags.find(Flag::IPv6) != flags.end();
 
   // TODO we should move this into more shared place where TCP socks can use this as well.
@@ -78,7 +78,7 @@ UDPSocket::UDPSocket(Port port, const std::set<Flag>& flags) : mHandle(InvalidHa
   #endif
 }
 
-UDPSocket::UDPSocket(UDPSocket&& rhs) noexcept : mHandle(0) {
+UDPSocket::UDPSocket(UDPSocket&& rhs) noexcept : Socket() {
   mHandle = std::move(rhs.mHandle);
   mAddress = std::move(rhs.mAddress);
 }

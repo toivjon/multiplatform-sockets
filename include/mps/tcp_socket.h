@@ -2,12 +2,12 @@
 #define MPS_TCP_SOCKET_H
 
 #include "address.h"
-#include "mps.h"
+#include "socket.h"
 
 #include <set>
 
 namespace mps {
-  class TCPSocket {
+  class TCPSocket : public Socket {
   public:
     enum class Flag { IPv6, NonBlock, NoNagle };
 
@@ -24,7 +24,6 @@ namespace mps {
     // Get the details about the bound address.
     const Address& getAddress() const { return mAddress; }
   protected:
-    SocketHandle  mHandle;
     Address       mAddress;
   };
 }

@@ -17,7 +17,7 @@ using namespace mps;
 // Port number used to automatically select any available port.
 constexpr Port AnyPort = 0;
 
-TCPSocket::TCPSocket(const Address& address, SocketHandle handle) : mAddress(address), mHandle(handle) {
+TCPSocket::TCPSocket(const Address& address, SocketHandle handle) : Socket(handle), mAddress(address) {
 }
 
 TCPSocket::TCPSocket(const Address& address, const std::set<Flag>& flags) : mAddress(address) {
