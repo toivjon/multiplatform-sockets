@@ -16,7 +16,7 @@ Socket::Socket() : Socket(InvalidHandle) {
 Socket::Socket(SocketHandle handle) : mHandle(handle) {
 }
 
-Socket::Socket(AddressFamily af, Protocol protocol) : Socket() {
+Socket::Socket(AddressFamily af, SocketType type) : Socket() {
 }
 
 Socket::Socket(Socket&& rhs) noexcept : Socket() {

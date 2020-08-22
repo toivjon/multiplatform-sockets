@@ -27,6 +27,18 @@ namespace mps {
 
   // The default maximum amount of bytes to receive on a receive call.
   constexpr auto DefaultMaxReceiveDataLength = 1024;
+
+  // Address family defines whether address or socket handles IPv4 or IPv6.
+  enum class AddressFamily {
+    IPv4 = AF_INET,
+    IPv6 = AF_INET6
+  };
+
+  // Socket type defines whether socket handles UDP or TCP communication.
+  enum class SocketType {
+    TCP = SOCK_STREAM,
+    UDP = SOCK_DGRAM
+  };
 }
 
 #endif

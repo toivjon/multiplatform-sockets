@@ -2,15 +2,13 @@
 #define MPS_SOCKET_H
 
 #include "mps.h"
-#include "protocol.h"
-#include "address_family.h"
 
 namespace mps {
   class Socket {
   public:
     Socket();
     Socket(SocketHandle handle);
-    Socket(AddressFamily af, Protocol protocol);
+    Socket(AddressFamily af, SocketType type);
     Socket(const Socket&) = delete;
     Socket(Socket&& rhs) noexcept;
 
