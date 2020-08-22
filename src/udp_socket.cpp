@@ -28,20 +28,9 @@ UDPSocket::UDPSocket(Port port) : UDPSocket(port, {}) {
 UDPSocket::UDPSocket(const std::set<Flag>& flags) : UDPSocket(AnyPort, flags) {
 }
 
-UDPSocket::UDPSocket(Port port, const std::set<Flag>& flags) : Socket() {
+UDPSocket::UDPSocket(Port port, const std::set<Flag>& flags)
+  : Socket(flags.find(Flag::IPv6) == flags.end() ? AddressFamily::IPv4 : AddressFamily::IPv6, SocketType::UDP) {
   auto isIPv6 = flags.find(Flag::IPv6) != flags.end();
-
-  // TODO we should move this into more shared place where TCP socks can use this as well.
-  // WSA needs explicit initialization and shutdown.
-  #if _WIN32
-  static WSA wsa;
-  #endif
-
-  // build a new UDP socket handle either for IPv4 or IPv6.
-  mHandle = socket(isIPv6 ? AF_INET6 : AF_INET, SOCK_DGRAM, 0);
-  if (mHandle == InvalidHandle) {
-    throw SocketException("socket", GetErrorMessage());
-  }
 
   // build an address descriptor and bind socket with the given instructions.
   mAddress = Address(isIPv6 ? AddressFamily::IPv6 : AddressFamily::IPv4, port);

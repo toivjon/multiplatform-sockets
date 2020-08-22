@@ -20,20 +20,10 @@ constexpr Port AnyPort = 0;
 TCPSocket::TCPSocket(const Address& address, SocketHandle handle) : Socket(handle), mAddress(address) {
 }
 
-TCPSocket::TCPSocket(const Address& address, const std::set<Flag>& flags) : mAddress(address) {
+TCPSocket::TCPSocket(const Address& address, const std::set<Flag>& flags)
+  : Socket(flags.find(Flag::IPv6) == flags.end() ? AddressFamily::IPv4 : AddressFamily::IPv6, SocketType::TCP),
+  mAddress(address) {
   auto isIPv6 = flags.find(Flag::IPv6) != flags.end();
-
-  // TODO we should move this into more shared place where TCP socks can use this as well.
-  // WSA needs explicit initialization and shutdown.
-  #if _WIN32
-  static WSA wsa;
-  #endif
-
-  // build a new TCP socket handle either for IPv4 or IPv6.
-  mHandle = socket(isIPv6 ? AF_INET6 : AF_INET, SOCK_STREAM, 0);
-  if (mHandle == InvalidHandle) {
-    throw SocketException("socket", GetErrorMessage());
-  }
 
   // disable Nagle's algorithm if the corresponding flag is set.
   auto value = (flags.find(Flag::NoNagle) == flags.end() ? '0' : '1');
