@@ -21,8 +21,6 @@ TCPSocket::TCPSocket(const Address& address, SocketHandle handle) : Socket(handl
 TCPSocket::TCPSocket(const Address& address, const std::set<Flag>& flags)
   : Socket(flags.find(Flag::IPv6) == flags.end() ? AddressFamily::IPv4 : AddressFamily::IPv6, SocketType::TCP),
   mAddress(address) {
-  auto isIPv6 = flags.find(Flag::IPv6) != flags.end();
-
   // disable Nagle's algorithm if the corresponding flag is set.
   auto value = (flags.find(Flag::NoNagle) == flags.end() ? '0' : '1');
   if (setsockopt(mHandle, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value)) == SocketError) {
