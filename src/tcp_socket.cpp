@@ -2,84 +2,46 @@
 #include "mps/exception.h"
 #include "error.h"
 
-using namespace mps;
-
-#if defined(_WIN32)
-// Windows and Xbox use Winsock 2 API for sockets.
+#if _WIN32
 #include "wsa.h"
-constexpr SocketHandle InvalidHandle = INVALID_SOCKET;
+constexpr uint64_t InvalidHandle = INVALID_SOCKET;
 constexpr int SocketError = SOCKET_ERROR;
-typedef int socklen_t;
-typedef char Data;
 #else
-// Unix based variants use Unix API for sockets.
-#include <sys/types.h>
-#include <sys/socket.h>
-constexpr SocketHandle InvalidHandle = -1;
+#include <unistd.h>
+constexpr uint64_t InvalidHandle = -1;
 constexpr int SocketError = -1;
-typedef void Data;
 #endif
 
-TCPSocket::TCPSocket(AddressFamily addressFamily) : Socket(addressFamily, Protocol::TCP) {
+using namespace mps;
+
+// Port number used to automatically select any available port.
+constexpr Port AnyPort = 0;
+
+TCPSocket::TCPSocket(const Address& address, SocketHandle handle) : mAddress(address), mHandle(handle) {
 }
 
-TCPSocket::TCPSocket(SocketHandle handle, AddressFamily addressFamily)
-  : Socket(handle, addressFamily, Protocol::TCP) {
-}
+TCPSocket::TCPSocket(const Address& address, const std::set<Flag>& flags) : mAddress(address) {
+  auto isIPv6 = flags.find(Flag::IPv6) != flags.end();
 
-TCPSocket& TCPSocket::operator=(TCPSocket&& other) noexcept {
-  // TODO
-  return *this;
+  // TODO we should move this into more shared place where TCP socks can use this as well.
+  // WSA needs explicit initialization and shutdown.
+  #if _WIN32
+  static WSA wsa;
+  #endif
+
+  // build a new TCP socket handle either for IPv4 or IPv6.
+  mHandle = socket(isIPv6 ? AF_INET6 : AF_INET, SOCK_STREAM, 0);
+  if (mHandle == InvalidHandle) {
+    throw SocketException("socket", GetErrorMessage());
+  }
 }
 
 TCPSocket::~TCPSocket() {
-}
-
-void TCPSocket::listen(int backlog) {
-  // TODO sanity check that socket has been bound?
-  auto result = ::listen(mHandle, backlog);
-  if (result == SocketError) {
-    throw SocketException("listen", GetErrorMessage());
+  if (mHandle != InvalidHandle) {
+    #if _WIN32
+    closesocket(mHandle);
+    #else
+    close(mHandle);
+    #endif
   }
-}
-
-TCPSocket::Connection TCPSocket::accept() {
-  // TODO sanity check that socket has been bound?
-  sockaddr_storage address = {};
-  socklen_t addressSize = sizeof(address);
-  auto result = ::accept(mHandle, reinterpret_cast<sockaddr*>(&address), &addressSize);
-  if (result == InvalidHandle) {
-    throw SocketException("accept", GetErrorMessage());
   }
-  Address addr(address);
-  return { result, addr };
-}
-
-void TCPSocket::connect(const Address& address) {
-  // TODO sanity check that socket is not yet connected?
-  auto result = ::connect(mHandle, address.asSockaddr(), address.getSize());
-  if (result == SocketError) {
-    throw SocketException("connect", GetErrorMessage());
-  }
-}
-
-void TCPSocket::send(const void* data, size_t dataSize) {
-  // TODO sanity check that socket has been connected?
-  auto result = ::send(mHandle, reinterpret_cast<const Data*>(data), dataSize, 0);
-  if (result == SocketError) {
-    throw SocketException("send", GetErrorMessage());
-  }
-}
-
-void TCPSocket::send(const std::string& message) {
-  send(message.c_str(), message.size());
-}
-
-int TCPSocket::recv(void* data, size_t maxDataSize) {
-  // TODO sanity check that socket has been connected?
-  auto result = ::recv(mHandle, reinterpret_cast<Data*>(data), maxDataSize, 0);
-  if (result == SocketError) {
-    throw SocketException("recv", GetErrorMessage());
-  }
-  return result;
-}

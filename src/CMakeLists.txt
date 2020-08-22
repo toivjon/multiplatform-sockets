@@ -1,4 +1,4 @@
-add_library(mps "socket.cpp" "tcp_socket.cpp" "wsa.cpp"  "exception.cpp" "error.h" "error.cpp" "new_udp_socket.cpp" "address.cpp" "udp_packet.cpp")
+add_library(mps "socket.cpp"  "wsa.cpp"  "exception.cpp" "error.h" "error.cpp" "udp_socket.cpp" "address.cpp" "udp_packet.cpp" "tcp_socket.cpp" "tcp_server_socket.cpp" "tcp_client_socket.cpp")
 
 target_include_directories(mps
 	PUBLIC

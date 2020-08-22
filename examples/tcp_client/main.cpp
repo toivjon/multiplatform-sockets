@@ -1,4 +1,4 @@
-#include "mps/tcp_socket.h"
+#include "mps/tcp_client_socket.h"
 #include "mps/exception.h"
 
 #include <iostream>
@@ -19,17 +19,13 @@ int main(int argc, char* argv[]) {
   auto port = std::stoi(argv[2]);
   auto addr = Address(host, port);
 
-  char buffer[BufferSize];
-  std::string message = "hello";
   try {
-    TCPSocket socket(addr.getAddressFamily());
-    socket.connect(addr);
-    std::cout << "Sending '" << message << "' to server..." << std::endl;
-    socket.send(message);
-    std::cout << "Waiting for server to respond..." << std::endl;
-    auto byteCount = socket.recv(buffer, BufferSize);
-    buffer[byteCount] = '\0';
-    std::cout << "Received message '" << buffer << "' from the server" << std::endl;
+    TCPClientSocket socket(addr);
+    socket.send({ 'h','e','l','l','o' });
+    auto data = socket.recv(BufferSize);
+    std::vector<Byte> buffer(data);
+    buffer.push_back('\0');
+    std::cout << "response: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
   } catch (const SocketException& e) {
     std::cerr << e.what() << std::endl;
   }

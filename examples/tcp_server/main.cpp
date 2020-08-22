@@ -1,4 +1,4 @@
-#include "mps/tcp_socket.h"
+#include "mps/tcp_server_socket.h"
 #include "mps/exception.h"
 
 #include <iostream>
@@ -6,24 +6,17 @@
 using namespace mps;
 
 constexpr auto BufferSize = 1024;
-constexpr auto SocketPort = 5555;
-constexpr auto IPAddress = "127.0.0.1";
+constexpr auto SocketPort = 56789;
 
 int main() {
-  char buffer[BufferSize];
-  std::string message = "thx!";
   try {
-    TCPSocket socket(AddressFamily::IPv4);
-    socket.bind(SocketPort);
-    socket.listen(1);
-    std::cout << "Listening for incoming messages on port " << SocketPort << std::endl;
-    auto conn = socket.accept();
-    TCPSocket client(conn.handle, conn.address.getAddressFamily());
-    auto byteCount = client.recv(buffer, BufferSize);
-    buffer[byteCount] = '\0';
-    std::cout << "Received message '" << buffer << "' from the client" << std::endl;
-    std::cout << "Sending a '" << message << "' message to client" << std::endl;
-    client.send(message);
+    TCPServerSocket socket(SocketPort);
+    auto client = socket.accept();
+    auto data = client->recv();
+    std::vector<Byte> buffer(data);
+    buffer.push_back('\0');
+    std::cout << "echoing data: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
+    client->send(data);
   } catch (const SocketException& e) {
     std::cerr << e.what() << std::endl;
   }
