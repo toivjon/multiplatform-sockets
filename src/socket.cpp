@@ -27,5 +27,11 @@ Socket& Socket::operator=(Socket&& rhs) noexcept {
 }
 
 Socket::~Socket() {
-  // TODO close socket
+  if (mHandle != INVALID_SOCKET) {
+    #if _WIN32
+    closesocket(mHandle);
+    #else
+    close(mHandle);
+    #endif
+  }
 }
