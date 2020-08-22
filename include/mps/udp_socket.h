@@ -10,7 +10,7 @@
 namespace mps {
   class UDPSocket : public Socket {
   public:
-    enum class Flag { IPv6, Broadcast, NonBlock };
+    enum class Flag { IPv6, Broadcast };
 
     UDPSocket();
     UDPSocket(Port port);

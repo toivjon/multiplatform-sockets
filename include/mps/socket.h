@@ -16,8 +16,12 @@ namespace mps {
     Socket& operator=(Socket&& rhs) noexcept;
 
     virtual ~Socket();
+
+    void setNonBlocking(bool nonBlocking);
+    bool isNonBlocking() const { return mNonBlocking; }
   protected:
-    SocketHandle mHandle;
+    SocketHandle  mHandle;
+    bool          mNonBlocking;
   };
 }
 
