@@ -4,13 +4,11 @@
 
 using namespace mps;
 
-#if _WIN32
-constexpr uint64_t InvalidHandle = INVALID_SOCKET;
-#else
-constexpr uint64_t InvalidHandle = -1;
+#ifndef INVALID_SOCKET
+#define INVALID_SOCKET -1
 #endif
 
-Socket::Socket() : Socket(InvalidHandle) {
+Socket::Socket() : Socket(INVALID_SOCKET) {
 }
 
 Socket::Socket(SocketHandle handle) : mHandle(handle) {
