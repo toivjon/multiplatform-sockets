@@ -79,11 +79,13 @@ UDPSocket::UDPSocket(Port port, const std::set<Flag>& flags) : mHandle(InvalidHa
 }
 
 UDPSocket::UDPSocket(UDPSocket&& rhs) noexcept : mHandle(0) {
-
+  mHandle = std::move(rhs.mHandle);
+  mAddress = std::move(rhs.mAddress);
 }
 
 UDPSocket& UDPSocket::operator=(UDPSocket&& rhs) noexcept {
-  // TODO
+  mHandle = std::move(rhs.mHandle);
+  mAddress = std::move(rhs.mAddress);
   return *this;
 }
 
