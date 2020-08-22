@@ -1,21 +1,20 @@
 #include "mps/socket.h"
 #include "mps/exception.h"
 #include "error.h"
-
-#if _WIN32
 #include "wsa.h"
-#define STATIC_INIT static WSA wsa
-#else
-#define STATIC_INIT
-#endif
 
 #include <algorithm>
 
-using namespace mps;
-
-#ifndef INVALID_SOCKET
+#if _WIN32
+#define STATIC_INIT static WSA wsa
+#define closesocket closesocket
+#else
+#define STATIC_INIT
+#define closesocket close
 #define INVALID_SOCKET -1
 #endif
+
+using namespace mps;
 
 Socket::Socket() : Socket(INVALID_SOCKET) {
 }
@@ -42,10 +41,6 @@ Socket& Socket::operator=(Socket&& rhs) noexcept {
 
 Socket::~Socket() {
   if (mHandle != INVALID_SOCKET) {
-    #if _WIN32
     closesocket(mHandle);
-    #else
-    close(mHandle);
-    #endif
   }
 }
