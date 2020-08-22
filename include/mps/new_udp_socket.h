@@ -5,7 +5,6 @@
 #include "mps.h"
 #include "udp_packet.h"
 
-#include <cstdint>
 #include <set>
 
 namespace mps {
