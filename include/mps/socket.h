@@ -12,6 +12,9 @@ namespace mps {
     Socket(const Socket&) = delete;
     Socket(Socket&& rhs) noexcept;
 
+    Socket& operator=(const Socket&) = delete;
+    Socket& operator=(Socket&& rhs) noexcept;
+
     virtual ~Socket();
   protected:
     SocketHandle mHandle;

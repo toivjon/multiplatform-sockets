@@ -23,6 +23,11 @@ Socket::Socket(Socket&& rhs) noexcept : Socket() {
   std::swap(mHandle, rhs.mHandle);
 }
 
+Socket& Socket::operator=(Socket&& rhs) noexcept {
+  std::swap(mHandle, rhs.mHandle);
+  return *this;
+}
+
 Socket::~Socket() {
   // TODO close socket
 }
