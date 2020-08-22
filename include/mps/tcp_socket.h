@@ -5,7 +5,6 @@
 #include "mps.h"
 
 #include <set>
-#include <vector>
 
 namespace mps {
   class TCPSocket {

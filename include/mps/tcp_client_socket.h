@@ -3,6 +3,8 @@
 
 #include "tcp_socket.h"
 
+#include <vector>
+
 namespace mps {
   class TCPClientSocket : public TCPSocket {
   public:
