@@ -5,11 +5,9 @@
 using namespace mps;
 
 #if defined(_WIN32)
-constexpr uint64_t InvalidHandle = INVALID_SOCKET;
 constexpr int SocketError = SOCKET_ERROR;
 typedef int socklen_t;
 #else
-constexpr uint64_t InvalidHandle = -1;
 constexpr int SocketError = -1;
 #endif
 
@@ -49,7 +47,7 @@ std::unique_ptr<TCPClientSocket> TCPServerSocket::accept() {
   sockaddr_storage address = {};
   socklen_t addressSize = sizeof(address);
   auto handle = ::accept(mHandle, reinterpret_cast<sockaddr*>(&address), &addressSize);
-  if (handle == InvalidHandle) {
+  if (handle == SocketError) {
     throw SocketException("accept", GetErrorMessage());
   }
   return std::make_unique<TCPClientSocket>(Address(address), handle);

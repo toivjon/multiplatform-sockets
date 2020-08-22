@@ -4,14 +4,12 @@
 
 #if defined(_WIN32)
 #include "wsa.h"
-constexpr uint64_t InvalidHandle = INVALID_SOCKET;
 constexpr int SocketError = SOCKET_ERROR;
 typedef int socklen_t;
 #else
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-constexpr uint64_t InvalidHandle = -1;
 #endif
 
 using namespace mps;

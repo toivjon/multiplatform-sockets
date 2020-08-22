@@ -4,11 +4,9 @@
 
 #if _WIN32
 #include "wsa.h"
-constexpr uint64_t InvalidHandle = INVALID_SOCKET;
 constexpr int SocketError = SOCKET_ERROR;
 #else
 #include <unistd.h>
-constexpr uint64_t InvalidHandle = -1;
 constexpr int SocketError = -1;
 #endif
 
