@@ -34,6 +34,22 @@ TCPSocket::TCPSocket(const Address& address, const std::set<Flag>& flags) : mAdd
   if (mHandle == InvalidHandle) {
     throw SocketException("socket", GetErrorMessage());
   }
+
+  #if _WIN32
+  // enable non-blocking mode if the non-block flag has been set.
+  auto isNonBlocking = flags.find(Flag::NonBlock) == flags.end() ? 0lu : 1lu;
+  if (ioctlsocket(mHandle, FIONBIO, &isNonBlocking) == SocketError) {
+    throw SocketException("ioctlsocket", GetErrorMessage());
+  }
+  #else
+  // enable non-blocking mode if the non-block flag has been set.
+  auto isBlocking = flags.find(Flag::NonBlock) == flags.end();
+  auto flags = fcntl(mHandle, F_GETFL, 0);
+  flags = isBlocking ? (flags | O_NONBLOCK) : (flags & ~O_NONBLOCK);
+  if (fcntl(mHandle, F_SETFL, flags) == SocketError) {
+    throw SocketException("fcntl", GetErrorMessage());
+  }
+  #endif
 }
 
 TCPSocket::~TCPSocket() {
