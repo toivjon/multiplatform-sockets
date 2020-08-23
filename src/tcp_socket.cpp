@@ -3,10 +3,8 @@
 #include "error.h"
 
 #if _WIN32
-#include "wsa.h"
 constexpr int SocketError = SOCKET_ERROR;
 #else
-#include <unistd.h>
 constexpr int SocketError = -1;
 #endif
 
