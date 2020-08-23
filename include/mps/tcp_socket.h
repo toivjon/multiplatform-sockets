@@ -9,7 +9,7 @@
 namespace mps {
   class TCPSocket : public Socket {
   public:
-    enum class Flag { IPv6, NoNagle };
+    enum class Flag { IPv6 };
 
     TCPSocket(const Address& address, SocketHandle handle);
     TCPSocket(const Address& address, const std::set<Flag>& flags);
@@ -23,8 +23,12 @@ namespace mps {
 
     // Get the details about the bound address.
     const Address& getAddress() const { return mAddress; }
+
+    void setNagleEnabled(bool enabled);
+    bool isNagleEnabled() const { return mNagleEnabled; }
   protected:
-    Address       mAddress;
+    Address mAddress;
+    bool    mNagleEnabled;
   };
 }
 

@@ -15,14 +15,16 @@ using namespace mps;
 // Port number used to automatically select any available port.
 constexpr Port AnyPort = 0;
 
-TCPSocket::TCPSocket(const Address& address, SocketHandle handle) : Socket(handle), mAddress(address) {
+TCPSocket::TCPSocket(const Address& address, SocketHandle handle) : Socket(handle), mAddress(address), mNagleEnabled(true) {
 }
 
 TCPSocket::TCPSocket(const Address& address, const std::set<Flag>& flags)
   : Socket(flags.find(Flag::IPv6) == flags.end() ? AddressFamily::IPv4 : AddressFamily::IPv6, SocketType::TCP),
-  mAddress(address) {
-  // disable Nagle's algorithm if the corresponding flag is set.
-  auto value = (flags.find(Flag::NoNagle) == flags.end() ? '0' : '1');
+  mAddress(address), mNagleEnabled(true) {
+}
+
+void TCPSocket::setNagleEnabled(bool enabled) {
+  auto value = (enabled ? '0' : '1');
   if (setsockopt(mHandle, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value)) == SocketError) {
     throw SocketException("setsockopt", GetErrorMessage());
   }
