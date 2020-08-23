@@ -18,9 +18,7 @@ namespace mps {
     virtual ~TCPSocket() = default;
 
     void setNagleEnabled(bool enabled);
-    bool isNagleEnabled() const { return mNagleEnabled; }
-  private:
-    bool mNagleEnabled;
+    bool isNagleEnabled() const;
   };
 }
 

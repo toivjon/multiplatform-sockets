@@ -11,6 +11,10 @@ constexpr auto SocketPort = 56789;
 int main() {
   try {
     TCPServerSocket socket(SocketPort);
+    std::cout << "Nagle enabled before: " << socket.isNagleEnabled() << std::endl;
+    socket.setNagleEnabled(false);
+    std::cout << "Nagle enabled after: " << socket.isNagleEnabled() << std::endl;
+
     auto addr = socket.getLocalAddress();
     std::cout << "Bound addr='" << addr.getIPAddress() << "' port=" << addr.getPort() << std::endl;
     auto client = socket.accept();

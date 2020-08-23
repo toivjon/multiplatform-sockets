@@ -12,15 +12,25 @@ constexpr int SocketError = -1;
 
 using namespace mps;
 
-TCPSocket::TCPSocket(SocketHandle handle) : Socket(handle), mNagleEnabled(true) {
+TCPSocket::TCPSocket(SocketHandle handle) : Socket(handle) {
 }
 
-TCPSocket::TCPSocket(AddressFamily af) : Socket(af, SocketType::TCP), mNagleEnabled(true) {
+TCPSocket::TCPSocket(AddressFamily af) : Socket(af, SocketType::TCP) {
 }
 
 void TCPSocket::setNagleEnabled(bool enabled) {
-  auto value = (enabled ? '0' : '1');
-  if (setsockopt(mHandle, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value)) == SocketError) {
+  int optVal = enabled ? 0 : 1;
+  int optLen = sizeof(int);
+  if (setsockopt(mHandle, IPPROTO_TCP, TCP_NODELAY, (const char*)&optVal, optLen) == SocketError) {
     throw SocketException("setsockopt", GetErrorMessage());
   }
+}
+
+bool TCPSocket::isNagleEnabled() const {
+  int optVal = 0;
+  int optLen = sizeof(int);
+  if (getsockopt(mHandle, IPPROTO_TCP, TCP_NODELAY, (char*)&optVal, &optLen) == SocketError) {
+    throw SocketException("getsockopt", GetErrorMessage());
+  }
+  return optVal == 0;
 }
