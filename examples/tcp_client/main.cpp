@@ -21,6 +21,10 @@ int main(int argc, char* argv[]) {
 
   try {
     TCPClientSocket socket(addr);
+    auto lAddr = socket.getLocalAddress();
+    auto rAddr = socket.getRemoteAddress();
+    std::cout << "Local addr='" << lAddr.getIPAddress() << "' port=" << lAddr.getPort() << std::endl;
+    std::cout << "Remote addr='" << rAddr.getIPAddress() << "' port=" << rAddr.getPort() << std::endl;
     socket.send({ 'h','e','l','l','o' });
     auto data = socket.recv(BufferSize);
     std::vector<Byte> buffer(data);

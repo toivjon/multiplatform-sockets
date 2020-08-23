@@ -21,6 +21,8 @@ int main(int argc, char* argv[]) {
 
   try {
     UDPSocket socket;
+    auto localAddress = socket.getAddress();
+    std::cout << "Bound addr='" << localAddress.getIPAddress() << "' port=" << localAddress.getPort() << std::endl;
     socket.send(UDPPacket{ addr, { 'h','e','l','l','o' } });
     auto packet = socket.recv(BufferSize);
     std::cout << "response packet: " << packet.toString() << std::endl;

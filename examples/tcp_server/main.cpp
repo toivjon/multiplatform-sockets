@@ -11,7 +11,13 @@ constexpr auto SocketPort = 56789;
 int main() {
   try {
     TCPServerSocket socket(SocketPort);
+    auto addr = socket.getLocalAddress();
+    std::cout << "Bound addr='" << addr.getIPAddress() << "' port=" << addr.getPort() << std::endl;
     auto client = socket.accept();
+    auto clientLocalAddr = client->getLocalAddress();
+    auto clientRemoteAddr = client->getRemoteAddress();
+    std::cout << "L-Client addr='" << clientLocalAddr.getIPAddress() << "' port=" << clientLocalAddr.getPort() << std::endl;
+    std::cout << "R-Client addr='" << clientRemoteAddr.getIPAddress() << "' port=" << clientRemoteAddr.getPort() << std::endl;
     auto data = client->recv();
     std::vector<Byte> buffer(data);
     buffer.push_back('\0');

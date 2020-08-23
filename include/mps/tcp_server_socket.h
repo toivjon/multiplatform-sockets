@@ -18,6 +18,10 @@ namespace mps {
     virtual ~TCPServerSocket() = default;
 
     std::unique_ptr<TCPClientSocket> accept();
+
+    const Address& getLocalAddress() const { return mLocalAddress; }
+  private:
+    Address mLocalAddress;
   };
 }
 

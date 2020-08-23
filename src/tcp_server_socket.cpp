@@ -29,11 +29,16 @@ TCPServerSocket::TCPServerSocket(Port port, bool ipv6)
   : TCPServerSocket(Address(ipv6 ? AddressFamily::IPv6 : AddressFamily::IPv4, port), ipv6) {
 }
 
-TCPServerSocket::TCPServerSocket(const Address& address, bool ipv6)
-  : TCPSocket(address, ipv6) {
+TCPServerSocket::TCPServerSocket(const Address& address, bool ipv6) : TCPSocket(address.getAddressFamily()) {
   // bind the new socket with the given instructions.
-  if (bind(mHandle, mAddress.asSockaddr(), (int)mAddress.getSize()) == SocketError) {
+  if (bind(mHandle, address.asSockaddr(), (int)address.getSize()) == SocketError) {
     throw SocketException("bind", GetErrorMessage());
+  }
+
+  // get the information about how the socket was bound.
+  auto addrSize = static_cast<int>(mLocalAddress.getSize());
+  if (getsockname(mHandle, mLocalAddress.asSockaddr(), &addrSize) == SocketError) {
+    throw SocketException("getsockname", GetErrorMessage());
   }
 
   if (listen(mHandle, BacklogSize) == SocketError) {

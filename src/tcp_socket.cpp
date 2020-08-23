@@ -12,16 +12,10 @@ constexpr int SocketError = -1;
 
 using namespace mps;
 
-TCPSocket::TCPSocket(const Address& address, SocketHandle handle)
-  : Socket(handle),
-  mAddress(address),
-  mNagleEnabled(true) {
+TCPSocket::TCPSocket(SocketHandle handle) : Socket(handle), mNagleEnabled(true) {
 }
 
-TCPSocket::TCPSocket(const Address& address, AddressFamily af)
-  : Socket(af, SocketType::TCP),
-  mAddress(address),
-  mNagleEnabled(true) {
+TCPSocket::TCPSocket(AddressFamily af) : Socket(af, SocketType::TCP), mNagleEnabled(true) {
 }
 
 void TCPSocket::setNagleEnabled(bool enabled) {

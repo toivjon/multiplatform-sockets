@@ -7,8 +7,8 @@
 namespace mps {
   class TCPSocket : public Socket {
   public:
-    TCPSocket(const Address& address, SocketHandle handle);
-    TCPSocket(const Address& address, AddressFamily af);
+    TCPSocket(SocketHandle handle);
+    TCPSocket(AddressFamily af);
     TCPSocket(const TCPSocket& rhs) = delete;
     TCPSocket(TCPSocket&& rhs) noexcept = default;
 
@@ -17,14 +17,10 @@ namespace mps {
 
     virtual ~TCPSocket() = default;
 
-    // Get the details about the bound address.
-    const Address& getAddress() const { return mAddress; }
-
     void setNagleEnabled(bool enabled);
     bool isNagleEnabled() const { return mNagleEnabled; }
-  protected:
-    Address mAddress;
-    bool    mNagleEnabled;
+  private:
+    bool mNagleEnabled;
   };
 }
 
