@@ -12,8 +12,8 @@ namespace mps {
     TCPServerSocket();
     TCPServerSocket(Port port);
     TCPServerSocket(const Address& address);
-    TCPServerSocket(Port port, const std::set<TCPSocket::Flag>& flags);
-    TCPServerSocket(const Address& address, const std::set<Flag>& flags);
+    TCPServerSocket(Port port, bool ipv6);
+    TCPServerSocket(const Address& address, bool ipv6);
 
     virtual ~TCPServerSocket() = default;
 

@@ -10,7 +10,7 @@ namespace mps {
   public:
     TCPClientSocket(const Address& address, SocketHandle handle);
     TCPClientSocket(const Address& address);
-    TCPClientSocket(const Address& address, const std::set<Flag>& flags);
+    TCPClientSocket(const Address& address, bool ipv6);
 
     virtual ~TCPClientSocket() = default;
 

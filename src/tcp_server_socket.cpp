@@ -25,14 +25,12 @@ TCPServerSocket::TCPServerSocket(Port port) : TCPServerSocket(port, {}) {
 TCPServerSocket::TCPServerSocket(const Address& address) : TCPServerSocket(address, {}) {
 }
 
-TCPServerSocket::TCPServerSocket(Port port, const std::set<Flag>& flags)
-  : TCPServerSocket(
-    Address(flags.find(Flag::IPv6) != flags.end() ? AddressFamily::IPv6 : AddressFamily::IPv4, port),
-    flags) {
+TCPServerSocket::TCPServerSocket(Port port, bool ipv6)
+  : TCPServerSocket(Address(ipv6 ? AddressFamily::IPv6 : AddressFamily::IPv4, port), ipv6) {
 }
 
-TCPServerSocket::TCPServerSocket(const Address& address, const std::set<Flag>& flags)
-  : TCPSocket(address, flags) {
+TCPServerSocket::TCPServerSocket(const Address& address, bool ipv6)
+  : TCPSocket(address, ipv6) {
   // bind the new socket with the given instructions.
   if (bind(mHandle, mAddress.asSockaddr(), (int)mAddress.getSize()) == SocketError) {
     throw SocketException("bind", GetErrorMessage());

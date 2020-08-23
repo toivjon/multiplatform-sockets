@@ -14,7 +14,7 @@ int main() {
     UDPSocket socket2(56789);
     std::cout << "2 Bound to port: " << socket2.getAddress().getPort() << std::endl;
     std::cout << "2 Bound to host: " << socket2.getAddress().getIPAddress() << std::endl;
-    UDPSocket socket3({ UDPSocket::Flag::IPv6 });
+    UDPSocket socket3(true);
     socket3.setBroadcastEnabled(true);
     std::cout << "3 Bound to port: " << socket3.getAddress().getPort() << std::endl;
     std::cout << "3 Bound to host: " << socket3.getAddress().getIPAddress() << std::endl;

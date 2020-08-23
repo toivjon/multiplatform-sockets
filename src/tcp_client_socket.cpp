@@ -13,13 +13,11 @@ constexpr int SocketError = -1;
 TCPClientSocket::TCPClientSocket(const Address& address, SocketHandle handle) : TCPSocket(address, handle) {
 }
 
-TCPClientSocket::TCPClientSocket(const Address& address) : TCPClientSocket(address, std::set<Flag>()) {
+TCPClientSocket::TCPClientSocket(const Address& address) : TCPClientSocket(address, address.isIPv6()) {
 }
 
-TCPClientSocket::TCPClientSocket(const Address& address, const std::set<Flag>& flags)
-  : TCPSocket(
-    Address(flags.find(Flag::IPv6) != flags.end() ? AddressFamily::IPv6 : AddressFamily::IPv4, 0),
-    flags) {
+TCPClientSocket::TCPClientSocket(const Address& address, bool ipv6)
+  : TCPSocket(Address(ipv6 ? AddressFamily::IPv6 : AddressFamily::IPv4, 0), ipv6) {
   auto result = ::connect(mHandle, address.asSockaddr(), static_cast<int>(address.getSize()));
   if (result == SocketError) {
     throw SocketException("connect", GetErrorMessage());

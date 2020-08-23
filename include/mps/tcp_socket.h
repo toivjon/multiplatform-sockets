@@ -4,15 +4,11 @@
 #include "address.h"
 #include "socket.h"
 
-#include <set>
-
 namespace mps {
   class TCPSocket : public Socket {
   public:
-    enum class Flag { IPv6 };
-
     TCPSocket(const Address& address, SocketHandle handle);
-    TCPSocket(const Address& address, const std::set<Flag>& flags);
+    TCPSocket(const Address& address, AddressFamily af);
     TCPSocket(const TCPSocket& rhs) = delete;
     TCPSocket(TCPSocket&& rhs) noexcept = default;
 

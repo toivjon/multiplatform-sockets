@@ -5,17 +5,13 @@
 #include "socket.h"
 #include "udp_packet.h"
 
-#include <set>
-
 namespace mps {
   class UDPSocket : public Socket {
   public:
-    enum class Flag { IPv6 };
-
     UDPSocket();
     UDPSocket(Port port);
-    UDPSocket(const std::set<Flag>& flags);
-    UDPSocket(Port port, const std::set<Flag>& flags);
+    UDPSocket(AddressFamily af);
+    UDPSocket(Port port, AddressFamily af);
     UDPSocket(const UDPSocket&) = delete;
     UDPSocket(UDPSocket&& rhs) noexcept;
 
