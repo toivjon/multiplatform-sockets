@@ -15,8 +15,6 @@ namespace mps {
     TCPServerSocket(Port port, bool ipv6);
     TCPServerSocket(const Address& address, bool ipv6);
 
-    virtual ~TCPServerSocket() = default;
-
     std::unique_ptr<TCPClientSocket> accept();
 
     const Address& getLocalAddress() const { return mLocalAddress; }

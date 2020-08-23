@@ -11,8 +11,6 @@ namespace mps {
     TCPClientSocket(const Address& address, SocketHandle handle);
     TCPClientSocket(const Address& address);
 
-    virtual ~TCPClientSocket() = default;
-
     void send(const std::vector<Byte>& bytes);
 
     std::vector<Byte> recv();
