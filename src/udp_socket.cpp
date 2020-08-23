@@ -26,9 +26,7 @@ UDPSocket::UDPSocket(Port port) : UDPSocket(port, AddressFamily::IPv4) {
 UDPSocket::UDPSocket(AddressFamily af) : UDPSocket(AnyPort, af) {
 }
 
-UDPSocket::UDPSocket(Port port, AddressFamily af)
-  : Socket(af, SocketType::UDP),
-  mBroadcastEnabled(false) {
+UDPSocket::UDPSocket(Port port, AddressFamily af) : Socket(af, SocketType::UDP) {
 
   // build an address descriptor and bind socket with the given instructions.
   mAddress = Address(af, port);
@@ -98,8 +96,18 @@ UDPPacket UDPSocket::recv(int maxDataSize) {
 }
 
 void UDPSocket::setBroadcastEnabled(bool enabled) {
-  auto value = enabled ? '1' : '0';
-  if (setsockopt(mHandle, SOL_SOCKET, SO_BROADCAST, &value, sizeof(value)) == SocketError) {
+  int optVal = enabled ? 1 : 0;
+  int optLen = sizeof(int);
+  if (setsockopt(mHandle, SOL_SOCKET, SO_BROADCAST, (const char*)&optVal, optLen) == SocketError) {
     throw SocketException("setsockopt", GetErrorMessage());
   }
+}
+
+bool UDPSocket::isBroadcastEnabled() const {
+  int optVal = 0;
+  int optLen = sizeof(int);
+  if (getsockopt(mHandle, SOL_SOCKET, SO_BROADCAST, (char*)&optVal, &optLen) == SocketError) {
+    throw SocketException("getsockopt", GetErrorMessage());
+  }
+  return optVal == 1;
 }

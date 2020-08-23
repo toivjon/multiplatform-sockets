@@ -29,10 +29,9 @@ namespace mps {
     const Address& getAddress() const { return mAddress; }
 
     void setBroadcastEnabled(bool enabled);
-    bool isBroadcastEnabled() const { return mBroadcastEnabled; }
+    bool isBroadcastEnabled() const;
   private:
     Address mAddress;
-    bool    mBroadcastEnabled;
   };
 }
 
