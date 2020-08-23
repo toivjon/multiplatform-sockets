@@ -27,7 +27,8 @@ UDPSocket::UDPSocket(const std::set<Flag>& flags) : UDPSocket(AnyPort, flags) {
 }
 
 UDPSocket::UDPSocket(Port port, const std::set<Flag>& flags)
-  : Socket(flags.find(Flag::IPv6) == flags.end() ? AddressFamily::IPv4 : AddressFamily::IPv6, SocketType::UDP) {
+  : Socket(flags.find(Flag::IPv6) == flags.end() ? AddressFamily::IPv4 : AddressFamily::IPv6, SocketType::UDP),
+  mBroadcastEnabled(false) {
   auto isIPv6 = flags.find(Flag::IPv6) != flags.end();
 
   // build an address descriptor and bind socket with the given instructions.
@@ -40,12 +41,6 @@ UDPSocket::UDPSocket(Port port, const std::set<Flag>& flags)
   auto addrSize = static_cast<int>(mAddress.getSize());
   if (getsockname(mHandle, mAddress.asSockaddr(), &addrSize) == SocketError) {
     throw SocketException("getsockname", GetErrorMessage());
-  }
-
-  // enable UDP LAN broadcasting if the broadcast flag is set.
-  auto value = (flags.find(Flag::Broadcast) == flags.end() ? '0' : '1');
-  if (setsockopt(mHandle, SOL_SOCKET, SO_BROADCAST, &value, sizeof(value)) == SocketError) {
-    throw SocketException("setsockopt", GetErrorMessage());
   }
 }
 
@@ -101,4 +96,11 @@ UDPPacket UDPSocket::recv(int maxDataSize) {
   // truncate bytes array and return results in a packet structure.
   bytes.resize(result);
   return UDPPacket(Address(address), bytes);
+}
+
+void UDPSocket::setBroadcastEnabled(bool enabled) {
+  auto value = enabled ? '1' : '0';
+  if (setsockopt(mHandle, SOL_SOCKET, SO_BROADCAST, &value, sizeof(value)) == SocketError) {
+    throw SocketException("setsockopt", GetErrorMessage());
+  }
 }

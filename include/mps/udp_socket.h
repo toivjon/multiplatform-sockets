@@ -10,7 +10,7 @@
 namespace mps {
   class UDPSocket : public Socket {
   public:
-    enum class Flag { IPv6, Broadcast };
+    enum class Flag { IPv6 };
 
     UDPSocket();
     UDPSocket(Port port);
@@ -31,8 +31,12 @@ namespace mps {
 
     // Get the details about the bound address.
     const Address& getAddress() const { return mAddress; }
+
+    void setBroadcastEnabled(bool enabled);
+    bool isBroadcastEnabled() const { return mBroadcastEnabled; }
   private:
-    Address       mAddress;
+    Address mAddress;
+    bool    mBroadcastEnabled;
   };
 }
 
