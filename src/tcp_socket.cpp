@@ -12,9 +12,6 @@ constexpr int SocketError = -1;
 
 using namespace mps;
 
-// Port number used to automatically select any available port.
-constexpr Port AnyPort = 0;
-
 TCPSocket::TCPSocket(const Address& address, SocketHandle handle) : Socket(handle), mAddress(address), mNagleEnabled(true) {
 }
 
