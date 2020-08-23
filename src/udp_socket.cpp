@@ -20,7 +20,7 @@ constexpr Port AnyPort = 0;
 UDPSocket::UDPSocket() : UDPSocket(AnyPort) {
 }
 
-UDPSocket::UDPSocket(Port port) : UDPSocket(port, {}) {
+UDPSocket::UDPSocket(Port port) : UDPSocket(port, AddressFamily::IPv4) {
 }
 
 UDPSocket::UDPSocket(AddressFamily af) : UDPSocket(AnyPort, af) {
