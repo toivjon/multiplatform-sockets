@@ -5,9 +5,6 @@
 
 using namespace mps;
 
-// Port number used to automatically select any available port.
-constexpr Port AnyPort = 0;
-
 UDPSocket::UDPSocket() : UDPSocket(AnyPort) {
 }
 

@@ -5,8 +5,6 @@
 
 using namespace mps;
 
-// Port number used to automatically select any available port.
-constexpr Port AnyPort = 0;
 // The default size for the listen backlog.
 constexpr int BacklogSize = 4;
 
