@@ -3,8 +3,6 @@
 #include "error.h"
 #include "wsa.h"
 
-#include <algorithm>
-
 #if _WIN32
 #define STATIC_INIT static WSA wsa
 #define closesocket closesocket
@@ -29,15 +27,6 @@ Socket::Socket(AddressFamily af, SocketType type) : Socket() {
   if (mHandle == INVALID_SOCKET) {
     throw SocketException("socket", GetErrorMessage());
   }
-}
-
-Socket::Socket(Socket&& rhs) noexcept : Socket() {
-  std::swap(mHandle, rhs.mHandle);
-}
-
-Socket& Socket::operator=(Socket&& rhs) noexcept {
-  std::swap(mHandle, rhs.mHandle);
-  return *this;
 }
 
 Socket::~Socket() {

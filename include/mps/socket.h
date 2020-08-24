@@ -10,10 +10,10 @@ namespace mps {
     Socket(SocketHandle handle);
     Socket(AddressFamily af, SocketType type);
     Socket(const Socket&) = delete;
-    Socket(Socket&& rhs) noexcept;
+    Socket(Socket&& rhs) noexcept = default;
 
     Socket& operator=(const Socket&) = delete;
-    Socket& operator=(Socket&& rhs) noexcept;
+    Socket& operator=(Socket&& rhs) noexcept = default;
 
     virtual ~Socket();
 
