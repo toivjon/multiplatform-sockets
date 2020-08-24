@@ -1,7 +1,6 @@
 #ifndef MPS_TCP_SOCKET_H
 #define MPS_TCP_SOCKET_H
 
-#include "address.h"
 #include "socket.h"
 
 namespace mps {
