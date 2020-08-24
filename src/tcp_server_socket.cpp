@@ -22,14 +22,10 @@ TCPServerSocket::TCPServerSocket() : TCPServerSocket(AnyPort, {}) {
 TCPServerSocket::TCPServerSocket(Port port) : TCPServerSocket(port, {}) {
 }
 
-TCPServerSocket::TCPServerSocket(const Address& address) : TCPServerSocket(address, {}) {
+TCPServerSocket::TCPServerSocket(Port port, AddressFamily af) : TCPServerSocket(Address(af, port)) {
 }
 
-TCPServerSocket::TCPServerSocket(Port port, bool ipv6)
-  : TCPServerSocket(Address(ipv6 ? AddressFamily::IPv6 : AddressFamily::IPv4, port), ipv6) {
-}
-
-TCPServerSocket::TCPServerSocket(const Address& address, bool ipv6) : TCPSocket(address.getAddressFamily()) {
+TCPServerSocket::TCPServerSocket(const Address& address) : TCPSocket(address.getAddressFamily()) {
   // bind the new socket with the given instructions.
   if (bind(mHandle, address.asSockaddr(), (int)address.getSize()) == SocketError) {
     throw SocketException("bind", GetErrorMessage());

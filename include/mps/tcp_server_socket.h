@@ -11,9 +11,8 @@ namespace mps {
   public:
     TCPServerSocket();
     TCPServerSocket(Port port);
+    TCPServerSocket(Port port, AddressFamily af);
     TCPServerSocket(const Address& address);
-    TCPServerSocket(Port port, bool ipv6);
-    TCPServerSocket(const Address& address, bool ipv6);
 
     std::unique_ptr<TCPClientSocket> accept();
 
