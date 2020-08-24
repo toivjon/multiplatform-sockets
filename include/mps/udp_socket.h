@@ -12,13 +12,9 @@ namespace mps {
     UDPSocket(Port port);
     UDPSocket(AddressFamily af);
     UDPSocket(Port port, AddressFamily af);
-    UDPSocket(const UDPSocket&) = delete;
     UDPSocket(UDPSocket&& rhs) noexcept;
 
-    UDPSocket& operator=(const UDPSocket&) = delete;
     UDPSocket& operator=(UDPSocket&& rhs) noexcept;
-
-    virtual ~UDPSocket() = default;
 
     void send(UDPPacket& packet);
 
