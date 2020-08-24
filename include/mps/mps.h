@@ -2,6 +2,7 @@
 #define MPS_H
 
 #include <cstdint>
+#include <vector>
 
 // Windows and Xbox use Winsock 2 API for sockets.
 #if _WIN32
@@ -16,6 +17,8 @@ namespace mps {
   typedef uint16_t Port;
   // We support platforms where one byte contains 8 bits.
   typedef uint8_t Byte;
+  // A type for a dynamic array of bytes.
+  typedef std::vector<Byte> Bytes;
 
   #if _WIN32
   // Handle for underlying Winsock 2 socket handle.

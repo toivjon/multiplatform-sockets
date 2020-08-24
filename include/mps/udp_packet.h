@@ -4,13 +4,11 @@
 #include "address.h"
 #include "mps/mps.h"
 
-#include <vector>
-
 namespace mps {
   class UDPPacket {
   public:
     UDPPacket();
-    UDPPacket(const Address& address, const std::vector<Byte>& data);
+    UDPPacket(const Address& address, const Bytes& data);
     UDPPacket(const UDPPacket& rhs);
     UDPPacket(UDPPacket&& rhs) noexcept;
 
@@ -26,16 +24,16 @@ namespace mps {
     const Address& getAddress() const { return mAddress; }
 
     // Set the data that is associated with the packet.
-    void setData(const std::vector<Byte>& data) { mData = data; }
+    void setData(const Bytes& data) { mData = data; }
 
     // Get the data associated with the packet.
-    const std::vector<Byte>& getData() const { return mData; }
+    const Bytes& getData() const { return mData; }
 
     // Get a string presentation of the packet.
     const std::string toString() const;
   private:
-    Address           mAddress;
-    std::vector<Byte> mData;
+    Address mAddress;
+    Bytes   mData;
   };
 }
 

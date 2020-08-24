@@ -25,7 +25,7 @@ TCPClientSocket::TCPClientSocket(const Address& address) : TCPSocket(address.get
   }
 }
 
-void TCPClientSocket::send(const std::vector<Byte>& bytes) {
+void TCPClientSocket::send(const Bytes& bytes) {
   auto result = ::send(
     mHandle,
     reinterpret_cast<const char*>(&bytes[0]),
@@ -36,13 +36,13 @@ void TCPClientSocket::send(const std::vector<Byte>& bytes) {
   }
 }
 
-std::vector<Byte> TCPClientSocket::receive() {
+Bytes TCPClientSocket::receive() {
   return receive(DefaultMaxReceiveDataLength);
 }
 
-std::vector<Byte> TCPClientSocket::receive(int maxDataSize) {
+Bytes TCPClientSocket::receive(int maxDataSize) {
   // reserve desired amount of memory for the incoming data and address.
-  std::vector<Byte> bytes;
+  Bytes bytes;
   bytes.resize(maxDataSize);
 
   // take whatever awaits in the queue.
