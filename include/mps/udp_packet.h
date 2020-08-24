@@ -9,11 +9,11 @@ namespace mps {
   public:
     UDPPacket();
     UDPPacket(const Address& address, const Bytes& data);
-    UDPPacket(const UDPPacket& rhs);
-    UDPPacket(UDPPacket&& rhs) noexcept;
+    UDPPacket(const UDPPacket& rhs) = default;
+    UDPPacket(UDPPacket&& rhs) noexcept = default;
 
-    UDPPacket& operator=(const UDPPacket& rhs);
-    UDPPacket& operator=(UDPPacket&& rhs) noexcept;
+    UDPPacket& operator=(const UDPPacket& rhs) = default;
+    UDPPacket& operator=(UDPPacket&& rhs) noexcept = default;
 
     virtual ~UDPPacket() = default;
 

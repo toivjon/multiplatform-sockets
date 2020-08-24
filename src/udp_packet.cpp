@@ -9,28 +9,6 @@ UDPPacket::UDPPacket(const Address& address, const Bytes& data)
   : mAddress(address), mData(data) {
 }
 
-UDPPacket::UDPPacket(const UDPPacket& rhs) {
-  mAddress = rhs.mAddress;
-  mData = rhs.mData;
-}
-
-UDPPacket::UDPPacket(UDPPacket&& rhs) noexcept {
-  mAddress = std::move(rhs.mAddress);
-  mData = std::move(rhs.mData);
-}
-
-UDPPacket& UDPPacket::operator=(const UDPPacket& rhs) {
-  mAddress = rhs.mAddress;
-  mData = rhs.mData;
-  return *this;
-}
-
-UDPPacket& UDPPacket::operator=(UDPPacket&& rhs) noexcept {
-  mAddress = std::move(rhs.mAddress);
-  mData = std::move(rhs.mData);
-  return *this;
-}
-
 const std::string UDPPacket::toString() const {
   // TODO check how this could be done in a more elegant way.
   // append the zero flag into buffer to indicate string end.
