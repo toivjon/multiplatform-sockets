@@ -3,14 +3,6 @@
 #include "error.h"
 #include "internal.h"
 
-#if defined(_WIN32)
-#include "wsa.h"
-#else
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#endif
-
 using namespace mps;
 
 // Port number used to automatically select any available port.
