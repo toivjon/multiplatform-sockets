@@ -1,14 +1,9 @@
 #include "mps/tcp_client_socket.h"
 #include "mps/exception.h"
 #include "error.h"
+#include "internal.h"
 
 using namespace mps;
-
-#if _WIN32
-constexpr int SocketError = SOCKET_ERROR;
-#else
-constexpr int SocketError = -1;
-#endif
 
 TCPClientSocket::TCPClientSocket(const Address& address, SocketHandle handle) : TCPSocket(handle), mRemoteAddress(address) {
   auto addrSize = static_cast<int>(mLocalAddress.getSize());

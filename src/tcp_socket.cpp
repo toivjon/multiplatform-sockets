@@ -1,12 +1,7 @@
 #include "mps/tcp_socket.h"
 #include "mps/exception.h"
 #include "error.h"
-
-#if _WIN32
-constexpr int SocketError = SOCKET_ERROR;
-#else
-constexpr int SocketError = -1;
-#endif
+#include "internal.h"
 
 using namespace mps;
 

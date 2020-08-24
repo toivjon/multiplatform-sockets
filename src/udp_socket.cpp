@@ -1,11 +1,10 @@
 #include "mps/udp_socket.h"
 #include "mps/exception.h"
 #include "error.h"
+#include "internal.h"
 
 #if defined(_WIN32)
 #include "wsa.h"
-constexpr int SocketError = SOCKET_ERROR;
-typedef int socklen_t;
 #else
 #include <unistd.h>
 #include <sys/types.h>

@@ -1,15 +1,9 @@
 #include "mps/tcp_server_socket.h"
 #include "mps/exception.h"
 #include "error.h"
+#include "internal.h"
 
 using namespace mps;
-
-#if defined(_WIN32)
-constexpr int SocketError = SOCKET_ERROR;
-typedef int socklen_t;
-#else
-constexpr int SocketError = -1;
-#endif
 
 // Port number used to automatically select any available port.
 constexpr Port AnyPort = 0;
