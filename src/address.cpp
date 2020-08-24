@@ -70,26 +70,6 @@ Address::Address(const sockaddr_storage& sockaddr) {
   mSockAddr = sockaddr;
 }
 
-Address::Address(const Address& other) : mSockAddr(other.mSockAddr) {
-}
-
-Address::Address(Address&& other) noexcept {
-  swap(other);
-}
-
-Address& Address::operator=(const Address& other) {
-  mSockAddr = other.mSockAddr;
-  return *this;
-}
-
-Address& Address::operator=(Address&& other) noexcept {
-  swap(other);
-  return *this;
-}
-
-Address::~Address() {
-}
-
 void Address::swap(Address& address) noexcept {
   std::swap(mSockAddr, address.mSockAddr);
 }

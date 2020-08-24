@@ -13,13 +13,13 @@ namespace mps {
     Address(const std::string& ipAddress, unsigned short port);
     Address(const sockaddr& sockaddr, int sockaddrSize);
     Address(const sockaddr_storage& sockaddr);
-    Address(const Address& other);
-    Address(Address&& other) noexcept;
+    Address(const Address& other) = default;
+    Address(Address&& other) noexcept = default;
 
-    Address& operator=(const Address& other);
-    Address& operator=(Address&& other) noexcept;
+    Address& operator=(const Address& other) = default;
+    Address& operator=(Address&& other) noexcept = default;
 
-    virtual ~Address();
+    virtual ~Address() = default;
 
     // Swap the contents of the address with the target address.
     void swap(Address& address) noexcept;
