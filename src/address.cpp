@@ -1,7 +1,6 @@
 #include "mps/address.h"
 #include "mps/exception.h"
 
-#include <algorithm>
 #include <cstring>
 #if defined(_WIN32)
 // Windows and Xbox use Winsock 2 API for sockets.
