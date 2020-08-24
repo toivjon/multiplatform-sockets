@@ -13,8 +13,8 @@ namespace mps {
 
     void send(const std::vector<Byte>& bytes);
 
-    std::vector<Byte> recv();
-    std::vector<Byte> recv(int maxDataSize);
+    std::vector<Byte> receive();
+    std::vector<Byte> receive(int maxDataSize);
 
     const Address& getLocalAddress() const { return mLocalAddress; }
     const Address& getRemoteAddress() const { return mRemoteAddress; }

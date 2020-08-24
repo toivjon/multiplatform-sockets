@@ -22,7 +22,7 @@ int main() {
     auto clientRemoteAddr = client->getRemoteAddress();
     std::cout << "L-Client addr='" << clientLocalAddr.getIPAddress() << "' port=" << clientLocalAddr.getPort() << std::endl;
     std::cout << "R-Client addr='" << clientRemoteAddr.getIPAddress() << "' port=" << clientRemoteAddr.getPort() << std::endl;
-    auto data = client->recv();
+    auto data = client->receive();
     std::vector<Byte> buffer(data);
     buffer.push_back('\0');
     std::cout << "echoing data: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;

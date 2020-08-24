@@ -22,8 +22,8 @@ namespace mps {
 
     void send(UDPPacket& packet);
 
-    UDPPacket recv();
-    UDPPacket recv(int maxDataSize);
+    UDPPacket receive();
+    UDPPacket receive(int maxDataSize);
 
     // Get the details about the bound address.
     const Address& getAddress() const { return mAddress; }

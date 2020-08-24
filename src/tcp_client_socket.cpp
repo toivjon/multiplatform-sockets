@@ -41,17 +41,17 @@ void TCPClientSocket::send(const std::vector<Byte>& bytes) {
   }
 }
 
-std::vector<Byte> TCPClientSocket::recv() {
-  return recv(DefaultMaxReceiveDataLength);
+std::vector<Byte> TCPClientSocket::receive() {
+  return receive(DefaultMaxReceiveDataLength);
 }
 
-std::vector<Byte> TCPClientSocket::recv(int maxDataSize) {
+std::vector<Byte> TCPClientSocket::receive(int maxDataSize) {
   // reserve desired amount of memory for the incoming data and address.
   std::vector<Byte> bytes;
   bytes.resize(maxDataSize);
 
   // take whatever awaits in the queue.
-  auto result = ::recv(mHandle, reinterpret_cast<char*>(&bytes[0]), maxDataSize, 0);
+  auto result = recv(mHandle, reinterpret_cast<char*>(&bytes[0]), maxDataSize, 0);
   if (result == SocketError) {
     throw SocketException("recv", GetErrorMessage());
   }

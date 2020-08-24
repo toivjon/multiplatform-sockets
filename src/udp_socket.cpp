@@ -67,11 +67,11 @@ void UDPSocket::send(UDPPacket& packet) {
   }
 }
 
-UDPPacket UDPSocket::recv() {
-  return recv(DefaultMaxReceiveDataLength);
+UDPPacket UDPSocket::receive() {
+  return receive(DefaultMaxReceiveDataLength);
 }
 
-UDPPacket UDPSocket::recv(int maxDataSize) {
+UDPPacket UDPSocket::receive(int maxDataSize) {
   // reserve desired amount of memory for the incoming data and address.
   std::vector<Byte> bytes;
   bytes.resize(maxDataSize);

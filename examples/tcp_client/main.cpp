@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Local addr='" << lAddr.getIPAddress() << "' port=" << lAddr.getPort() << std::endl;
     std::cout << "Remote addr='" << rAddr.getIPAddress() << "' port=" << rAddr.getPort() << std::endl;
     socket.send({ 'h','e','l','l','o' });
-    auto data = socket.recv(BufferSize);
+    auto data = socket.receive(BufferSize);
     std::vector<Byte> buffer(data);
     buffer.push_back('\0');
     std::cout << "response: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;

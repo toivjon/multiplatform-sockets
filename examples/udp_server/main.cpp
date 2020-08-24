@@ -17,7 +17,7 @@ int main() {
 
     auto addr = socket.getAddress();
     std::cout << "Bound addr='" << addr.getIPAddress() << "' port=" << addr.getPort() << std::endl;
-    auto packet = socket.recv(BufferSize);
+    auto packet = socket.receive(BufferSize);
     std::cout << "echoing packet: " << packet.toString() << std::endl;
     socket.send(packet);
   } catch (const SocketException& e) {
