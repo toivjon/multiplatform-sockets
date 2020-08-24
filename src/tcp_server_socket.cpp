@@ -19,7 +19,7 @@ constexpr int BacklogSize = 4;
 TCPServerSocket::TCPServerSocket() : TCPServerSocket(AnyPort, {}) {
 }
 
-TCPServerSocket::TCPServerSocket(Port port) : TCPServerSocket(port, {}) {
+TCPServerSocket::TCPServerSocket(Port port) : TCPServerSocket(port, AddressFamily::IPv4) {
 }
 
 TCPServerSocket::TCPServerSocket(Port port, AddressFamily af) : TCPServerSocket(Address(af, port)) {
