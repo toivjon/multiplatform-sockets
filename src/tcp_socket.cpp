@@ -27,3 +27,20 @@ bool TCPSocket::isNagleEnabled() const {
   }
   return optVal == 0;
 }
+
+void TCPSocket::setKeepAliveEnabled(bool enabled) {
+  int optVal = enabled ? 1 : 0;
+  int optLen = sizeof(int);
+  if (setsockopt(mHandle, SOL_SOCKET, SO_KEEPALIVE, (char*)&optVal, optLen) == SocketError) {
+    throw SocketException("setsockopt", GetErrorMessage());
+  }
+}
+
+bool TCPSocket::isKeepAliveEnabled() const {
+  int optVal = 0;
+  int optLen = sizeof(int);
+  if (getsockopt(mHandle, SOL_SOCKET, SO_KEEPALIVE, (char*)&optVal, &optLen) == SocketError) {
+    throw SocketException("getsockopt", GetErrorMessage());
+  }
+  return optVal == 1;
+}

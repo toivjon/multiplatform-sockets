@@ -11,6 +11,9 @@ namespace mps {
 
     void setNagleEnabled(bool enabled);
     bool isNagleEnabled() const;
+
+    void setKeepAliveEnabled(bool enabled);
+    bool isKeepAliveEnabled() const;
   };
 }
 

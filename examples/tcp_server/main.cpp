@@ -15,6 +15,10 @@ int main() {
     socket.setNagleEnabled(false);
     std::cout << "Nagle enabled after: " << socket.isNagleEnabled() << std::endl;
 
+    std::cout << "KeepAlive enabled before: " << socket.isKeepAliveEnabled() << std::endl;
+    socket.setKeepAliveEnabled(true);
+    std::cout << "KeepAlive enabled after: " << socket.isKeepAliveEnabled() << std::endl;
+
     auto addr = socket.getLocalAddress();
     std::cout << "Bound addr='" << addr.getIPAddress() << "' port=" << addr.getPort() << std::endl;
     auto client = socket.accept();
