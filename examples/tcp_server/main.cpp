@@ -19,6 +19,10 @@ int main() {
     socket.setKeepAliveEnabled(true);
     std::cout << "KeepAlive enabled after: " << socket.isKeepAliveEnabled() << std::endl;
 
+    std::cout << "Socket receive buffer size before: " << socket.getReceiveBufferSize() << std::endl;
+    socket.setReceiveBufferSize(1024);
+    std::cout << "Socket receive buffer size after: " << socket.getReceiveBufferSize() << std::endl;
+
     auto addr = socket.getLocalAddress();
     std::cout << "Bound addr='" << addr.getIPAddress() << "' port=" << addr.getPort() << std::endl;
     auto client = socket.accept();

@@ -19,6 +19,9 @@ namespace mps {
 
     void setNonBlocking(bool nonBlocking);
     bool isNonBlocking() const { return mNonBlocking; }
+
+    void setReceiveBufferSize(int size);
+    int getReceiveBufferSize() const;
   protected:
     SocketHandle  mHandle;
     bool          mNonBlocking;

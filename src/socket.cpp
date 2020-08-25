@@ -2,6 +2,7 @@
 #include "mps/exception.h"
 #include "error.h"
 #include "wsa.h"
+#include "internal.h"
 
 #if _WIN32
 #define STATIC_INIT static WSA wsa
@@ -51,4 +52,20 @@ void Socket::setNonBlocking(bool nonBlocking) {
   }
   #endif
   mNonBlocking = nonBlocking;
+}
+
+void Socket::setReceiveBufferSize(int size) {
+  int optLen = sizeof(int);
+  if (setsockopt(mHandle, SOL_SOCKET, SO_RCVBUF, (const char*)&size, optLen) == SocketError) {
+    throw SocketException("setsockopt", GetErrorMessage());
+  }
+}
+
+int Socket::getReceiveBufferSize() const {
+  int optVal = 0;
+  int optLen = sizeof(int);
+  if (getsockopt(mHandle, SOL_SOCKET, SO_RCVBUF, (char*)&optVal, &optLen) == SocketError) {
+    throw SocketException("getsockopt", GetErrorMessage());
+  }
+  return optVal;
 }
