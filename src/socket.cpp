@@ -69,3 +69,19 @@ int Socket::getReceiveBufferSize() const {
   }
   return optVal;
 }
+
+void Socket::setSendBufferSize(int size) {
+  int optLen = sizeof(int);
+  if (setsockopt(mHandle, SOL_SOCKET, SO_SNDBUF, (const char*)&size, optLen) == SocketError) {
+    throw SocketException("setsockopt", GetErrorMessage());
+  }
+}
+
+int Socket::getSendBufferSize() const {
+  int optVal = 0;
+  int optLen = sizeof(int);
+  if (getsockopt(mHandle, SOL_SOCKET, SO_SNDBUF, (char*)&optVal, &optLen) == SocketError) {
+    throw SocketException("getsockopt", GetErrorMessage());
+  }
+  return optVal;
+}

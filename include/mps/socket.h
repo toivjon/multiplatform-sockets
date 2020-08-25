@@ -22,6 +22,9 @@ namespace mps {
 
     void setReceiveBufferSize(int size);
     int getReceiveBufferSize() const;
+
+    void setSendBufferSize(int size);
+    int getSendBufferSize() const;
   protected:
     SocketHandle  mHandle;
     bool          mNonBlocking;

@@ -23,6 +23,10 @@ int main() {
     socket.setReceiveBufferSize(1024);
     std::cout << "Socket receive buffer size after: " << socket.getReceiveBufferSize() << std::endl;
 
+    std::cout << "Socket send buffer size before: " << socket.getSendBufferSize() << std::endl;
+    socket.setSendBufferSize(1024);
+    std::cout << "Socket send buffer size after: " << socket.getSendBufferSize() << std::endl;
+
     auto addr = socket.getLocalAddress();
     std::cout << "Bound addr='" << addr.getIPAddress() << "' port=" << addr.getPort() << std::endl;
     auto client = socket.accept();
