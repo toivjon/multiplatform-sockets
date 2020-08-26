@@ -43,6 +43,29 @@ namespace mps {
     UDP = SOCK_DGRAM
   };
 
+  // UDP flags used when sending data.
+  enum class UDPSendFlag {
+    DontRoute = MSG_DONTROUTE
+  };
+
+  // TCP flags used when sending data.
+  enum class TCPSendFlag {
+    DontRouter = MSG_DONTROUTE,
+    OutOfBand  = MSG_OOB
+  };
+
+  // UDP flags used when receiving data.
+  enum class UDPReceiveFlag {
+    Peek      = MSG_PEEK,
+    OutOfBand = MSG_OOB
+  };
+
+  // TCP flags used when receiving data.
+  enum class TCPReceiveFlag {
+    Peek      = MSG_PEEK,
+    OutOfBand = MSG_OOB
+  };
+
   // A linger structure used to set and get linger definitions.
   struct Linger {
     bool enabled;
