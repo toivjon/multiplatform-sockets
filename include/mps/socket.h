@@ -25,6 +25,9 @@ namespace mps {
 
     void setSendBufferSize(int size);
     int getSendBufferSize() const;
+
+    void setNonRouting(bool nonRouting);
+    bool isNonRouting() const;
   protected:
     SocketHandle  mHandle;
     bool          mNonBlocking;

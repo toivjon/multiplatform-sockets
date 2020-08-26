@@ -27,6 +27,10 @@ int main() {
     socket.setSendBufferSize(1024);
     std::cout << "Socket send buffer size after: " << socket.getSendBufferSize() << std::endl;
 
+    std::cout << "DontRoute enabled before : " << socket.isNonRouting() << std::endl;
+    socket.setNonRouting(true);
+    std::cout << "DontRoute enabled after: " << socket.isNonRouting() << std::endl;
+
     auto addr = socket.getLocalAddress();
     std::cout << "Bound addr='" << addr.getIPAddress() << "' port=" << addr.getPort() << std::endl;
     auto client = socket.accept();

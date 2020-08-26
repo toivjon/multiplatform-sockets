@@ -85,3 +85,20 @@ int Socket::getSendBufferSize() const {
   }
   return optVal;
 }
+
+void Socket::setNonRouting(bool nonRouting) {
+  int optVal = nonRouting ? 1 : 0;
+  int optLen = sizeof(int);
+  if (setsockopt(mHandle, SOL_SOCKET, SO_DONTROUTE, (const char*)&optVal, optLen) == SocketError) {
+    throw SocketException("setsockopt", GetErrorMessage());
+  }
+}
+
+bool Socket::isNonRouting() const {
+  int optVal = 0;
+  int optLen = sizeof(int);
+  if (getsockopt(mHandle, SOL_SOCKET, SO_DONTROUTE, (char*)&optVal, &optLen) == SocketError) {
+    throw SocketException("getsockopt", GetErrorMessage());
+  }
+  return optVal == 1;
+}
