@@ -14,6 +14,9 @@ namespace mps {
 
     void setKeepAliveEnabled(bool enabled);
     bool isKeepAliveEnabled() const;
+
+    void setLinger(const Linger& setting);
+    Linger getLinger() const;
   };
 }
 

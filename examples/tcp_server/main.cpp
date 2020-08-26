@@ -31,6 +31,14 @@ int main() {
     socket.setNonRouting(true);
     std::cout << "DontRoute enabled after: " << socket.isNonRouting() << std::endl;
 
+    auto linger = socket.getLinger();
+    std::cout << "Linger before enabled: " << linger.enabled << " timeout: " << linger.timeoutSeconds << std::endl;
+    linger.enabled = !linger.enabled;
+    linger.timeoutSeconds = 100;
+    socket.setLinger(linger);
+    linger = socket.getLinger();
+    std::cout << "Linger after enabled: " << linger.enabled << " timeout: " << linger.timeoutSeconds << std::endl;
+
     auto addr = socket.getLocalAddress();
     std::cout << "Bound addr='" << addr.getIPAddress() << "' port=" << addr.getPort() << std::endl;
     auto client = socket.accept();

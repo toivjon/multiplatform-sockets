@@ -42,6 +42,12 @@ namespace mps {
     TCP = SOCK_STREAM,
     UDP = SOCK_DGRAM
   };
+
+  // A linger structure used to set and get linger definitions.
+  struct Linger {
+    bool enabled;
+    int  timeoutSeconds;
+  };
 }
 
 #endif

@@ -44,3 +44,25 @@ bool TCPSocket::isKeepAliveEnabled() const {
   }
   return optVal == 1;
 }
+
+void TCPSocket::setLinger(const Linger& setting) {
+  linger optVal = {};
+  optVal.l_onoff = setting.enabled ? 1 : 0;
+  optVal.l_linger = setting.timeoutSeconds;
+  int optLen = sizeof(linger);
+  if (setsockopt(mHandle, SOL_SOCKET, SO_LINGER, (const char*)&optVal, optLen) == SocketError) {
+    throw SocketException("setsockopt", GetErrorMessage());
+  }
+}
+
+Linger TCPSocket::getLinger() const {
+  linger optVal = {};
+  int optLen = sizeof(linger);
+  if (getsockopt(mHandle, SOL_SOCKET, SO_LINGER, (char*)&optVal, &optLen) == SocketError) {
+    throw SocketException("getsockopt", GetErrorMessage());
+  }
+  Linger linger = {};
+  linger.enabled = optVal.l_onoff == 1;
+  linger.timeoutSeconds = optVal.l_linger;
+  return linger;
+}
