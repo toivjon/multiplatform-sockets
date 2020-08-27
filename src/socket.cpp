@@ -4,35 +4,31 @@
 #include "wsa.h"
 #include "internal.h"
 
-#if _WIN32
-#define STATIC_INIT static WSA wsa
-#define closesocket closesocket
-#else
-#define STATIC_INIT
-#define closesocket close
-#define INVALID_SOCKET -1
-#define SOCKET_ERROR -1
-#endif
-
 using namespace mps;
 
-Socket::Socket() : Socket(INVALID_SOCKET) {
+Socket::Socket() : Socket(InvalidHandle) {
 }
 
 Socket::Socket(SocketHandle handle) : mHandle(handle), mNonBlocking(false) {
 }
 
 Socket::Socket(AddressFamily af, SocketType type) : Socket() {
-  STATIC_INIT;
+  #if _WIN32
+  static WSA wsa;
+  #endif
   mHandle = socket(static_cast<int>(af), static_cast<int>(type), 0);
-  if (mHandle == INVALID_SOCKET) {
+  if (mHandle == InvalidHandle) {
     throw SocketException("socket", GetErrorMessage());
   }
 }
 
 Socket::~Socket() {
-  if (mHandle != INVALID_SOCKET) {
+  if (mHandle != InvalidHandle) {
+    #if _WIN32
     closesocket(mHandle);
+    #else
+    close(mHandle);
+    #endif
   }
 }
 
