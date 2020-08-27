@@ -5,9 +5,6 @@
 
 using namespace mps;
 
-// The default size for the listen backlog.
-constexpr int BacklogSize = 4;
-
 TCPServerSocket::TCPServerSocket() : TCPServerSocket(AnyPort, {}) {
 }
 
@@ -29,7 +26,7 @@ TCPServerSocket::TCPServerSocket(const Address& address) : TCPSocket(address.get
     throw SocketException("getsockname", GetErrorMessage());
   }
 
-  if (listen(mHandle, BacklogSize) == SocketError) {
+  if (listen(mHandle, TCPBacklogSize) == SocketError) {
     throw SocketException("listen", GetErrorMessage());
   }
 }

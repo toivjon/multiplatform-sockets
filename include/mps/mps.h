@@ -31,6 +31,9 @@ namespace mps {
   // The default maximum amount of bytes to receive on a receive call.
   constexpr auto DefaultMaxReceiveDataLength = 1024;
 
+  // The default size for the listen backlog for TCP server sockets.
+  constexpr int TCPBacklogSize = 4;
+
   // Address family defines whether address or socket handles IPv4 or IPv6.
   enum class AddressFamily {
     IPv4 = AF_INET,
@@ -51,18 +54,18 @@ namespace mps {
   // TCP flags used when sending data.
   enum class TCPSendFlag {
     DontRouter = MSG_DONTROUTE,
-    OutOfBand  = MSG_OOB
+    OutOfBand = MSG_OOB
   };
 
   // UDP flags used when receiving data.
   enum class UDPReceiveFlag {
-    Peek      = MSG_PEEK,
+    Peek = MSG_PEEK,
     OutOfBand = MSG_OOB
   };
 
   // TCP flags used when receiving data.
   enum class TCPReceiveFlag {
-    Peek      = MSG_PEEK,
+    Peek = MSG_PEEK,
     OutOfBand = MSG_OOB
   };
 
