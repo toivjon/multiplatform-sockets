@@ -1,12 +1,21 @@
-#include "mps/tcp_socket.h"
-#include "mps/udp_socket.h"
-#include "mps/exception.h"
+#include "mps.h"
 
 #include <iostream>
 
 using namespace mps;
 
 int main() {
+  try {
+    UDPSocket socket;
+    socket.setBlocking(false);
+    socket.setRouting(true);
+    socket.setSendBufferSize(1024);
+    socket.setReceiveBufferSize(1024);
+  } catch (const SocketException& e) {
+    std::cout << e.what() << std::endl;
+  }
+
+  /*
   try {
     UDPSocket socket;
     std::cout << "1 Bound to port: " << socket.getAddress().getPort() << std::endl;
@@ -21,6 +30,7 @@ int main() {
   } catch (const SocketException& e) {
     std::cerr << e.what() << std::endl;
   }
+  */
   // TCPSocket tcpSocket(AddressFamily::IPv4);
   // UDPSocket udpSocket(AddressFamily::IPv6);
   // tcpSocket.bind(Address("127.0.0.1", 5555));
