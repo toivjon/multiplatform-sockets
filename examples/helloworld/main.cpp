@@ -12,6 +12,7 @@ int main() {
     socket.setBroadcasting(true);
     socket.setSendBufferSize(1024);
     socket.setReceiveBufferSize(1024);
+
   } catch (const SocketException& e) {
     std::cout << e.what() << std::endl;
   }

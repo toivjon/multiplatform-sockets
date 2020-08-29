@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <exception>
 #include <string>
+#include <vector>
 
 #if _WIN32
 #include <winsock2.h>
@@ -27,8 +28,16 @@ constexpr auto CloseSocket = close;
 
 namespace mps
 {
+  // We support platforms where one byte contains 8 bits.
+  typedef uint8_t Byte;
+  // A type for a dynamic array of bytes.
+  typedef std::vector<Byte> Bytes;
+
   // A constant for specifying that the OS is free to select a port for the socket.
   constexpr uint16_t AnyPort = 0;
+
+  // A constant to specify the default maximum amount of incoming data to be read.
+  constexpr int DefaultMaxReceiveDataSize = 1024;
 
   // Address family defines whether address or socket handles IPv4 or IPv6.
   enum class AddressFamily {
@@ -95,6 +104,9 @@ namespace mps
         sockaddr->sin_addr.S_un.S_addr = INADDR_ANY;
       }
     }
+
+    // Build a new address from the given socket address descriptor.
+    Address(const sockaddr_storage& addr) : mSockAddr(addr) {}
 
     // Get the definition which tells whether the address presents IPv4 or IPv6 address.
     AddressFamily getAddressFamily() const { return isIPv4() ? AddressFamily::IPv4 : AddressFamily::IPv6; }
@@ -373,6 +385,31 @@ namespace mps
     // TODO accept
   };
 
+  class UDPPacket
+  {
+  public:
+    // Build a new UDP packet with empty address and bytes.
+    UDPPacket() : UDPPacket(Address(), Bytes()) {}
+    // Build a new UDP packet with given address and data.
+    UDPPacket(const Address& address, const Bytes& data) : mAddress(address), mData(data) {}
+
+    // Get the source / target address of the UDP packet.
+    const Address& getAddress() const { return mAddress; }
+    // Set the source / target address of the UDP packet.
+    void setAddress(const Address& address) { mAddress = address; }
+
+    // Get the data associated with the UDP packet.
+    const Bytes& getData() const { return mData; }
+    // Set the data associated with the UDP packet.
+    void setData(const Bytes& data) { mData = data; }
+
+    // Get the size of the packet data.
+    size_t getSize() const { return mData.size(); }
+  private:
+    Address mAddress;
+    Bytes   mData;
+  };
+
   class UDPSocket : public Socket
   {
   public:
@@ -392,11 +429,44 @@ namespace mps
     // Get the definition whether the socket can be used to broadcast packets in LAN.
     bool isBroadcasting() const { return getSockOpt(SockOpt::UDP_BROADCAST) == 1; }
 
-    // TODO send(UDPPacket&)
-    // TODO receive()
-    // TODO receive(maxData)
-    // TODO receive(UDPPacket&)
-    // TODO receive(maxData, UDPPacket&)
+    // TODO add a support for flags?
+    // TODO add better functions to get required references
+    // TODO improve the way how to indicate if connection was closed?
+    void send(const UDPPacket& packet) {
+      const auto& addr = packet.getAddress();
+      const auto& data = reinterpret_cast<const char*>(&packet.getData()[0]);
+      auto dataSize = static_cast<int>(packet.getSize());
+      auto addrSize = static_cast<int>(addr.getSize());
+      if (sendto(mHandle, data, dataSize, 0, addr.asSockaddr(), addrSize) == SOCKET_ERROR) {
+        throw SocketException("sendto");
+      }
+    }
+
+    // Receive incoming data from the socket. Uses default value for the maximum data bytes.
+    UDPPacket receive() { return receive(DefaultMaxReceiveDataSize); }
+
+    // TODO add a support for flags?
+    // TODO add better functions to get required references
+    // TODO improve the way how to indicate if connection was closed?
+    // Receive incoming data from the socket. Reads max of the given amount of bytes.
+    UDPPacket receive(int maxDataSize) {
+      // reserve desired amount of memory for the incoming data and address.
+      Bytes bytes(maxDataSize);
+      sockaddr_storage address = {};
+      socklen_t addrSize = sizeof(address);
+
+      // take whatever awaits in the incoming queue.
+      auto data = reinterpret_cast<char*>(&bytes[0]);
+      auto addr = reinterpret_cast<sockaddr*>(&address);
+      auto result = recvfrom(mHandle, data, maxDataSize, 0, addr, &addrSize);
+      if (result == SOCKET_ERROR) {
+        throw SocketException("recvfrom");
+      }
+
+      // truncate bytes array and return results in the package structure.
+      bytes.resize(result);
+      return UDPPacket(Address(address), bytes);
+    }
   };
 
 }
