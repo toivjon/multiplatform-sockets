@@ -7,8 +7,10 @@
 
 #if _WIN32
 #include <winsock2.h>
+#include <ws2tcpip.h>
 constexpr auto CloseSocket = closesocket;
 #else
+#include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 typedef int SOCKET;
@@ -34,6 +36,113 @@ namespace mps
     IPv6 = AF_INET6
   };
 
+  // An exception type for logical exceptions that may arise from the address operations.
+  class AddressException final : public std::exception
+  {
+  public:
+    // Construct a new exception about the target address.
+    AddressException(const std::string& address) : mAddress(address) {
+      mMessage = "The '" + address + "' is not a valid IPv4 or IPv6 address.";
+    }
+
+    // Get the address that was related when this exception was issued.
+    const std::string& getAddress() const { return mAddress; }
+
+    // Print out what actually happened when this exception was issued.
+    const char* what() const noexcept override { return mMessage.c_str(); }
+  private:
+    std::string mAddress;
+    std::string mMessage;
+  };
+
+  // Address encapsulates the network IP address and the port.
+  class Address final
+  {
+  public:
+    // Construct a new IPv4 address with auto-select port definition.
+    Address() : Address(AnyPort, AddressFamily::IPv4) {}
+
+    // Construct a new address with the given port and IP address.
+    Address(uint16_t port, const std::string& ip) {
+      if (isIPv6String(ip)) {
+        auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
+        sockaddr->sin6_family = AF_INET6;
+        sockaddr->sin6_port = htons(port);
+        if (!inet_pton(AF_INET6, ip.c_str(), &sockaddr->sin6_addr)) {
+          throw AddressException(ip);
+        }
+      } else {
+        auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
+        sockaddr->sin_family = AF_INET;
+        sockaddr->sin_port = htons(port);
+        if (!inet_pton(AF_INET, ip.c_str(), &sockaddr->sin_addr)) {
+          throw AddressException(ip);
+        }
+      }
+    }
+
+    // Construct a new address with the given port and any-interface.
+    Address(uint16_t port, AddressFamily af) {
+      if (af == AddressFamily::IPv6) {
+        auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
+        sockaddr->sin6_family = AF_INET6;
+        sockaddr->sin6_port = htons(port);
+        sockaddr->sin6_addr = in6addr_any;
+      } else {
+        auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
+        sockaddr->sin_family = AF_INET;
+        sockaddr->sin_port = htons(port);
+        sockaddr->sin_addr.S_un.S_addr = INADDR_ANY;
+      }
+    }
+
+    // Get the definition which tells whether the address presents IPv4 or IPv6 address.
+    AddressFamily getAddressFamily() const { return isIPv4() ? AddressFamily::IPv4 : AddressFamily::IPv6; }
+    // Get the definition whether the address presents a IPv4 address.
+    bool isIPv4() const { return mSockAddr.ss_family == AF_INET; }
+    // Get the definition whether the address presents a IPv6 address.
+    bool isIPv6() const { return mSockAddr.ss_family == AF_INET6; }
+
+    // Get a reference to the wrapped socket address as a sockaddr.
+    sockaddr* asSockaddr() { return reinterpret_cast<sockaddr*>(&mSockAddr); }
+    // Get a constant reference to the wrapped socket address as a sockaddr.
+    const sockaddr* asSockaddr() const { return reinterpret_cast<const sockaddr*>(&mSockAddr); }
+    // Get the size of the wrapped socket address structure.
+    size_t getSize() const { return isIPv4() ? sizeof(sockaddr_in) : sizeof(sockaddr_in6); }
+
+    // Get the IP address of the address.
+    std::string getIP() const {
+      if (isIPv4()) {
+        char buffer[16];
+        auto addr = reinterpret_cast<const sockaddr_in*>(&mSockAddr);
+        inet_ntop(AF_INET, &addr->sin_addr, buffer, sizeof(buffer));
+        return buffer;
+      } else {
+        char buffer[46];
+        auto addr = reinterpret_cast<const sockaddr_in6*>(&mSockAddr);
+        inet_ntop(AF_INET6, &addr->sin6_addr, buffer, sizeof(buffer));
+        return buffer;
+      }
+    }
+
+    // Get the port of the address.
+    uint16_t getPort() const {
+      if (isIPv4()) {
+        const auto& sockaddr = reinterpret_cast<const sockaddr_in*>(&mSockAddr);
+        return ntohs(sockaddr->sin_port);
+      } else {
+        const auto& sockaddr = reinterpret_cast<const sockaddr_in6*>(&mSockAddr);
+        return ntohs(sockaddr->sin6_port);
+      }
+    }
+  private:
+    // Check whether the given string contains IPv6 address.
+    static bool isIPv6String(const std::string& val) {
+      return val.find(":") != std::string::npos;
+    }
+    sockaddr_storage mSockAddr;
+  };
+
   // An exception type for logical exceptions that may arise from the socket operations.
   class SocketException final : public std::exception
   {
@@ -56,13 +165,13 @@ namespace mps
       // TODO how to get perror message? check when testing in unix-environment
 
       #endif
-      }
+    }
 
     // Print out what actually happened when this exception was issued.
     const char* what() const noexcept override { return mMessage.c_str(); }
   private:
     std::string mMessage;
-    };
+  };
 
   class Socket
   {
@@ -102,6 +211,10 @@ namespace mps
     // Get the definition whether the socket routes traffic or directly uses the interface.
     bool isRouting() const { return getSockOpt(SockOpt::DONT_ROUTE) == 0; }
 
+    // TODO getPort
+    // TODO getIP
+    // TODO getAddress
+
     // Specify whether the socket should block on blocking calls (e.g. receive etc.).
     void setBlocking(bool blocking) {
       #if _WIN32
@@ -117,7 +230,7 @@ namespace mps
       }
       #endif
       mBlocking = blocking;
-      }
+    }
     // Get the definition whether socket operations are set to block or not.
     bool isBlocking() const { return mBlocking; }
 
@@ -132,7 +245,8 @@ namespace mps
     enum class SockOpt {
       RECEIVE_BUFFER_SIZE = SO_RCVBUF,
       SEND_BUFFER_SIZE = SO_SNDBUF,
-      DONT_ROUTE = SO_DONTROUTE
+      DONT_ROUTE = SO_DONTROUTE,
+      UDP_BROADCAST = SO_BROADCAST
     };
 
     Socket(AddressFamily af, SocketType type) : mAddressFamily(af), mType(type), mBlocking(true) {
@@ -165,10 +279,27 @@ namespace mps
       return optVal;
     }
 
+    void bind(const Address& address) {
+      const auto& sockaddr = address.asSockaddr();
+      const auto sockaddrSize = static_cast<int>(address.getSize());
+      if (::bind(mHandle, sockaddr, sockaddrSize) == SOCKET_ERROR) {
+        throw SocketException("bind");
+      }
+      refreshLocalAddress();
+    }
+
+    void refreshLocalAddress() {
+      auto addrSize = static_cast<int>(mLocalAddress.getSize());
+      if (getsockname(mHandle, mLocalAddress.asSockaddr(), &addrSize) == SOCKET_ERROR) {
+        throw SocketException("getsockname");
+      }
+    }
+
     AddressFamily mAddressFamily;
     SocketType    mType;
     SOCKET        mHandle;
     bool          mBlocking;
+    Address       mLocalAddress;
   private:
     // A RAII wrapper for proper initialization and graceful shutdown for the Winsock service.
     class WinsockService final
@@ -193,21 +324,81 @@ namespace mps
       mBlocking = rhs.mBlocking;
       rhs.mHandle = INVALID_SOCKET;
     }
-    };
-
-  class UDPSocket : public Socket
-  {
-  public:
-    UDPSocket() : UDPSocket(AddressFamily::IPv4, AnyPort) {}
-    UDPSocket(AddressFamily af, uint16_t port) : Socket(af, SocketType::UDP) {}
   };
 
   class TCPSocket : public Socket
   {
   public:
     TCPSocket(AddressFamily af) : Socket(af, SocketType::TCP) {}
+
+
   };
 
-  }
+  class TCPClientSocket : public TCPSocket
+  {
+  public:
+    // Construct a new TCP client by connecting to given server address.
+    TCPClientSocket(const Address& address) : TCPSocket(address.getAddressFamily()) {
+      const auto& sockAddr = address.asSockaddr();
+      auto sockAddrSize = static_cast<int>(address.getSize());
+      if (connect(mHandle, sockAddr, sockAddrSize) == SOCKET_ERROR) {
+        throw SocketException("connect");
+      }
+      refreshLocalAddress();
+    }
+    // TODO get remote address
+    // TODO get remote port
+    // TODO get remote ip
+
+    // TODO send
+    // TODO receive
+    // TODO receive(maxDataSize)
+    // TODO receive(bytes)
+  };
+
+  class TCPServerSocket : public TCPSocket
+  {
+  public:
+    // Build a new IPv4 socket with auto-selected port and auto-selected interface.
+    TCPServerSocket() : TCPServerSocket(AnyPort) {};
+    // Build a new IPv4 socket with the target port in auto-selected interface.
+    TCPServerSocket(uint16_t port) : TCPServerSocket(port, AddressFamily::IPv4) {}
+    // Build a new socket with the target address family and port in the auto-selected interface.
+    TCPServerSocket(uint16_t port, AddressFamily af) : TCPServerSocket(Address(port, af)) {}
+    // Build a new TCP server socket and bind it to target address.
+    TCPServerSocket(const Address& address) : TCPSocket(address.getAddressFamily()) {
+      bind(address);
+      // TODO specify listen with backlog size
+    }
+    // TODO accept
+  };
+
+  class UDPSocket : public Socket
+  {
+  public:
+    // Build a new IPv4 socket with auto-selected port.
+    UDPSocket() : UDPSocket(AnyPort) {};
+    // Build a new IPv4 socket with the target port.
+    UDPSocket(uint16_t port) : UDPSocket(port, AddressFamily::IPv4) {};
+    // Build a new socket with the target port and address family.
+    UDPSocket(uint16_t port, AddressFamily af) : UDPSocket(Address(port, af)) {}
+    // Build a new UDP socket and bind it to target address.
+    UDPSocket(const Address& address) : Socket(address.getAddressFamily(), SocketType::UDP) {
+      bind(address);
+    }
+
+    // Specify whether the socket can be used to broadcast packets in LAN.
+    void setBroadcasting(bool value) { setSockOpt(SockOpt::UDP_BROADCAST, value ? 1 : 0); }
+    // Get the definition whether the socket can be used to broadcast packets in LAN.
+    bool isBroadcasting() const { return getSockOpt(SockOpt::UDP_BROADCAST) == 1; }
+
+    // TODO send(UDPPacket&)
+    // TODO receive()
+    // TODO receive(maxData)
+    // TODO receive(UDPPacket&)
+    // TODO receive(maxData, UDPPacket&)
+  };
+
+}
 
 #endif

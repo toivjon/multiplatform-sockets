@@ -9,6 +9,7 @@ int main() {
     UDPSocket socket;
     socket.setBlocking(false);
     socket.setRouting(true);
+    socket.setBroadcasting(true);
     socket.setSendBufferSize(1024);
     socket.setReceiveBufferSize(1024);
   } catch (const SocketException& e) {
