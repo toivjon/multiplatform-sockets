@@ -318,7 +318,6 @@ namespace mps
       return result;
     }
 
-    // AddressFamily mAddressFamily;
     SOCKET        mHandle;
     bool          mBlocking;
     Address       mLocalAddress;
