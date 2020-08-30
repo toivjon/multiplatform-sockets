@@ -73,7 +73,7 @@ namespace mps
     Address() : Address(AnyPort, AddressFamily::IPv4) {}
 
     // Construct a new address with the given port and IP address.
-    Address(const std::string& ip, uint16_t port) {
+    Address(const std::string& ip, uint16_t port) : mSockAddr({}) {
       if (isIPv6String(ip)) {
         auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
         sockaddr->sin6_family = AF_INET6;
@@ -92,7 +92,7 @@ namespace mps
     }
 
     // Construct a new address with the given port and any-interface.
-    Address(uint16_t port, AddressFamily af) {
+    Address(uint16_t port, AddressFamily af) : mSockAddr({}) {
       if (af == AddressFamily::IPv6) {
         auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
         sockaddr->sin6_family = AF_INET6;

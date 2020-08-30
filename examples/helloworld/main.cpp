@@ -15,7 +15,6 @@ int main() {
     socket.send({ {"127.0.0.1", 12345}, {'a'} });
     socket.send({ {"127.0.0.1", 12345}, {'a'} }, {UDPSendFlag::DontRoute});
 
-    Address address;
     // TODO address.asSockaddr
     // address.getAddressFamily
   } catch (const SocketException& e) {
