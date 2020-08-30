@@ -393,8 +393,12 @@ namespace mps
   public:
     // Construct a new TCP client by connecting to given server address.
     TCPClientSocket(const Address& address) : TCPSocket(address.getFamily()) {
-      auto sockAddrSize = static_cast<int>(address.getSize());
-      if (connect(mHandle, address, sockAddrSize) == SOCKET_ERROR) {
+      #if _WIN32
+      auto addrSize = static_cast<int>(address.getSize());
+      #else
+      auto addrSize = static_cast<socklen_t>(address.getSize());
+      #endif
+      if (connect(mHandle, address, addrSize) == SOCKET_ERROR) {
         throw SocketException("connect");
       }
       refreshLocalAddress();
