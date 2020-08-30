@@ -328,8 +328,12 @@ namespace mps
     }
 
     void bind(const Address& address) {
-      const auto sockaddrSize = static_cast<int>(address.getSize());
-      if (::bind(mHandle, address, sockaddrSize) == SOCKET_ERROR) {
+      #if _WIN32
+      auto addrSize = static_cast<int>(sizeof(address.getSize()));
+      #else
+      auto addrSize = static_cast<socklen_t>(address.getSize());
+      #endif
+      if (::bind(mHandle, address, addrSize) == SOCKET_ERROR) {
         throw SocketException("bind");
       }
       refreshLocalAddress();
