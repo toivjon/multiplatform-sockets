@@ -320,7 +320,6 @@ namespace mps
     }
 
     AddressFamily mAddressFamily;
-    int           mType;
     SOCKET        mHandle;
     bool          mBlocking;
     Address       mLocalAddress;
