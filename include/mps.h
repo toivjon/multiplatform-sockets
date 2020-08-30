@@ -117,9 +117,9 @@ namespace mps
     bool isIPv6() const { return mSockAddr.ss_family == AF_INET6; }
 
     // Get a reference to the wrapped socket address as a sockaddr.
-    sockaddr* asSockaddr() { return reinterpret_cast<sockaddr*>(&mSockAddr); }
+    operator sockaddr* () { return reinterpret_cast<sockaddr*>(&mSockAddr); }
     // Get a constant reference to the wrapped socket address as a sockaddr.
-    const sockaddr* asSockaddr() const { return reinterpret_cast<const sockaddr*>(&mSockAddr); }
+    operator const sockaddr* () const { return reinterpret_cast<const sockaddr*>(&mSockAddr); }
     // Get the size of the wrapped socket address structure.
     size_t getSize() const { return isIPv4() ? sizeof(sockaddr_in) : sizeof(sockaddr_in6); }
 
@@ -293,9 +293,8 @@ namespace mps
     }
 
     void bind(const Address& address) {
-      const auto& sockaddr = address.asSockaddr();
       const auto sockaddrSize = static_cast<int>(address.getSize());
-      if (::bind(mHandle, sockaddr, sockaddrSize) == SOCKET_ERROR) {
+      if (::bind(mHandle, address, sockaddrSize) == SOCKET_ERROR) {
         throw SocketException("bind");
       }
       refreshLocalAddress();
@@ -303,7 +302,7 @@ namespace mps
 
     void refreshLocalAddress() {
       auto addrSize = static_cast<int>(mLocalAddress.getSize());
-      if (getsockname(mHandle, mLocalAddress.asSockaddr(), &addrSize) == SOCKET_ERROR) {
+      if (getsockname(mHandle, mLocalAddress, &addrSize) == SOCKET_ERROR) {
         throw SocketException("getsockname");
       }
     }
@@ -360,9 +359,8 @@ namespace mps
   public:
     // Construct a new TCP client by connecting to given server address.
     TCPClientSocket(const Address& address) : TCPSocket(address.getFamily()) {
-      const auto& sockAddr = address.asSockaddr();
       auto sockAddrSize = static_cast<int>(address.getSize());
-      if (connect(mHandle, sockAddr, sockAddrSize) == SOCKET_ERROR) {
+      if (connect(mHandle, address, sockAddrSize) == SOCKET_ERROR) {
         throw SocketException("connect");
       }
       refreshLocalAddress();
@@ -457,7 +455,7 @@ namespace mps
       auto dataSize = static_cast<int>(packet.getSize());
       auto addrSize = static_cast<int>(addr.getSize());
       auto flag = buildFlagInt(flags);
-      if (sendto(mHandle, data, dataSize, flag, addr.asSockaddr(), addrSize) == SOCKET_ERROR) {
+      if (sendto(mHandle, data, dataSize, flag, addr, addrSize) == SOCKET_ERROR) {
         throw SocketException("sendto");
       }
     }
