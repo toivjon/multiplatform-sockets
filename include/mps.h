@@ -299,11 +299,29 @@ namespace mps
       }
     }
 
+    template<typename T>
+    void setSockOpt(int level, int optKey, const T& value) {
+      auto optVal = (const char*)&value;
+      auto optLen = static_cast<int>(sizeof(T));
+      if (setsockopt(mHandle, level, optKey, optVal, optLen) == SOCKET_ERROR) {
+        throw SocketException("setsockopt(" + std::to_string(optKey) + ")");
+      }
+    }
+
     int getSockOpt(SockOpt option) const {
       auto optKey = static_cast<int>(option);
       auto optVal = 0;
       auto optLen = static_cast<int>(sizeof(int));
       if (getsockopt(mHandle, SOL_SOCKET, optKey, (char*)&optVal, &optLen) == SOCKET_ERROR) {
+        throw SocketException("getsockopt(" + std::to_string(optKey) + ")");
+      }
+      return optVal;
+    }
+
+    int getSockOpt(int level, int optKey) const {
+      auto optVal = 0;
+      auto optLen = static_cast<int>(sizeof(int));
+      if (getsockopt(mHandle, level, optKey, (char*)&optVal, &optLen) == SOCKET_ERROR) {
         throw SocketException("getsockopt(" + std::to_string(optKey) + ")");
       }
       return optVal;
@@ -375,6 +393,11 @@ namespace mps
     TCPSocket(AddressFamily af) : Socket(af, SocketType::TCP) {}
     // Build a new TCP socket with the given socket handle and with the given address family.
     TCPSocket(SOCKET handle, AddressFamily af) : Socket(handle, af, SocketType::TCP) {}
+
+    // Specify whether the socket should use Nagle's algorithm to buffer data flow.
+    void setBuffering(bool value) { setSockOpt(IPPROTO_TCP, TCP_NODELAY, value ? 0 : 1); }
+    // Get the definition whether the socket uses Nagle's algorithm to buffer data flow.
+    bool isBuffering() const { return getSockOpt(IPPROTO_TCP, TCP_NODELAY) == 0; }
 
   };
 
