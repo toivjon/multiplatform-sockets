@@ -377,7 +377,7 @@ namespace mps
   };
 
   // UDP flags used when receiving data.
-  enum class UDPReceiveFlag {
+  enum class TCPReceiveFlag {
     Peek = MSG_PEEK
   };
 
@@ -420,8 +420,10 @@ namespace mps
 
     // Receive incoming bytes from the connection.
     Bytes receive() { return receive(DefaultMaxReceiveDataSize, {}); }
+    // Receive incoming bytes from the connection with the desired max data amount.
+    Bytes receive(int maxDataSize) { return receive(maxDataSize, {}); }
     // Receive incoming bytes from the connection with the desired max data amount and flags.
-    Bytes receive(int maxDataSize, const std::set<UDPReceiveFlag>& flags) {
+    Bytes receive(int maxDataSize, const std::set<TCPReceiveFlag>& flags) {
       Bytes bytes(maxDataSize);
       #if _WIN32
       auto data = reinterpret_cast<char*>(&bytes[0]);

@@ -1,5 +1,4 @@
-#include "mps/tcp_client_socket.h"
-#include "mps/exception.h"
+#include "mps.h"
 
 #include <iostream>
 
@@ -21,13 +20,9 @@ int main(int argc, char* argv[]) {
 
   try {
     TCPClientSocket socket(addr);
-    auto lAddr = socket.getLocalAddress();
-    auto rAddr = socket.getRemoteAddress();
-    std::cout << "Local addr='" << lAddr.getIPAddress() << "' port=" << lAddr.getPort() << std::endl;
-    std::cout << "Remote addr='" << rAddr.getIPAddress() << "' port=" << rAddr.getPort() << std::endl;
     socket.send({ 'h','e','l','l','o' });
     auto data = socket.receive(BufferSize);
-    std::vector<Byte> buffer(data);
+    Bytes buffer(data);
     buffer.push_back('\0');
     std::cout << "response: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
   } catch (const SocketException& e) {
