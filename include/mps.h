@@ -121,7 +121,7 @@ namespace mps
     // Get a constant reference to the wrapped socket address as a sockaddr.
     operator const sockaddr* () const { return reinterpret_cast<const sockaddr*>(&mSockAddr); }
     // Get the size of the wrapped socket address structure.
-    size_t getSize() const { return isIPv4() ? sizeof(sockaddr_in) : sizeof(sockaddr_in6); }
+    socklen_t getSize() const { return isIPv4() ? sizeof(sockaddr_in) : sizeof(sockaddr_in6); }
 
     // Get the IP address of the address.
     std::string getIP() const {
@@ -460,9 +460,8 @@ namespace mps
     void send(const UDPPacket& packet, const std::set<UDPSendFlag>& flags) {
       const auto& addr = packet.getAddress();
       auto dataSize = static_cast<int>(packet.getSize());
-      auto addrSize = static_cast<int>(addr.getSize());
       auto flag = buildFlagInt(flags);
-      if (sendto(mHandle, packet, dataSize, flag, addr, addrSize) == SOCKET_ERROR) {
+      if (sendto(mHandle, packet, dataSize, flag, addr, addr.getSize()) == SOCKET_ERROR) {
         throw SocketException("sendto");
       }
     }
