@@ -253,7 +253,7 @@ namespace mps
     bool isBlocking() const { return mBlocking; }
 
   protected:
-    Socket(AddressFamily af, int type) : mAddressFamily(af), mType(type), mBlocking(true) {
+    Socket(AddressFamily af, int type) : mAddressFamily(af), mBlocking(true) {
       #if _WIN32
       static WinsockService winsock(2, 2);
       #endif
@@ -265,7 +265,7 @@ namespace mps
 
     // TODO check whether we should also pass blocking info here?
     Socket(SOCKET handle, AddressFamily af, int type)
-      : mAddressFamily(af), mType(type), mHandle(handle), mBlocking(true) {
+      : mAddressFamily(af), mHandle(handle), mBlocking(true) {
       refreshLocalAddress();
     }
 
@@ -345,7 +345,6 @@ namespace mps
 
     void swap(Socket& rhs) noexcept {
       mAddressFamily = rhs.mAddressFamily;
-      mType = rhs.mType;
       mHandle = rhs.mHandle;
       mBlocking = rhs.mBlocking;
       rhs.mHandle = INVALID_SOCKET;
