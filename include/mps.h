@@ -354,7 +354,7 @@ namespace mps
     // Build a new TCP socket with the given address family.
     TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {}
     // Build a new TCP socket with the given socket handle and with the given address family.
-    TCPSocket(SOCKET handle, AddressFamily af) : Socket(handle) {}
+    TCPSocket(SOCKET handle) : Socket(handle) {}
 
     // Specify whether the socket should use Nagle's algorithm to buffer data flow.
     void setBuffering(bool value) { setSockOpt(IPPROTO_TCP, TCP_NODELAY, value ? 0 : 1); }
@@ -388,7 +388,7 @@ namespace mps
       refreshLocalAddress();
     }
 
-    TCPClientSocket(SOCKET handle, const Address& addr) : TCPSocket(handle, addr.getFamily()), mRemoteAddress(addr) {}
+    TCPClientSocket(SOCKET handle, const Address& addr) : TCPSocket(handle), mRemoteAddress(addr) {}
 
     // Get the remote address of the established TCP connection.
     const Address& getRemoteAddress() const { return mRemoteAddress; }
