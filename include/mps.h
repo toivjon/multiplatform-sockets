@@ -361,6 +361,7 @@ namespace mps
     bool          mBlocking;
     Address       mLocalAddress;
   private:
+    #if _WIN32
     // A RAII wrapper for proper initialization and graceful shutdown for the Winsock service.
     class WinsockService final
     {
@@ -376,6 +377,7 @@ namespace mps
     private:
       WSAData mData;
     };
+    #endif
 
     void swap(Socket& rhs) noexcept {
       mAddressFamily = rhs.mAddressFamily;
