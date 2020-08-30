@@ -343,6 +343,7 @@ namespace mps
     void swap(Socket& rhs) noexcept {
       mHandle = rhs.mHandle;
       mBlocking = rhs.mBlocking;
+      mLocalAddress = rhs.mLocalAddress;
       rhs.mHandle = INVALID_SOCKET;
     }
   };
