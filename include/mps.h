@@ -257,7 +257,7 @@ namespace mps
       #if _WIN32
       static WinsockService winsock(2, 2);
       #endif
-      mHandle = socket(static_cast<int>(af), static_cast<int>(type), 0);
+      mHandle = socket(static_cast<int>(af), type, 0);
       if (mHandle == INVALID_SOCKET) {
         throw SocketException("socket");
       }
