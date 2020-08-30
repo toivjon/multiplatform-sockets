@@ -264,7 +264,7 @@ namespace mps
     }
 
     // TODO check whether we should also pass blocking info here?
-    Socket(SOCKET handle, AddressFamily af, int type) : mHandle(handle), mBlocking(true) {
+    Socket(SOCKET handle, int type) : mHandle(handle), mBlocking(true) {
       refreshLocalAddress();
     }
 
@@ -354,7 +354,7 @@ namespace mps
     // Build a new TCP socket with the given address family.
     TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {}
     // Build a new TCP socket with the given socket handle and with the given address family.
-    TCPSocket(SOCKET handle, AddressFamily af) : Socket(handle, af, SOCK_STREAM) {}
+    TCPSocket(SOCKET handle, AddressFamily af) : Socket(handle, SOCK_STREAM) {}
 
     // Specify whether the socket should use Nagle's algorithm to buffer data flow.
     void setBuffering(bool value) { setSockOpt(IPPROTO_TCP, TCP_NODELAY, value ? 0 : 1); }
