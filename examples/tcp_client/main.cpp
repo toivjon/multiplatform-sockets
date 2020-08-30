@@ -20,7 +20,8 @@ int main(int argc, char* argv[]) {
 
   try {
     TCPClientSocket socket(addr);
-    std::cout << "Local IP=" << socket.getLocalIP() << " port=" << socket.getLocalPort() << std::endl;
+    std::cout << "Local  IP=" << socket.getLocalIP() << " port=" << socket.getLocalPort() << std::endl;
+    std::cout << "Remote IP=" << socket.getRemoteIP() << " port=" << socket.getRemotePort() << std::endl;
 
     socket.send({ 'h','e','l','l','o' });
     auto data = socket.receive(BufferSize);

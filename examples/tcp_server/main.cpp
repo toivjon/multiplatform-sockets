@@ -13,6 +13,9 @@ int main() {
     std::cout << "Server IP=" << socket.getLocalIP() << " port=" << socket.getLocalPort() << std::endl;
 
     auto client = socket.accept();
+    std::cout << "Client local  IP=" << client.getLocalIP() << " port=" << client.getLocalPort() << std::endl;
+    std::cout << "Client remote IP=" << client.getRemoteIP() << " port=" << client.getRemotePort() << std::endl;
+
     auto data = client.receive();
     Bytes buffer(data);
     buffer.push_back('\0');

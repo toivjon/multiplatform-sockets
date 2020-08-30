@@ -392,7 +392,7 @@ namespace mps
   {
   public:
     // Construct a new TCP client by connecting to given server address.
-    TCPClientSocket(const Address& address) : TCPSocket(address.getFamily()) {
+    TCPClientSocket(const Address& address) : TCPSocket(address.getFamily()), mRemoteAddress(address) {
       #if _WIN32
       auto addrSize = static_cast<int>(address.getSize());
       #else
@@ -404,19 +404,14 @@ namespace mps
       refreshLocalAddress();
     }
 
-    TCPClientSocket(SOCKET handle, const Address& addr) : TCPSocket(handle, addr.getFamily()) {
+    TCPClientSocket(SOCKET handle, const Address& addr) : TCPSocket(handle, addr.getFamily()), mRemoteAddress(addr) {}
 
-    }
-
-    // TODO get remote address
-    // TODO get remote port
-    // TODO get remote ip
-
-    /*
-    const Address& getPeerAddress() const { return; }
-    uint16_t getPeerPort() const { return 0; }
-    std::string getPeerIP() const { return ""; }
-    */
+    // Get the remote address of the established TCP connection.
+    const Address& getRemoteAddress() const { return mRemoteAddress; }
+    // Get the port of the remote address of the established TCP connection.
+    uint16_t getRemotePort() const { return mRemoteAddress.getPort(); }
+    // Get the IP of the remote address of the established TCP connection.
+    std::string getRemoteIP() const { return mRemoteAddress.getIP(); }
 
     // Send the given bytes to connection destination.
     void send(const Bytes& bytes) { send(bytes, {}); }
@@ -455,6 +450,8 @@ namespace mps
       }
       return bytes;
     }
+  private:
+    Address mRemoteAddress;
   };
 
   class TCPServerSocket : public TCPSocket
