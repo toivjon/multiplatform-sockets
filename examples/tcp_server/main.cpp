@@ -10,8 +10,9 @@ constexpr auto SocketPort = 56789;
 int main() {
   try {
     TCPServerSocket socket(SocketPort);
-    auto client = socket.accept();
+    std::cout << "Server IP=" << socket.getLocalIP() << " port=" << socket.getLocalPort() << std::endl;
 
+    auto client = socket.accept();
     auto data = client.receive();
     Bytes buffer(data);
     buffer.push_back('\0');

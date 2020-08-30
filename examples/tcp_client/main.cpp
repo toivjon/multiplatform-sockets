@@ -20,6 +20,7 @@ int main(int argc, char* argv[]) {
 
   try {
     TCPClientSocket socket(addr);
+
     socket.send({ 'h','e','l','l','o' });
     auto data = socket.receive(BufferSize);
     Bytes buffer(data);

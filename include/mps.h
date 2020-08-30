@@ -232,9 +232,12 @@ namespace mps
     // Get the definition whether the socket routes traffic or directly uses the interface.
     bool isRouting() const { return getSockOpt(SockOpt::DONT_ROUTE) == 0; }
 
-    // TODO getPort
-    // TODO getIP
-    // TODO getAddress
+    // Get the locally bound address of the socket.
+    const Address& getLocalAddress() const { return mLocalAddress; }
+    // Get the locally bound port of the socket.
+    uint16_t getLocalPort() const { return mLocalAddress.getPort(); }
+    // Get the locally bound IP of the socket.
+    std::string getLocalIP() const { return mLocalAddress.getIP(); }
 
     // Specify whether the socket should block on blocking calls (e.g. receive etc.).
     void setBlocking(bool blocking) {
@@ -400,6 +403,12 @@ namespace mps
     // TODO get remote address
     // TODO get remote port
     // TODO get remote ip
+
+    /*
+    const Address& getPeerAddress() const { return; }
+    uint16_t getPeerPort() const { return 0; }
+    std::string getPeerIP() const { return ""; }
+    */
 
     // Send the given bytes to connection destination.
     void send(const Bytes& bytes) { send(bytes, {}); }
