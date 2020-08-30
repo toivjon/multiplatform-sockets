@@ -282,7 +282,11 @@ namespace mps
 
     int getSockOpt(int level, int optKey) const {
       auto optVal = 0;
+      #if _WIN32
       auto optLen = static_cast<int>(sizeof(int));
+      #else
+      auto optLen = static_cast<socklen_t>(sizeof(int));
+      #endif
       if (getsockopt(mHandle, level, optKey, (char*)&optVal, &optLen) == SOCKET_ERROR) {
         throw SocketException("getsockopt(" + std::to_string(optKey) + ")");
       }
@@ -305,7 +309,7 @@ namespace mps
       #if _WIN32
       auto addrSize = static_cast<int>(sizeof(sockaddr_storage));
       #else
-      auto addrSize = sizeof(sockaddr_storage);
+      auto addrSize = static_cast<socklen_t>(sizeof(sockaddr_storage));
       #endif
       if (getsockname(mHandle, mLocalAddress, &addrSize) == SOCKET_ERROR) {
         throw SocketException("getsockname");
