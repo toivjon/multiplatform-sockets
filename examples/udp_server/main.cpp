@@ -9,9 +9,9 @@ constexpr auto SocketPort = 56789;
 
 int main() {
   try {
-    UDPSocket socket(SocketPort);
-    // auto addr = socket.getAddress();
-    // std::cout << "Bound addr='" << addr.getIPAddress() << "' port=" << addr.getPort() << std::endl;
+    UDPSocket socket(SocketPort, AddressFamily::IPv6);
+    std::cout << "Server IP=" << socket.getLocalIP() << " port=" << socket.getLocalPort() << std::endl;
+    
     auto packet = socket.receive(BufferSize);
     Bytes buffer(packet.getData());
     buffer.push_back('\0');

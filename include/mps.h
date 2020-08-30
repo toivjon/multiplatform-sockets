@@ -318,7 +318,11 @@ namespace mps
     }
 
     void refreshLocalAddress() {
-      auto addrSize = static_cast<int>(mLocalAddress.getSize());
+      #if _WIN32
+      auto addrSize = static_cast<int>(sizeof(sockaddr_storage));
+      #else
+      auto addrSize = sizeof(sockaddr_storage);
+      #endif
       if (getsockname(mHandle, mLocalAddress, &addrSize) == SOCKET_ERROR) {
         throw SocketException("getsockname");
       }
