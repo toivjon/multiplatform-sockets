@@ -45,6 +45,8 @@ namespace mps
 
   // A constant to specify the default maximum amount of incoming data to be read.
   constexpr int DefaultMaxReceiveDataSize = 1024;
+  // The size of the TCP server listen queue.
+  constexpr int TCPServerListenQueueSize = 4;
 
   // Address family defines whether address or socket handles IPv4 or IPv6.
   enum class AddressFamily {
@@ -278,6 +280,12 @@ namespace mps
       }
     }
 
+    // TODO check whether we should also pass blocking info here?
+    Socket(SOCKET handle, AddressFamily af, SocketType type)
+      : mAddressFamily(af), mType(type), mHandle(handle), mBlocking(true) {
+      refreshLocalAddress();
+    }
+
     template<typename T>
     void setSockOpt(SockOpt option, const T& value) {
       auto optKey = static_cast<int>(option);
@@ -356,7 +364,10 @@ namespace mps
   class TCPSocket : public Socket
   {
   public:
+    // Build a new TCP socket with the given address family.
     TCPSocket(AddressFamily af) : Socket(af, SocketType::TCP) {}
+    // Build a new TCP socket with the given socket handle and with the given address family.
+    TCPSocket(SOCKET handle, AddressFamily af) : Socket(handle, af, SocketType::TCP) {}
 
   };
 
@@ -371,6 +382,11 @@ namespace mps
       }
       refreshLocalAddress();
     }
+
+    TCPClientSocket(SOCKET handle, const Address& addr) : TCPSocket(handle, addr.getFamily()) {
+
+    }
+
     // TODO get remote address
     // TODO get remote port
     // TODO get remote ip
@@ -393,9 +409,21 @@ namespace mps
     // Build a new TCP server socket and bind it to target address.
     TCPServerSocket(const Address& address) : TCPSocket(address.getFamily()) {
       bind(address);
-      // TODO specify listen with backlog size
+      if (listen(mHandle, TCPServerListenQueueSize) == SOCKET_ERROR) {
+        throw SocketException("listen");
+      }
     }
-    // TODO accept
+
+    // Accept the next incoming client connection.
+    TCPClientSocket accept() {
+      Address address;
+      socklen_t addressSize = sizeof(sockaddr_storage);
+      auto client = ::accept(mHandle, address, &addressSize);
+      if (client == INVALID_SOCKET) {
+        throw SocketException("accept");
+      }
+      return TCPClientSocket(client, address);
+    }
   };
 
   class UDPPacket

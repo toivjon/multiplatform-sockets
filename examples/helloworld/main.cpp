@@ -6,6 +6,9 @@ using namespace mps;
 
 int main() {
   try {
+    TCPServerSocket server;
+    auto client = server.accept();
+    /*
     UDPSocket socket;
     socket.setBlocking(false);
     socket.setRouting(true);
@@ -14,6 +17,7 @@ int main() {
     socket.setReceiveBufferSize(1024);
     socket.send({ {"127.0.0.1", 12345}, {'a'} });
     socket.send({ {"127.0.0.1", 12345}, {'a'} }, { UDPSendFlag::DontRoute });
+    */
   } catch (const SocketException& e) {
     std::cout << e.what() << std::endl;
   }
