@@ -534,6 +534,8 @@ namespace mps
     UDPSocket() : UDPSocket(AnyPort) {};
     // Build a new IPv4 socket with the target port.
     UDPSocket(uint16_t port) : UDPSocket(port, AddressFamily::IPv4) {};
+    // Build a new socket with the target address family and auto-selected port.
+    UDPSocket(AddressFamily af) : UDPSocket(AnyPort, af) {}
     // Build a new socket with the target port and address family.
     UDPSocket(uint16_t port, AddressFamily af) : UDPSocket(Address(port, af)) {}
     // Build a new UDP socket and bind it to target address.

@@ -19,15 +19,13 @@ int main(int argc, char* argv[]) {
   auto addr = Address(host, port);
 
   try {
-    UDPSocket socket;
-    // auto localAddress = socket.getAddress();
-    // std::cout << "Bound addr='" << localAddress.getIPAddress() << "' port=" << localAddress.getPort() << std::endl;
+    UDPSocket socket(addr.getFamily());
+    std::cout << "Local IP=" << socket.getLocalIP() << " port=" << socket.getLocalPort() << std::endl;
     socket.send(UDPPacket{ addr, { 'h','e','l','l','o' } });
     auto packet = socket.receive(BufferSize);
     Bytes buffer(packet.getData());
     buffer.push_back('\0');
     std::cout << "response: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
-    // std::cout << "response packet: " << packet.toString() << std::endl;
   } catch (const SocketException& e) {
     std::cerr << e.what() << std::endl;
   }
