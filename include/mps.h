@@ -212,19 +212,19 @@ namespace mps
     bool isIPv6() const { return mAddressFamily == AddressFamily::IPv6; }
 
     // Specify the size for the incoming data buffer in bytes.
-    void setReceiveBufferSize(int size) { setSockOpt(SockOpt::RECEIVE_BUFFER_SIZE, size); }
+    void setReceiveBufferSize(int size) { setSockOpt(SOL_SOCKET, SO_RCVBUF, size); }
     // Specify the size for the outgoing data buffer in bytes.
-    void setSendBufferSize(int size) { setSockOpt(SockOpt::SEND_BUFFER_SIZE, size); }
+    void setSendBufferSize(int size) { setSockOpt(SOL_SOCKET, SO_SNDBUF, size); }
 
     // Get the size of the incoming data buffer in bytes.
-    int getReceiveBufferSize() const { return getSockOpt(SockOpt::RECEIVE_BUFFER_SIZE); }
+    int getReceiveBufferSize() const { return getSockOpt(SOL_SOCKET, SO_RCVBUF); }
     // Get the size of the outgoing data buffer in bytes.
-    int getSendBufferSize() const { return getSockOpt(SockOpt::SEND_BUFFER_SIZE); }
+    int getSendBufferSize() const { return getSockOpt(SOL_SOCKET, SO_SNDBUF); }
 
     // Specify whether the socket should route traffic or just directly use the interface.
-    void setRouting(bool value) { setSockOpt(SockOpt::DONT_ROUTE, value ? 1 : 0); }
+    void setRouting(bool value) { setSockOpt(SOL_SOCKET, SO_DONTROUTE, value ? 1 : 0); }
     // Get the definition whether the socket routes traffic or directly uses the interface.
-    bool isRouting() const { return getSockOpt(SockOpt::DONT_ROUTE) == 0; }
+    bool isRouting() const { return getSockOpt(SOL_SOCKET, SO_DONTROUTE) == 0; }
 
     // Get the locally bound address of the socket.
     const Address& getLocalAddress() const { return mLocalAddress; }
@@ -259,14 +259,6 @@ namespace mps
       UDP = SOCK_DGRAM
     };
 
-    // Socket options can be used to customize the socket behaviour.
-    enum class SockOpt {
-      RECEIVE_BUFFER_SIZE = SO_RCVBUF,
-      SEND_BUFFER_SIZE = SO_SNDBUF,
-      DONT_ROUTE = SO_DONTROUTE,
-      UDP_BROADCAST = SO_BROADCAST
-    };
-
     Socket(AddressFamily af, SocketType type) : mAddressFamily(af), mType(type), mBlocking(true) {
       #if _WIN32
       static WinsockService winsock(2, 2);
@@ -284,32 +276,12 @@ namespace mps
     }
 
     template<typename T>
-    void setSockOpt(SockOpt option, const T& value) {
-      auto optKey = static_cast<int>(option);
-      auto optVal = (const char*)&value;
-      auto optLen = static_cast<int>(sizeof(T));
-      if (setsockopt(mHandle, SOL_SOCKET, optKey, optVal, optLen) == SOCKET_ERROR) {
-        throw SocketException("setsockopt(" + std::to_string(optKey) + ")");
-      }
-    }
-
-    template<typename T>
     void setSockOpt(int level, int optKey, const T& value) {
       auto optVal = (const char*)&value;
       auto optLen = static_cast<int>(sizeof(T));
       if (setsockopt(mHandle, level, optKey, optVal, optLen) == SOCKET_ERROR) {
         throw SocketException("setsockopt(" + std::to_string(optKey) + ")");
       }
-    }
-
-    int getSockOpt(SockOpt option) const {
-      auto optKey = static_cast<int>(option);
-      auto optVal = 0;
-      auto optLen = static_cast<int>(sizeof(int));
-      if (getsockopt(mHandle, SOL_SOCKET, optKey, (char*)&optVal, &optLen) == SOCKET_ERROR) {
-        throw SocketException("getsockopt(" + std::to_string(optKey) + ")");
-      }
-      return optVal;
     }
 
     int getSockOpt(int level, int optKey) const {
@@ -570,9 +542,9 @@ namespace mps
     UDPSocket(const Address& addr) : Socket(addr.getFamily(), SocketType::UDP) { bind(addr); }
 
     // Specify whether the socket can be used to broadcast packets in LAN.
-    void setBroadcasting(bool value) { setSockOpt(SockOpt::UDP_BROADCAST, value ? 1 : 0); }
+    void setBroadcasting(bool value) { setSockOpt(SOL_SOCKET, SO_BROADCAST, value ? 1 : 0); }
     // Get the definition whether the socket can be used to broadcast packets in LAN.
-    bool isBroadcasting() const { return getSockOpt(SockOpt::UDP_BROADCAST) == 1; }
+    bool isBroadcasting() const { return getSockOpt(SOL_SOCKET, SO_BROADCAST) == 1; }
 
     // Send the data from the given packet into the target packet address.
     void send(const UDPPacket& packet) { send(packet, {}); }
