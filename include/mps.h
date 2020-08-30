@@ -205,11 +205,11 @@ namespace mps
     virtual ~Socket() { CloseSocket(mHandle); }
 
     // The definition which tells whether the socket handles IPv4 or IPv6 communication.
-    AddressFamily getAddressFamily() const { return mAddressFamily; }
+    AddressFamily getAddressFamily() const { return mLocalAddress.getFamily(); }
     // Get the definition whether the socket uses IPv4 address family.
-    bool isIPv4() const { return mAddressFamily == AddressFamily::IPv4; }
+    bool isIPv4() const { return mLocalAddress.getFamily() == AddressFamily::IPv4; }
     // Get the definition whether the socket uses IPv6 address family.
-    bool isIPv6() const { return mAddressFamily == AddressFamily::IPv6; }
+    bool isIPv6() const { return mLocalAddress.getFamily() == AddressFamily::IPv6; }
 
     // Specify the size for the incoming data buffer in bytes.
     void setReceiveBufferSize(int size) { setSockOpt(SOL_SOCKET, SO_RCVBUF, size); }
@@ -253,7 +253,7 @@ namespace mps
     bool isBlocking() const { return mBlocking; }
 
   protected:
-    Socket(AddressFamily af, int type) : mAddressFamily(af), mBlocking(true) {
+    Socket(AddressFamily af, int type) : mBlocking(true) {
       #if _WIN32
       static WinsockService winsock(2, 2);
       #endif
@@ -264,8 +264,7 @@ namespace mps
     }
 
     // TODO check whether we should also pass blocking info here?
-    Socket(SOCKET handle, AddressFamily af, int type)
-      : mAddressFamily(af), mHandle(handle), mBlocking(true) {
+    Socket(SOCKET handle, AddressFamily af, int type) : mHandle(handle), mBlocking(true) {
       refreshLocalAddress();
     }
 
@@ -289,7 +288,7 @@ namespace mps
 
     void bind(const Address& address) {
       #if _WIN32
-      auto addrSize = static_cast<int>(sizeof(address.getSize()));
+      auto addrSize = static_cast<int>(address.getSize());
       #else
       auto addrSize = static_cast<socklen_t>(address.getSize());
       #endif
@@ -319,7 +318,7 @@ namespace mps
       return result;
     }
 
-    AddressFamily mAddressFamily;
+    // AddressFamily mAddressFamily;
     SOCKET        mHandle;
     bool          mBlocking;
     Address       mLocalAddress;
@@ -343,7 +342,6 @@ namespace mps
     #endif
 
     void swap(Socket& rhs) noexcept {
-      mAddressFamily = rhs.mAddressFamily;
       mHandle = rhs.mHandle;
       mBlocking = rhs.mBlocking;
       rhs.mHandle = INVALID_SOCKET;
