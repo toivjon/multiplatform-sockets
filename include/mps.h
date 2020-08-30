@@ -412,6 +412,16 @@ namespace mps
 
     // Get the size of the packet data.
     size_t getSize() const { return mData.size(); }
+
+    // Get the constant char pointer to the beginning of the data.
+    operator const char* () const { return reinterpret_cast<const char*>(&mData[0]); }
+    // Get the char pointer to the beginning of the data.
+    operator char* () { return reinterpret_cast<char*>(&mData[0]); }
+
+    // Get the constant void pointer to the beginning of the data.
+    operator const void* () const { return reinterpret_cast<const void*>(&mData[0]); }
+    // Get the void pointer to the beginning of the data.
+    operator void* () { return reinterpret_cast<void*>(&mData[0]); }
   private:
     Address mAddress;
     Bytes   mData;
@@ -449,11 +459,10 @@ namespace mps
     // Send the data from the given packet into the target packet address with the given flags.
     void send(const UDPPacket& packet, const std::set<UDPSendFlag>& flags) {
       const auto& addr = packet.getAddress();
-      const auto& data = reinterpret_cast<const char*>(&packet.getData()[0]);
       auto dataSize = static_cast<int>(packet.getSize());
       auto addrSize = static_cast<int>(addr.getSize());
       auto flag = buildFlagInt(flags);
-      if (sendto(mHandle, data, dataSize, flag, addr, addrSize) == SOCKET_ERROR) {
+      if (sendto(mHandle, packet, dataSize, flag, addr, addrSize) == SOCKET_ERROR) {
         throw SocketException("sendto");
       }
     }
