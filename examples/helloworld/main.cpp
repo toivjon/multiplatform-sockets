@@ -8,6 +8,7 @@ int main() {
   try {
     TCPServerSocket server;
     auto client = server.accept();
+    client.send({});
     /*
     UDPSocket socket;
     socket.setBlocking(false);

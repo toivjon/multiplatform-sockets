@@ -371,6 +371,16 @@ namespace mps
 
   };
 
+  // TCP flags used when sending data.
+  enum class TCPSendFlag {
+    DontRouter = MSG_DONTROUTE
+  };
+
+  // UDP flags used when receiving data.
+  enum class UDPReceiveFlag {
+    Peek = MSG_PEEK
+  };
+
   class TCPClientSocket : public TCPSocket
   {
   public:
@@ -391,7 +401,23 @@ namespace mps
     // TODO get remote port
     // TODO get remote ip
 
-    // TODO send
+    // Send the given bytes to connection destination.
+    void send(const Bytes& bytes) { send(bytes, {}); }
+    // Send the given bytes to connection destination with the additional flags.
+    void send(const Bytes& bytes, const std::set<TCPSendFlag>& flags) {
+      #if _WIN32
+      auto data = reinterpret_cast<const char*>(&bytes[0]);
+      auto size = static_cast<int>(bytes.size());
+      #else
+      auto data = reinterpret_cast<const void*>(&bytes[0]);
+      auto size = bytes.size();
+      #endif
+      auto flag = buildFlagInt(flags);
+      if (::send(mHandle, data, size, flag) == SOCKET_ERROR) {
+        throw SocketException("send");
+      }
+    }
+
     // TODO receive
     // TODO receive(maxDataSize)
     // TODO receive(bytes)
@@ -468,7 +494,7 @@ namespace mps
 
   // UDP flags used when receiving data.
   enum class UDPReceiveFlag {
-    Peek = MSG_PEEK,
+    Peek = MSG_PEEK
   };
 
   class UDPSocket : public Socket
