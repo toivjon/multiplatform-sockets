@@ -373,7 +373,7 @@ namespace mps
 
   // TCP flags used when sending data.
   enum class TCPSendFlag {
-    DontRouter = MSG_DONTROUTE
+    DontRoute = MSG_DONTROUTE
   };
 
   // UDP flags used when receiving data.
