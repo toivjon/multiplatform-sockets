@@ -29,12 +29,6 @@ constexpr auto CloseSocket = close;
 
 namespace mps
 {
-  #if _WIN32
-  typedef int datalen_t;
-  #else
-  typedef size_t datalen_t;
-  #endif
-
   // We support platforms where one byte contains 8 bits.
   typedef uint8_t Byte;
   // A type for a dynamic array of bytes.
@@ -535,7 +529,7 @@ namespace mps
     void setData(const Bytes& data) { mData = data; }
 
     // Get the size of the packet data.
-    datalen_t getSize() const { return static_cast<datalen_t>(mData.size()); }
+    size_t getSize() const { return mData.size(); }
 
     // Get the constant char pointer to the beginning of the data.
     operator const char* () const { return reinterpret_cast<const char*>(&mData[0]); }
@@ -585,8 +579,15 @@ namespace mps
     // Send the data from the given packet into the target packet address with the given flags.
     void send(const UDPPacket& packet, const std::set<UDPSendFlag>& flags) {
       const auto& addr = packet.getAddress();
+      #if _WIN32
+      auto addrSize = static_cast<int>(addr.getSize());
+      auto dataSize = static_cast<int>(packet.getSize());
+      #else
+      auto addrSize = static_cast<socklen_t>(addr.getSize());
+      auto dataSize = addr.getSize();
+      #endif
       auto flag = buildFlagInt(flags);
-      if (sendto(mHandle, packet, packet.getSize(), flag, addr, addr.getSize()) == SOCKET_ERROR) {
+      if (sendto(mHandle, packet, dataSize, flag, addr, addrSize) == SOCKET_ERROR) {
         throw SocketException("sendto");
       }
     }
