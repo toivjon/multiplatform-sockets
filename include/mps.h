@@ -398,7 +398,6 @@ namespace mps
     void setBuffering(bool value) { setSockOpt(IPPROTO_TCP, TCP_NODELAY, value ? 0 : 1); }
     // Get the definition whether the socket uses Nagle's algorithm to buffer data flow.
     bool isBuffering() const { return getSockOpt(IPPROTO_TCP, TCP_NODELAY) == 0; }
-
   };
 
   // TCP flags used when sending data.
@@ -435,6 +434,11 @@ namespace mps
     uint16_t getRemotePort() const { return mRemoteAddress.getPort(); }
     // Get the IP of the remote address of the established TCP connection.
     std::string getRemoteIP() const { return mRemoteAddress.getIP(); }
+
+    // Specify whether the socket should send keep-alive messages to keep the connection alive.
+    void setKeepAlive(bool value) { setSockOpt(SOL_SOCKET, SO_KEEPALIVE, value ? 1 : 0); }
+    // Get the definition whether the socket keeps connection alive by sending keep-alive messages.
+    bool isKeepAlive() const { return getSockOpt(SOL_SOCKET, SO_KEEPALIVE) == 1; }
 
     // Send the given bytes to connection destination.
     void send(const Bytes& bytes) { send(bytes, {}); }
