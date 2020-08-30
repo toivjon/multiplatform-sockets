@@ -1,5 +1,4 @@
-#include "mps/udp_socket.h"
-#include "mps/exception.h"
+#include "mps.h"
 
 #include <iostream>
 
@@ -21,11 +20,14 @@ int main(int argc, char* argv[]) {
 
   try {
     UDPSocket socket;
-    auto localAddress = socket.getAddress();
-    std::cout << "Bound addr='" << localAddress.getIPAddress() << "' port=" << localAddress.getPort() << std::endl;
+    // auto localAddress = socket.getAddress();
+    // std::cout << "Bound addr='" << localAddress.getIPAddress() << "' port=" << localAddress.getPort() << std::endl;
     socket.send(UDPPacket{ addr, { 'h','e','l','l','o' } });
     auto packet = socket.receive(BufferSize);
-    std::cout << "response packet: " << packet.toString() << std::endl;
+    Bytes buffer(packet.getData());
+    buffer.push_back('\0');
+    std::cout << "response: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
+    // std::cout << "response packet: " << packet.toString() << std::endl;
   } catch (const SocketException& e) {
     std::cerr << e.what() << std::endl;
   }

@@ -1,5 +1,4 @@
-#include "mps/udp_socket.h"
-#include "mps/exception.h"
+#include "mps.h"
 
 #include <iostream>
 
@@ -11,14 +10,12 @@ constexpr auto SocketPort = 56789;
 int main() {
   try {
     UDPSocket socket(SocketPort);
-    std::cout << "Broadcase enabled before: " << socket.isBroadcastEnabled() << std::endl;
-    socket.setBroadcastEnabled(true);
-    std::cout << "Broadcase enabled after: " << socket.isBroadcastEnabled() << std::endl;
-
-    auto addr = socket.getAddress();
-    std::cout << "Bound addr='" << addr.getIPAddress() << "' port=" << addr.getPort() << std::endl;
+    // auto addr = socket.getAddress();
+    // std::cout << "Bound addr='" << addr.getIPAddress() << "' port=" << addr.getPort() << std::endl;
     auto packet = socket.receive(BufferSize);
-    std::cout << "echoing packet: " << packet.toString() << std::endl;
+    Bytes buffer(packet.getData());
+    buffer.push_back('\0');
+    std::cout << "response: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
     socket.send(packet);
   } catch (const SocketException& e) {
     std::cerr << e.what() << std::endl;

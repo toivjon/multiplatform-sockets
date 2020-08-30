@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <exception>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -72,7 +73,7 @@ namespace mps
     Address() : Address(AnyPort, AddressFamily::IPv4) {}
 
     // Construct a new address with the given port and IP address.
-    Address(uint16_t port, const std::string& ip) {
+    Address(const std::string& ip, uint16_t port) {
       if (isIPv6String(ip)) {
         auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
         sockaddr->sin6_family = AF_INET6;
@@ -307,6 +308,15 @@ namespace mps
       }
     }
 
+    template<typename T>
+    int buildFlagInt(const std::set<T>& flags) {
+      int result = 0;
+      for (T flag : flags) {
+        result |= static_cast<int>(flag);
+      }
+      return result;
+    }
+
     AddressFamily mAddressFamily;
     SocketType    mType;
     SOCKET        mHandle;
@@ -342,7 +352,6 @@ namespace mps
   {
   public:
     TCPSocket(AddressFamily af) : Socket(af, SocketType::TCP) {}
-
 
   };
 
@@ -410,6 +419,16 @@ namespace mps
     Bytes   mData;
   };
 
+  // UDP flags used when sending data.
+  enum class UDPSendFlag {
+    DontRoute = MSG_DONTROUTE
+  };
+
+  // UDP flags used when receiving data.
+  enum class UDPReceiveFlag {
+    Peek = MSG_PEEK,
+  };
+
   class UDPSocket : public Socket
   {
   public:
@@ -429,27 +448,26 @@ namespace mps
     // Get the definition whether the socket can be used to broadcast packets in LAN.
     bool isBroadcasting() const { return getSockOpt(SockOpt::UDP_BROADCAST) == 1; }
 
-    // TODO add a support for flags?
-    // TODO add better functions to get required references
-    // TODO improve the way how to indicate if connection was closed?
-    void send(const UDPPacket& packet) {
+    // Send the data from the given packet into the target packet address.
+    void send(const UDPPacket& packet) { send(packet, {}); }
+    // Send the data from the given packet into the target packet address with the given flags.
+    void send(const UDPPacket& packet, const std::set<UDPSendFlag>& flags) {
       const auto& addr = packet.getAddress();
       const auto& data = reinterpret_cast<const char*>(&packet.getData()[0]);
       auto dataSize = static_cast<int>(packet.getSize());
       auto addrSize = static_cast<int>(addr.getSize());
-      if (sendto(mHandle, data, dataSize, 0, addr.asSockaddr(), addrSize) == SOCKET_ERROR) {
+      auto flag = buildFlagInt(flags);
+      if (sendto(mHandle, data, dataSize, flag, addr.asSockaddr(), addrSize) == SOCKET_ERROR) {
         throw SocketException("sendto");
       }
     }
 
     // Receive incoming data from the socket. Uses default value for the maximum data bytes.
-    UDPPacket receive() { return receive(DefaultMaxReceiveDataSize); }
-
-    // TODO add a support for flags?
-    // TODO add better functions to get required references
-    // TODO improve the way how to indicate if connection was closed?
+    UDPPacket receive() { return receive(DefaultMaxReceiveDataSize, {}); }
     // Receive incoming data from the socket. Reads max of the given amount of bytes.
-    UDPPacket receive(int maxDataSize) {
+    UDPPacket receive(int maxDataSize) { return receive(maxDataSize, {}); }
+    // Receive incoming data from the socket. Reads max of the given amount of bytes.
+    UDPPacket receive(int maxDataSize, const std::set<UDPReceiveFlag>& flags) {
       // reserve desired amount of memory for the incoming data and address.
       Bytes bytes(maxDataSize);
       sockaddr_storage address = {};
@@ -458,7 +476,8 @@ namespace mps
       // take whatever awaits in the incoming queue.
       auto data = reinterpret_cast<char*>(&bytes[0]);
       auto addr = reinterpret_cast<sockaddr*>(&address);
-      auto result = recvfrom(mHandle, data, maxDataSize, 0, addr, &addrSize);
+      auto flag = buildFlagInt(flags);
+      auto result = recvfrom(mHandle, data, maxDataSize, flag, addr, &addrSize);
       if (result == SOCKET_ERROR) {
         throw SocketException("recvfrom");
       }

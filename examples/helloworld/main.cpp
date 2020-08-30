@@ -12,7 +12,8 @@ int main() {
     socket.setBroadcasting(true);
     socket.setSendBufferSize(1024);
     socket.setReceiveBufferSize(1024);
-
+    socket.send({ {"127.0.0.1", 12345}, {'a'} });
+    socket.send({ {"127.0.0.1", 12345}, {'a'} }, {UDPSendFlag::DontRoute});
   } catch (const SocketException& e) {
     std::cout << e.what() << std::endl;
   }
