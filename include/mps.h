@@ -107,7 +107,7 @@ namespace mps
         auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
         sockaddr->sin_family = AF_INET;
         sockaddr->sin_port = htons(port);
-        sockaddr->sin_addr.S_un.S_addr = INADDR_ANY;
+        sockaddr->sin_addr.s_addr = INADDR_ANY;
       }
     }
 
