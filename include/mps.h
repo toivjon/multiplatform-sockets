@@ -110,7 +110,7 @@ namespace mps
     Address(const sockaddr_storage& addr) : mSockAddr(addr) {}
 
     // Get the definition which tells whether the address presents IPv4 or IPv6 address.
-    AddressFamily getAddressFamily() const { return isIPv4() ? AddressFamily::IPv4 : AddressFamily::IPv6; }
+    AddressFamily getFamily() const { return isIPv4() ? AddressFamily::IPv4 : AddressFamily::IPv6; }
     // Get the definition whether the address presents a IPv4 address.
     bool isIPv4() const { return mSockAddr.ss_family == AF_INET; }
     // Get the definition whether the address presents a IPv6 address.
@@ -359,7 +359,7 @@ namespace mps
   {
   public:
     // Construct a new TCP client by connecting to given server address.
-    TCPClientSocket(const Address& address) : TCPSocket(address.getAddressFamily()) {
+    TCPClientSocket(const Address& address) : TCPSocket(address.getFamily()) {
       const auto& sockAddr = address.asSockaddr();
       auto sockAddrSize = static_cast<int>(address.getSize());
       if (connect(mHandle, sockAddr, sockAddrSize) == SOCKET_ERROR) {
@@ -387,7 +387,7 @@ namespace mps
     // Build a new socket with the target address family and port in the auto-selected interface.
     TCPServerSocket(uint16_t port, AddressFamily af) : TCPServerSocket(Address(port, af)) {}
     // Build a new TCP server socket and bind it to target address.
-    TCPServerSocket(const Address& address) : TCPSocket(address.getAddressFamily()) {
+    TCPServerSocket(const Address& address) : TCPSocket(address.getFamily()) {
       bind(address);
       // TODO specify listen with backlog size
     }
@@ -439,7 +439,7 @@ namespace mps
     // Build a new socket with the target port and address family.
     UDPSocket(uint16_t port, AddressFamily af) : UDPSocket(Address(port, af)) {}
     // Build a new UDP socket and bind it to target address.
-    UDPSocket(const Address& address) : Socket(address.getAddressFamily(), SocketType::UDP) {
+    UDPSocket(const Address& address) : Socket(address.getFamily(), SocketType::UDP) {
       bind(address);
     }
 
