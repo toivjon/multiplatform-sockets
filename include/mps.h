@@ -418,9 +418,24 @@ namespace mps
       }
     }
 
-    // TODO receive
-    // TODO receive(maxDataSize)
-    // TODO receive(bytes)
+    // Receive incoming bytes from the connection.
+    Bytes receive() { return receive(DefaultMaxReceiveDataSize, {}); }
+    // Receive incoming bytes from the connection with the desired max data amount and flags.
+    Bytes receive(int maxDataSize, const std::set<UDPReceiveFlag>& flags) {
+      Bytes bytes(maxDataSize);
+      #if _WIN32
+      auto data = reinterpret_cast<char*>(&bytes[0]);
+      auto size = static_cast<int>(bytes.size());
+      #else
+      auto data = reinterpret_cast<void*>(&bytes[0]);
+      auto size = bytes.size();
+      #endif
+      auto flag = buildFlagInt(flags);
+      if (recv(mHandle, data, size, flag) == SOCKET_ERROR) {
+        throw SocketException("recv");
+      }
+      return bytes;
+    }
   };
 
   class TCPServerSocket : public TCPSocket
