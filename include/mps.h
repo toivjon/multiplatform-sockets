@@ -253,13 +253,7 @@ namespace mps
     bool isBlocking() const { return mBlocking; }
 
   protected:
-    // Socket type defines whether socket handles UDP or TCP communication.
-    enum class SocketType {
-      TCP = SOCK_STREAM,
-      UDP = SOCK_DGRAM
-    };
-
-    Socket(AddressFamily af, SocketType type) : mAddressFamily(af), mType(type), mBlocking(true) {
+    Socket(AddressFamily af, int type) : mAddressFamily(af), mType(type), mBlocking(true) {
       #if _WIN32
       static WinsockService winsock(2, 2);
       #endif
@@ -270,7 +264,7 @@ namespace mps
     }
 
     // TODO check whether we should also pass blocking info here?
-    Socket(SOCKET handle, AddressFamily af, SocketType type)
+    Socket(SOCKET handle, AddressFamily af, int type)
       : mAddressFamily(af), mType(type), mHandle(handle), mBlocking(true) {
       refreshLocalAddress();
     }
@@ -326,7 +320,7 @@ namespace mps
     }
 
     AddressFamily mAddressFamily;
-    SocketType    mType;
+    int           mType;
     SOCKET        mHandle;
     bool          mBlocking;
     Address       mLocalAddress;
@@ -362,9 +356,9 @@ namespace mps
   {
   public:
     // Build a new TCP socket with the given address family.
-    TCPSocket(AddressFamily af) : Socket(af, SocketType::TCP) {}
+    TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {}
     // Build a new TCP socket with the given socket handle and with the given address family.
-    TCPSocket(SOCKET handle, AddressFamily af) : Socket(handle, af, SocketType::TCP) {}
+    TCPSocket(SOCKET handle, AddressFamily af) : Socket(handle, af, SOCK_STREAM) {}
 
     // Specify whether the socket should use Nagle's algorithm to buffer data flow.
     void setBuffering(bool value) { setSockOpt(IPPROTO_TCP, TCP_NODELAY, value ? 0 : 1); }
@@ -539,7 +533,7 @@ namespace mps
     // Build a new socket with the target port and address family.
     UDPSocket(uint16_t port, AddressFamily af) : UDPSocket(Address(port, af)) {}
     // Build a new UDP socket and bind it to target address.
-    UDPSocket(const Address& addr) : Socket(addr.getFamily(), SocketType::UDP) { bind(addr); }
+    UDPSocket(const Address& addr) : Socket(addr.getFamily(), SOCK_DGRAM) { bind(addr); }
 
     // Specify whether the socket can be used to broadcast packets in LAN.
     void setBroadcasting(bool value) { setSockOpt(SOL_SOCKET, SO_BROADCAST, value ? 1 : 0); }
