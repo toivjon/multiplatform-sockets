@@ -387,7 +387,7 @@ namespace mps
       }
       refreshLocalAddress();
     }
-
+    // Build a new TCP client with the given socket handle and remote address.
     TCPClientSocket(SOCKET handle, const Address& addr) : TCPSocket(handle), mRemoteAddress(addr) {}
 
     // Get the remote address of the established TCP connection.
