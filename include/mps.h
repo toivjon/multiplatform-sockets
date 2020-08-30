@@ -13,8 +13,11 @@
 constexpr auto CloseSocket = closesocket;
 #else
 #include <arpa/inet.h>
+#include <fcntl.h>
+#include <netinet/tcp.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <unistd.h>
 typedef int SOCKET;
 constexpr auto CloseSocket = close;
 #endif
@@ -243,7 +246,7 @@ namespace mps
       #else
       auto flags = fcntl(mHandle, F_GETFL, 0);
       flags = blocking ? (flags & ~O_NONBLOCK) : (flags | O_NONBLOCK);
-      if (fcntl(mHandle, F_SETFL, flags) == SocketError) {
+      if (fcntl(mHandle, F_SETFL, flags) == SOCKET_ERROR) {
         throw SocketException("fcntl(F_SETFL)");
       }
       #endif
