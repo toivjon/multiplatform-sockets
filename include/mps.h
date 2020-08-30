@@ -437,9 +437,7 @@ namespace mps
     // Build a new socket with the target port and address family.
     UDPSocket(uint16_t port, AddressFamily af) : UDPSocket(Address(port, af)) {}
     // Build a new UDP socket and bind it to target address.
-    UDPSocket(const Address& address) : Socket(address.getFamily(), SocketType::UDP) {
-      bind(address);
-    }
+    UDPSocket(const Address& addr) : Socket(addr.getFamily(), SocketType::UDP) { bind(addr); }
 
     // Specify whether the socket can be used to broadcast packets in LAN.
     void setBroadcasting(bool value) { setSockOpt(SockOpt::UDP_BROADCAST, value ? 1 : 0); }
