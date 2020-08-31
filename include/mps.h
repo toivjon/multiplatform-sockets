@@ -479,39 +479,10 @@ namespace mps
     }
   };
 
-  class UDPPacket
+  struct UDPPacket
   {
-  public:
-    // Build a new UDP packet with empty address and bytes.
-    UDPPacket() : UDPPacket(Address(), Bytes()) {}
-    // Build a new UDP packet with given address and data.
-    UDPPacket(const Address& address, const Bytes& data) : mAddress(address), mData(data) {}
-
-    // Get the source / target address of the UDP packet.
-    const Address& getAddress() const { return mAddress; }
-    // Set the source / target address of the UDP packet.
-    void setAddress(const Address& address) { mAddress = address; }
-
-    // Get the data associated with the UDP packet.
-    const Bytes& getData() const { return mData; }
-    // Set the data associated with the UDP packet.
-    void setData(const Bytes& data) { mData = data; }
-
-    // Get the size of the packet data.
-    size_t getSize() const { return mData.size(); }
-
-    // Get the constant char pointer to the beginning of the data.
-    operator const char* () const { return reinterpret_cast<const char*>(&mData[0]); }
-    // Get the char pointer to the beginning of the data.
-    operator char* () { return reinterpret_cast<char*>(&mData[0]); }
-
-    // Get the constant void pointer to the beginning of the data.
-    operator const void* () const { return reinterpret_cast<const void*>(&mData[0]); }
-    // Get the void pointer to the beginning of the data.
-    operator void* () { return reinterpret_cast<void*>(&mData[0]); }
-  private:
-    Address mAddress;
-    Bytes   mData;
+    Address address; // The source/target address of the packet.
+    Bytes   data;    // The data associated with the packet.
   };
 
   // UDP flags used when sending data.
@@ -547,16 +518,17 @@ namespace mps
     void send(const UDPPacket& packet) { send(packet, {}); }
     // Send the data from the given packet into the target packet address with the given flags.
     void send(const UDPPacket& packet, const std::set<UDPSendFlag>& flags) {
-      const auto& addr = packet.getAddress();
       #if _WIN32
-      auto addrSize = static_cast<int>(addr.getSize());
-      auto dataSize = static_cast<int>(packet.getSize());
+      auto addrLen = static_cast<int>(packet.address.getSize());
+      auto dataPtr = reinterpret_cast<const char*>(&packet.data[0]);
+      auto dataLen = static_cast<int>(packet.data.size());
       #else
-      auto addrSize = static_cast<socklen_t>(addr.getSize());
-      auto dataSize = addr.getSize();
+      auto addrLen = static_cast<socklen_t>(packet.address.getSize());
+      auto dataPtr = reinterpret_cast<const void*>(&packet.data[0]);
+      auto dataLen = packet.data.size();
       #endif
       auto flag = buildFlagInt(flags);
-      if (sendto(mHandle, packet, dataSize, flag, addr, addrSize) == SOCKET_ERROR) {
+      if (sendto(mHandle, dataPtr, dataLen, flag, packet.address, addrLen) == SOCKET_ERROR) {
         throw SocketException("sendto");
       }
     }
@@ -567,23 +539,23 @@ namespace mps
     UDPPacket receive(int maxDataSize) { return receive(maxDataSize, {}); }
     // Receive incoming data from the socket. Reads max of the given amount of bytes.
     UDPPacket receive(int maxDataSize, const std::set<UDPReceiveFlag>& flags) {
-      // reserve desired amount of memory for the incoming data and address.
-      Bytes bytes(maxDataSize);
-      sockaddr_storage address = {};
-      socklen_t addrSize = sizeof(address);
-
-      // take whatever awaits in the incoming queue.
-      auto data = reinterpret_cast<char*>(&bytes[0]);
-      auto addr = reinterpret_cast<sockaddr*>(&address);
+      UDPPacket packet{ Address(), Bytes(maxDataSize) };
+      #ifdef _WIN32
+      auto addrLen = static_cast<int>(sizeof(sockaddr_storage));
+      auto dataPtr = reinterpret_cast<char*>(&packet.data[0]);
+      auto dataLen = static_cast<int>(packet.data.size());
+      #else
+      auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
+      auto dataPtr = reinteret_cast<void*>(&packet.data[0]);
+      auto dataLen = packet.data.size();
+      #endif
       auto flag = buildFlagInt(flags);
-      auto result = recvfrom(mHandle, data, maxDataSize, flag, addr, &addrSize);
+      auto result = recvfrom(mHandle, dataPtr, dataLen, flag, packet.address, &addrLen);
       if (result == SOCKET_ERROR) {
         throw SocketException("recvfrom");
       }
-
-      // truncate bytes array and return results in the package structure.
-      bytes.resize(result);
-      return UDPPacket(Address(address), bytes);
+      packet.data.resize(result);
+      return packet;
     }
   };
 
