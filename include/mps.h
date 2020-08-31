@@ -342,6 +342,16 @@ namespace mps
     }
   };
 
+  // TCP flags used when sending data.
+  enum class TCPSendFlag {
+    DontRoute = MSG_DONTROUTE
+  };
+
+  // UDP flags used when receiving data.
+  enum class TCPReceiveFlag {
+    Peek = MSG_PEEK
+  };
+
   class TCPSocket : public Socket
   {
   public:
@@ -356,23 +366,12 @@ namespace mps
     TCPSocket(SOCKET handle) : Socket(handle) {}
   };
 
-  // TCP flags used when sending data.
-  enum class TCPSendFlag {
-    DontRoute = MSG_DONTROUTE
-  };
-
-  // UDP flags used when receiving data.
-  enum class TCPReceiveFlag {
-    Peek = MSG_PEEK
-  };
-
   class TCPClientSocket : public TCPSocket
   {
   public:
     // Construct a new TCP client by connecting to given server address.
     TCPClientSocket(const Address& addr) : TCPSocket(addr.getFamily()), mRemoteAddress(addr) {
-      auto addrSize = addr.getSize();
-      if (connect(mHandle, addr, addrSize) == SOCKET_ERROR) {
+      if (connect(mHandle, addr, addr.getSize()) == SOCKET_ERROR) {
         throw SocketException("connect");
       }
       refreshLocalAddress();
