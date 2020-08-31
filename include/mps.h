@@ -10,7 +10,6 @@
 #if _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
-constexpr auto CloseSocket = closesocket;
 #else
 #include <arpa/inet.h>
 #include <fcntl.h>
@@ -18,8 +17,6 @@ constexpr auto CloseSocket = closesocket;
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
-typedef int SOCKET;
-constexpr auto CloseSocket = close;
 #endif
 
 #ifndef INVALID_SOCKET
@@ -44,6 +41,13 @@ namespace mps
   constexpr int DefaultMaxReceiveDataSize = 1024;
   // The size of the TCP server listen queue.
   constexpr int TCPServerListenQueueSize = 4;
+
+  #ifdef _WIN32
+  constexpr auto CloseSocket = closesocket;
+  #else
+  constexpr auto CloseSocket = close;
+  typedef int SOCKET;
+  #endif
 
   // Address family defines whether address or socket handles IPv4 or IPv6.
   enum class AddressFamily {
