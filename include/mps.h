@@ -383,13 +383,13 @@ namespace mps
   {
   public:
     // Construct a new TCP client by connecting to given server address.
-    TCPClientSocket(const Address& address) : TCPSocket(address.getFamily()), mRemoteAddress(address) {
+    TCPClientSocket(const Address& addr) : TCPSocket(addr.getFamily()), mRemoteAddress(addr) {
       #if _WIN32
-      auto addrSize = static_cast<int>(address.getSize());
+      auto addrSize = static_cast<int>(addr.getSize());
       #else
-      auto addrSize = static_cast<socklen_t>(address.getSize());
+      auto addrSize = static_cast<socklen_t>(addr.getSize());
       #endif
-      if (connect(mHandle, address, addrSize) == SOCKET_ERROR) {
+      if (connect(mHandle, addr, addrSize) == SOCKET_ERROR) {
         throw SocketException("connect");
       }
       refreshLocalAddress();
