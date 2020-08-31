@@ -274,7 +274,7 @@ namespace mps
     template<typename T>
     void setSockOpt(int level, int optKey, const T& value) {
       auto optVal = (const char*)&value;
-      auto optLen = static_cast<int>(sizeof(T));
+      auto optLen = static_cast<socklen_t>(sizeof(T));
       if (setsockopt(mHandle, level, optKey, optVal, optLen) == SOCKET_ERROR) {
         throw SocketException("setsockopt(" + std::to_string(optKey) + ")");
       }
@@ -282,11 +282,7 @@ namespace mps
 
     int getSockOpt(int level, int optKey) const {
       auto optVal = 0;
-      #if _WIN32
-      auto optLen = static_cast<int>(sizeof(int));
-      #else
       auto optLen = static_cast<socklen_t>(sizeof(int));
-      #endif
       if (getsockopt(mHandle, level, optKey, (char*)&optVal, &optLen) == SOCKET_ERROR) {
         throw SocketException("getsockopt(" + std::to_string(optKey) + ")");
       }
@@ -294,23 +290,14 @@ namespace mps
     }
 
     void bind(const Address& address) {
-      #if _WIN32
-      auto addrSize = static_cast<int>(address.getSize());
-      #else
-      auto addrSize = static_cast<socklen_t>(address.getSize());
-      #endif
-      if (::bind(mHandle, address, addrSize) == SOCKET_ERROR) {
+      if (::bind(mHandle, address, address.getSize()) == SOCKET_ERROR) {
         throw SocketException("bind");
       }
       refreshLocalAddress();
     }
 
     void refreshLocalAddress() {
-      #if _WIN32
-      auto addrSize = static_cast<int>(sizeof(sockaddr_storage));
-      #else
       auto addrSize = static_cast<socklen_t>(sizeof(sockaddr_storage));
-      #endif
       if (getsockname(mHandle, mLocalAddress, &addrSize) == SOCKET_ERROR) {
         throw SocketException("getsockname");
       }
@@ -384,11 +371,7 @@ namespace mps
   public:
     // Construct a new TCP client by connecting to given server address.
     TCPClientSocket(const Address& addr) : TCPSocket(addr.getFamily()), mRemoteAddress(addr) {
-      #if _WIN32
-      auto addrSize = static_cast<int>(addr.getSize());
-      #else
-      auto addrSize = static_cast<socklen_t>(addr.getSize());
-      #endif
+      auto addrSize = addr.getSize();
       if (connect(mHandle, addr, addrSize) == SOCKET_ERROR) {
         throw SocketException("connect");
       }
@@ -512,12 +495,11 @@ namespace mps
 
     // Send the data from the given packet into the target packet address with optional flags.
     void send(const UDPPacket& packet, const std::set<UDPSendFlag>& flags = {}) {
+      auto addrLen = packet.address.getSize();
       #if _WIN32
-      auto addrLen = static_cast<int>(packet.address.getSize());
       auto dataPtr = reinterpret_cast<const char*>(&packet.data[0]);
       auto dataLen = static_cast<int>(packet.data.size());
       #else
-      auto addrLen = static_cast<socklen_t>(packet.address.getSize());
       auto dataPtr = reinterpret_cast<const void*>(&packet.data[0]);
       auto dataLen = packet.data.size();
       #endif
@@ -532,12 +514,11 @@ namespace mps
     // Receive incoming data from the socket. Reads max of the given amount of bytes.
     UDPPacket receive(int maxDataSize, const std::set<UDPReceiveFlag>& flags = {}) {
       UDPPacket packet{ Address(), Bytes(maxDataSize) };
+      auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
       #ifdef _WIN32
-      auto addrLen = static_cast<int>(sizeof(sockaddr_storage));
       auto dataPtr = reinterpret_cast<char*>(&packet.data[0]);
       auto dataLen = static_cast<int>(packet.data.size());
       #else
-      auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
       auto dataPtr = reinteret_cast<void*>(&packet.data[0]);
       auto dataLen = packet.data.size();
       #endif
