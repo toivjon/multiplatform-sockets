@@ -19,14 +19,6 @@
 #include <unistd.h>
 #endif
 
-#ifndef INVALID_SOCKET
-#define INVALID_SOCKET -1
-#endif
-
-#ifndef SOCKET_ERROR
-#define SOCKET_ERROR -1
-#endif
-
 namespace mps
 {
   // We support platforms where one byte contains 8 bits.
@@ -44,8 +36,12 @@ namespace mps
 
   #ifdef _WIN32
   constexpr auto CloseSocket = closesocket;
+  constexpr auto InvalidSocket = INVALID_SOCKET;
+  constexpr auto SocketError = SOCKET_ERROR;
   #else
   constexpr auto CloseSocket = close;
+  constexpr auto InvalidSocket = -1;
+  constexpr auto SocketError = -1;
   typedef int SOCKET;
   #endif
 
@@ -244,13 +240,13 @@ namespace mps
     void setBlocking(bool blocking) {
       #if _WIN32
       auto flag = blocking ? 0lu : 1lu;
-      if (ioctlsocket(mHandle, FIONBIO, &flag) == SOCKET_ERROR) {
+      if (ioctlsocket(mHandle, FIONBIO, &flag) == SocketError) {
         throw SocketException("ioctlsocket(FIONBIO)");
       }
       #else
       auto flags = fcntl(mHandle, F_GETFL, 0);
       flags = blocking ? (flags & ~O_NONBLOCK) : (flags | O_NONBLOCK);
-      if (fcntl(mHandle, F_SETFL, flags) == SOCKET_ERROR) {
+      if (fcntl(mHandle, F_SETFL, flags) == SocketError) {
         throw SocketException("fcntl(F_SETFL)");
       }
       #endif
@@ -265,7 +261,7 @@ namespace mps
       static WinsockService winsock(2, 2);
       #endif
       mHandle = socket(static_cast<int>(af), type, 0);
-      if (mHandle == INVALID_SOCKET) {
+      if (mHandle == InvalidSocket) {
         throw SocketException("socket");
       }
     }
@@ -279,7 +275,7 @@ namespace mps
     void setSockOpt(int level, int optKey, const T& value) {
       auto optVal = (const char*)&value;
       auto optLen = static_cast<socklen_t>(sizeof(T));
-      if (setsockopt(mHandle, level, optKey, optVal, optLen) == SOCKET_ERROR) {
+      if (setsockopt(mHandle, level, optKey, optVal, optLen) == SocketError) {
         throw SocketException("setsockopt(" + std::to_string(optKey) + ")");
       }
     }
@@ -287,14 +283,14 @@ namespace mps
     int getSockOpt(int level, int optKey) const {
       auto optVal = 0;
       auto optLen = static_cast<socklen_t>(sizeof(int));
-      if (getsockopt(mHandle, level, optKey, (char*)&optVal, &optLen) == SOCKET_ERROR) {
+      if (getsockopt(mHandle, level, optKey, (char*)&optVal, &optLen) == SocketError) {
         throw SocketException("getsockopt(" + std::to_string(optKey) + ")");
       }
       return optVal;
     }
 
     void bind(const Address& address) {
-      if (::bind(mHandle, address, address.getSize()) == SOCKET_ERROR) {
+      if (::bind(mHandle, address, address.getSize()) == SocketError) {
         throw SocketException("bind");
       }
       refreshLocalAddress();
@@ -302,7 +298,7 @@ namespace mps
 
     void refreshLocalAddress() {
       auto addrSize = static_cast<socklen_t>(sizeof(sockaddr_storage));
-      if (getsockname(mHandle, mLocalAddress, &addrSize) == SOCKET_ERROR) {
+      if (getsockname(mHandle, mLocalAddress, &addrSize) == SocketError) {
         throw SocketException("getsockname");
       }
     }
@@ -342,7 +338,7 @@ namespace mps
       mHandle = rhs.mHandle;
       mBlocking = rhs.mBlocking;
       mLocalAddress = rhs.mLocalAddress;
-      rhs.mHandle = INVALID_SOCKET;
+      rhs.mHandle = InvalidSocket;
     }
   };
 
@@ -375,7 +371,7 @@ namespace mps
   public:
     // Construct a new TCP client by connecting to given server address.
     TCPClientSocket(const Address& addr) : TCPSocket(addr.getFamily()), mRemoteAddress(addr) {
-      if (connect(mHandle, addr, addr.getSize()) == SOCKET_ERROR) {
+      if (connect(mHandle, addr, addr.getSize()) == SocketError) {
         throw SocketException("connect");
       }
       refreshLocalAddress();
@@ -405,7 +401,7 @@ namespace mps
       auto size = bytes.size();
       #endif
       auto flag = buildFlagInt(flags);
-      if (::send(mHandle, data, size, flag) == SOCKET_ERROR) {
+      if (::send(mHandle, data, size, flag) == SocketError) {
         throw SocketException("send");
       }
     }
@@ -423,7 +419,7 @@ namespace mps
       auto size = bytes.size();
       #endif
       auto flag = buildFlagInt(flags);
-      if (recv(mHandle, data, size, flag) == SOCKET_ERROR) {
+      if (recv(mHandle, data, size, flag) == SocketError) {
         throw SocketException("recv");
       }
       return bytes;
@@ -444,7 +440,7 @@ namespace mps
     // Build a new TCP server socket and bind it to target address.
     TCPServerSocket(const Address& address) : TCPSocket(address.getFamily()) {
       bind(address);
-      if (listen(mHandle, TCPServerListenQueueSize) == SOCKET_ERROR) {
+      if (listen(mHandle, TCPServerListenQueueSize) == SocketError) {
         throw SocketException("listen");
       }
     }
@@ -454,7 +450,7 @@ namespace mps
       Address address;
       socklen_t addressSize = sizeof(sockaddr_storage);
       auto client = ::accept(mHandle, address, &addressSize);
-      if (client == INVALID_SOCKET) {
+      if (client == InvalidSocket) {
         throw SocketException("accept");
       }
       return TCPClientSocket(client, address);
@@ -507,7 +503,7 @@ namespace mps
       auto dataLen = packet.data.size();
       #endif
       auto flag = buildFlagInt(flags);
-      if (sendto(mHandle, dataPtr, dataLen, flag, packet.address, addrLen) == SOCKET_ERROR) {
+      if (sendto(mHandle, dataPtr, dataLen, flag, packet.address, addrLen) == SocketError) {
         throw SocketException("sendto");
       }
     }
@@ -527,7 +523,7 @@ namespace mps
       #endif
       auto flag = buildFlagInt(flags);
       auto result = recvfrom(mHandle, dataPtr, dataLen, flag, packet.address, &addrLen);
-      if (result == SOCKET_ERROR) {
+      if (result == SocketError) {
         throw SocketException("recvfrom");
       }
       packet.data.resize(result);
