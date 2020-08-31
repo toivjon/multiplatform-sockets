@@ -409,10 +409,8 @@ namespace mps
     // Get the definition whether the socket keeps connection alive by sending keep-alive messages.
     bool isKeepAlive() const { return getSockOpt(SOL_SOCKET, SO_KEEPALIVE) == 1; }
 
-    // Send the given bytes to connection destination.
-    void send(const Bytes& bytes) { send(bytes, {}); }
-    // Send the given bytes to connection destination with the additional flags.
-    void send(const Bytes& bytes, const std::set<TCPSendFlag>& flags) {
+    // Send the given bytes to connection destination with optional flags.
+    void send(const Bytes& bytes, const std::set<TCPSendFlag>& flags = {}) {
       #if _WIN32
       auto data = reinterpret_cast<const char*>(&bytes[0]);
       auto size = static_cast<int>(bytes.size());
@@ -428,10 +426,8 @@ namespace mps
 
     // Receive incoming bytes from the connection.
     Bytes receive() { return receive(DefaultMaxReceiveDataSize, {}); }
-    // Receive incoming bytes from the connection with the desired max data amount.
-    Bytes receive(int maxDataSize) { return receive(maxDataSize, {}); }
     // Receive incoming bytes from the connection with the desired max data amount and flags.
-    Bytes receive(int maxDataSize, const std::set<TCPReceiveFlag>& flags) {
+    Bytes receive(int maxDataSize, const std::set<TCPReceiveFlag>& flags = {}) {
       Bytes bytes(maxDataSize);
       #if _WIN32
       auto data = reinterpret_cast<char*>(&bytes[0]);
@@ -514,10 +510,8 @@ namespace mps
     // Get the definition whether the socket can be used to broadcast packets in LAN.
     bool isBroadcasting() const { return getSockOpt(SOL_SOCKET, SO_BROADCAST) == 1; }
 
-    // Send the data from the given packet into the target packet address.
-    void send(const UDPPacket& packet) { send(packet, {}); }
-    // Send the data from the given packet into the target packet address with the given flags.
-    void send(const UDPPacket& packet, const std::set<UDPSendFlag>& flags) {
+    // Send the data from the given packet into the target packet address with optional flags.
+    void send(const UDPPacket& packet, const std::set<UDPSendFlag>& flags = {}) {
       #if _WIN32
       auto addrLen = static_cast<int>(packet.address.getSize());
       auto dataPtr = reinterpret_cast<const char*>(&packet.data[0]);
@@ -536,9 +530,7 @@ namespace mps
     // Receive incoming data from the socket. Uses default value for the maximum data bytes.
     UDPPacket receive() { return receive(DefaultMaxReceiveDataSize, {}); }
     // Receive incoming data from the socket. Reads max of the given amount of bytes.
-    UDPPacket receive(int maxDataSize) { return receive(maxDataSize, {}); }
-    // Receive incoming data from the socket. Reads max of the given amount of bytes.
-    UDPPacket receive(int maxDataSize, const std::set<UDPReceiveFlag>& flags) {
+    UDPPacket receive(int maxDataSize, const std::set<UDPReceiveFlag>& flags = {}) {
       UDPPacket packet{ Address(), Bytes(maxDataSize) };
       #ifdef _WIN32
       auto addrLen = static_cast<int>(sizeof(sockaddr_storage));
