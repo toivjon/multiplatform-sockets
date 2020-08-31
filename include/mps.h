@@ -358,15 +358,15 @@ namespace mps
   class TCPSocket : public Socket
   {
   public:
-    // Build a new TCP socket with the given address family.
-    TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {}
-    // Build a new TCP socket with the given socket handle and with the given address family.
-    TCPSocket(SOCKET handle) : Socket(handle) {}
-
     // Specify whether the socket should use Nagle's algorithm to buffer data flow.
     void setBuffering(bool value) { setSockOpt(IPPROTO_TCP, TCP_NODELAY, value ? 0 : 1); }
     // Get the definition whether the socket uses Nagle's algorithm to buffer data flow.
     bool isBuffering() const { return getSockOpt(IPPROTO_TCP, TCP_NODELAY) == 0; }
+  protected:
+    // Build a new TCP socket with the given address family.
+    TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {}
+    // Build a new TCP socket with the given socket handle and with the given address family.
+    TCPSocket(SOCKET handle) : Socket(handle) {}
   };
 
   // TCP flags used when sending data.
