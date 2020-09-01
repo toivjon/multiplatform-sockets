@@ -21,13 +21,6 @@
 
 namespace mps
 {
-  #ifdef _WIN32
-  constexpr auto InvalidSocket = INVALID_SOCKET;
-  #else
-  constexpr auto InvalidSocket = -1;
-  typedef int SOCKET;
-  #endif
-
   // Address family defines whether address or socket handles IPv4 or IPv6.
   enum class AddressFamily {
     IPv4 = AF_INET,
@@ -245,6 +238,13 @@ namespace mps
     bool isBlocking() const { return mBlocking; }
 
   protected:
+    #ifdef _WIN32
+    static const auto InvalidSocket = INVALID_SOCKET;
+    #else
+    static const auto InvalidSocket = -1;
+    typedef int SOCKET;
+    #endif
+
     Socket(AddressFamily af, int type) : mBlocking(true) {
       #if _WIN32
       static WinsockService winsock(2, 2);
