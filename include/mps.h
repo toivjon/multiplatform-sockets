@@ -21,11 +21,6 @@
 
 namespace mps
 {
-  // A constant to specify the default maximum amount of incoming data to be read.
-  constexpr int DefaultMaxReceiveDataSize = 1024;
-  // The size of the TCP server listen queue.
-  constexpr int TCPServerListenQueueSize = 4;
-
   #ifdef _WIN32
   constexpr auto InvalidSocket = INVALID_SOCKET;
   constexpr auto SocketError = SOCKET_ERROR;
@@ -403,7 +398,7 @@ namespace mps
     }
 
     // Receive incoming bytes from the connection.
-    std::vector<uint8_t> receive() { return receive(DefaultMaxReceiveDataSize, {}); }
+    std::vector<uint8_t> receive() { return receive(1024, {}); }
     // Receive incoming bytes from the connection with the desired max data amount and flags.
     std::vector<uint8_t> receive(int maxDataSize, const std::set<TCPReceiveFlag>& flags = {}) {
       std::vector<uint8_t> bytes(maxDataSize);
@@ -436,7 +431,7 @@ namespace mps
     // Build a new TCP server socket and bind it to target address.
     TCPServerSocket(const Address& address) : TCPSocket(address.getFamily()) {
       bind(address);
-      if (listen(mHandle, TCPServerListenQueueSize) == SocketError) {
+      if (listen(mHandle, 4) == SocketError) {
         throw SocketException("listen");
       }
     }
@@ -505,7 +500,7 @@ namespace mps
     }
 
     // Receive incoming data from the socket. Uses default value for the maximum data bytes.
-    UDPPacket receive() { return receive(DefaultMaxReceiveDataSize, {}); }
+    UDPPacket receive() { return receive(1024, {}); }
     // Receive incoming data from the socket. Reads max of the given amount of bytes.
     UDPPacket receive(int maxDataSize, const std::set<UDPReceiveFlag>& flags = {}) {
       UDPPacket packet{ Address(), std::vector<uint8_t>(maxDataSize) };
