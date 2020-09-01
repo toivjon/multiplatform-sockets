@@ -18,7 +18,7 @@ int main() {
     client.setKeepAlive(true);
 
     auto data = client.receive();
-    Bytes buffer(data);
+    std::vector<uint8_t> buffer(data);
     buffer.push_back('\0');
     std::cout << "echoing data: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
     client.send(data);

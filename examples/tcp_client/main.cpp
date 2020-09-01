@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 
     socket.send({ 'h','e','l','l','o' });
     auto data = socket.receive(BufferSize);
-    Bytes buffer(data);
+    std::vector<uint8_t> buffer(data);
     buffer.push_back('\0');
     std::cout << "response: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
   } catch (const SocketException& e) {

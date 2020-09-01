@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Local IP=" << socket.getLocalIP() << " port=" << socket.getLocalPort() << std::endl;
     socket.send(UDPPacket{ addr, { 'h','e','l','l','o' } });
     auto packet = socket.receive(BufferSize);
-    Bytes buffer(packet.data);
+    std::vector<uint8_t> buffer(packet.data);
     buffer.push_back('\0');
     std::cout << "response: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
   } catch (const SocketException& e) {

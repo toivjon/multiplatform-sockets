@@ -21,14 +21,8 @@
 
 namespace mps
 {
-  // We support platforms where one byte contains 8 bits.
-  typedef uint8_t Byte;
-  // A type for a dynamic array of bytes.
-  typedef std::vector<Byte> Bytes;
-
   // A constant for specifying that the OS is free to select a port for the socket.
   constexpr uint16_t AnyPort = 0;
-
   // A constant to specify the default maximum amount of incoming data to be read.
   constexpr int DefaultMaxReceiveDataSize = 1024;
   // The size of the TCP server listen queue.
@@ -392,7 +386,7 @@ namespace mps
     bool isKeepAlive() const { return getSockOpt(SOL_SOCKET, SO_KEEPALIVE) == 1; }
 
     // Send the given bytes to connection destination with optional flags.
-    void send(const Bytes& bytes, const std::set<TCPSendFlag>& flags = {}) {
+    void send(const std::vector<uint8_t>& bytes, const std::set<TCPSendFlag>& flags = {}) {
       #if _WIN32
       auto data = reinterpret_cast<const char*>(&bytes[0]);
       auto size = static_cast<int>(bytes.size());
@@ -407,10 +401,10 @@ namespace mps
     }
 
     // Receive incoming bytes from the connection.
-    Bytes receive() { return receive(DefaultMaxReceiveDataSize, {}); }
+    std::vector<uint8_t> receive() { return receive(DefaultMaxReceiveDataSize, {}); }
     // Receive incoming bytes from the connection with the desired max data amount and flags.
-    Bytes receive(int maxDataSize, const std::set<TCPReceiveFlag>& flags = {}) {
-      Bytes bytes(maxDataSize);
+    std::vector<uint8_t> receive(int maxDataSize, const std::set<TCPReceiveFlag>& flags = {}) {
+      std::vector<uint8_t> bytes(maxDataSize);
       #if _WIN32
       auto data = reinterpret_cast<char*>(&bytes[0]);
       auto size = static_cast<int>(bytes.size());
@@ -459,8 +453,8 @@ namespace mps
 
   struct UDPPacket
   {
-    Address address; // The source/target address of the packet.
-    Bytes   data;    // The data associated with the packet.
+    Address               address; // The source/target address of the packet.
+    std::vector<uint8_t>  data;    // The data associated with the packet.
   };
 
   // UDP flags used when sending data.
@@ -512,7 +506,7 @@ namespace mps
     UDPPacket receive() { return receive(DefaultMaxReceiveDataSize, {}); }
     // Receive incoming data from the socket. Reads max of the given amount of bytes.
     UDPPacket receive(int maxDataSize, const std::set<UDPReceiveFlag>& flags = {}) {
-      UDPPacket packet{ Address(), Bytes(maxDataSize) };
+      UDPPacket packet{ Address(), std::vector<uint8_t>(maxDataSize) };
       auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
       #ifdef _WIN32
       auto dataPtr = reinterpret_cast<char*>(&packet.data[0]);
