@@ -518,7 +518,7 @@ namespace mps
       auto dataPtr = reinterpret_cast<char*>(&packet.data[0]);
       auto dataLen = static_cast<int>(packet.data.size());
       #else
-      auto dataPtr = reinteret_cast<void*>(&packet.data[0]);
+      auto dataPtr = reinterpret_cast<void*>(&packet.data[0]);
       auto dataLen = packet.data.size();
       #endif
       auto flag = buildFlagInt(flags);
