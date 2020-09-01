@@ -21,8 +21,6 @@
 
 namespace mps
 {
-  // A constant for specifying that the OS is free to select a port for the socket.
-  constexpr uint16_t AnyPort = 0;
   // A constant to specify the default maximum amount of incoming data to be read.
   constexpr int DefaultMaxReceiveDataSize = 1024;
   // The size of the TCP server listen queue.
@@ -69,7 +67,7 @@ namespace mps
   {
   public:
     // Construct a new IPv4 address with auto-select port definition.
-    Address() : Address(AnyPort, AddressFamily::IPv4) {}
+    Address() : Address(0, AddressFamily::IPv4) {}
 
     // Construct a new address with the given port and IP address.
     Address(const std::string& ip, uint16_t port) : mSockAddr({}) {
@@ -426,7 +424,7 @@ namespace mps
   {
   public:
     // Build a new IPv4 socket with auto-selected port and auto-selected interface.
-    TCPServerSocket() : TCPServerSocket(AnyPort) {};
+    TCPServerSocket() : TCPServerSocket(Address()) {};
     // Build a new IPv4 socket with the target port in auto-selected interface.
     TCPServerSocket(uint16_t port) : TCPServerSocket(port, AddressFamily::IPv4) {}
     // Build a new socket with the target address family and port in the auto-selected interface.
@@ -471,11 +469,11 @@ namespace mps
   {
   public:
     // Build a new IPv4 socket with auto-selected port.
-    UDPSocket() : UDPSocket(AnyPort) {};
+    UDPSocket() : UDPSocket(Address()) {};
     // Build a new IPv4 socket with the target port.
     UDPSocket(uint16_t port) : UDPSocket(port, AddressFamily::IPv4) {};
     // Build a new socket with the target address family and auto-selected port.
-    UDPSocket(AddressFamily af) : UDPSocket(AnyPort, af) {}
+    UDPSocket(AddressFamily af) : UDPSocket(0, af) {}
     // Build a new socket with the target port and address family.
     UDPSocket(uint16_t port, AddressFamily af) : UDPSocket(Address(port, af)) {}
     // Build a new UDP socket and bind it to target address.
