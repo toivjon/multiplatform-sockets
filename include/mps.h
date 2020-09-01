@@ -27,11 +27,9 @@ namespace mps
   constexpr int TCPServerListenQueueSize = 4;
 
   #ifdef _WIN32
-  constexpr auto CloseSocket = closesocket;
   constexpr auto InvalidSocket = INVALID_SOCKET;
   constexpr auto SocketError = SOCKET_ERROR;
   #else
-  constexpr auto CloseSocket = close;
   constexpr auto InvalidSocket = -1;
   constexpr auto SocketError = -1;
   typedef int SOCKET;
@@ -197,7 +195,13 @@ namespace mps
     Socket& operator=(Socket&& rhs) noexcept { swap(rhs); return *this; }
 
     // Destructor handles the automatic closing of the socket handle in a RAII way.
-    virtual ~Socket() { CloseSocket(mHandle); }
+    virtual ~Socket() {
+      #if _WIN32
+      closesocket(mHandle);
+      #else
+      close(mHandle);
+      #endif
+    }
 
     // The definition which tells whether the socket handles IPv4 or IPv6 communication.
     AddressFamily getAddressFamily() const { return mLocalAddress.getFamily(); }
