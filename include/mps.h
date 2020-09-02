@@ -46,7 +46,7 @@ namespace mps
     std::string mMessage;
   };
 
-  // Address encapsulates the network IP address and the port.
+  // A wrapper which is used to present a network address with an IP and port.
   class Address final
   {
   public:
