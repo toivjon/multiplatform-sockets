@@ -23,9 +23,9 @@ int main() {
     std::cout << "echoing data: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
     client.send(data);
   } catch (const AddressException& e) {
-    std::cerr << "ERROR: " << e.what() << std::endl;
+    std::cerr << "Error: " << e.what() << std::endl;
   } catch (const SocketException& e) {
-    std::cerr << "ERROR: " << e.what() << std::endl;
+    std::cerr << "Error: " << e.what() << std::endl;
   }
   return 0;
 }
