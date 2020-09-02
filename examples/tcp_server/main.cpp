@@ -11,7 +11,7 @@ int main() {
   try {
     TCPServerSocket socket(SocketPort);
     std::cout << "Server IP=" << socket.getLocalIP() << " port=" << socket.getLocalPort() << std::endl;
-    
+
     auto client = socket.accept();
     std::cout << "Client local  IP=" << client.getLocalIP() << " port=" << client.getLocalPort() << std::endl;
     std::cout << "Client remote IP=" << client.getRemoteIP() << " port=" << client.getRemotePort() << std::endl;
@@ -22,8 +22,10 @@ int main() {
     buffer.push_back('\0');
     std::cout << "echoing data: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
     client.send(data);
+  } catch (const AddressException& e) {
+    std::cerr << "ERROR: " << e.what() << std::endl;
   } catch (const SocketException& e) {
-    std::cerr << e.what() << std::endl;
+    std::cerr << "ERROR: " << e.what() << std::endl;
   }
   return 0;
 }
