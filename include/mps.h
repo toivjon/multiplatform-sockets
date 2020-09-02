@@ -21,25 +21,25 @@
 
 namespace mps
 {
-  // Address family defines whether address or socket handles IPv4 or IPv6.
+  // Address family defines whether an address or socket handles IPv4 or IPv6.
   enum class AddressFamily {
     IPv4 = AF_INET,
     IPv6 = AF_INET6
   };
 
-  // An exception type for logical exceptions that may arise from the address operations.
+  // An exception type thrown when the given address is not a valid IP address.
   class AddressException final : public std::exception
   {
   public:
-    // Construct a new exception about the target address.
+    // Build a new address exception which tells that given address is invalid.
     AddressException(const std::string& address) : mAddress(address) {
       mMessage = "The '" + address + "' is not a valid IPv4 or IPv6 address.";
     }
 
-    // Get the address that was related when this exception was issued.
+    // Get the original address that was used when this exception was thrown.
     const std::string& getAddress() const { return mAddress; }
 
-    // Print out what actually happened when this exception was issued.
+    // Print out what actually happened when this address exception was issued.
     const char* what() const noexcept override { return mMessage.c_str(); }
   private:
     std::string mAddress;
