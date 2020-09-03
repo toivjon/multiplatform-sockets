@@ -201,9 +201,9 @@ namespace mps
     bool isIPv6() const { return mLocalAddress.getFamily() == AddressFamily::IPv6; }
 
     // Specify the size for the incoming data buffer in bytes.
-    void setReceiveBufferSize(int size) { setSockOpt(SOL_SOCKET, SO_RCVBUF, size); }
+    void setReceiveBufferSize(int size) { setOpt(SOL_SOCKET, SO_RCVBUF, size); }
     // Specify the size for the outgoing data buffer in bytes.
-    void setSendBufferSize(int size) { setSockOpt(SOL_SOCKET, SO_SNDBUF, size); }
+    void setSendBufferSize(int size) { setOpt(SOL_SOCKET, SO_SNDBUF, size); }
 
     // Get the size of the incoming data buffer in bytes.
     int getReceiveBufferSize() const { return getSockOpt(SOL_SOCKET, SO_RCVBUF); }
@@ -211,7 +211,7 @@ namespace mps
     int getSendBufferSize() const { return getSockOpt(SOL_SOCKET, SO_SNDBUF); }
 
     // Specify whether the socket should route traffic or just directly use the interface.
-    void setRouting(bool value) { setSockOpt(SOL_SOCKET, SO_DONTROUTE, value ? 1 : 0); }
+    void setRouting(bool value) { setOpt(SOL_SOCKET, SO_DONTROUTE, value); }
     // Get the definition whether the socket routes traffic or directly uses the interface.
     bool isRouting() const { return getSockOpt(SOL_SOCKET, SO_DONTROUTE) == 0; }
 
@@ -264,8 +264,12 @@ namespace mps
       refreshLocalAddress();
     }
 
+    void setOpt(int level, int optKey, bool value) {
+      setOpt(level, optKey, value ? 1 : 0);
+    }
+
     template<typename T>
-    void setSockOpt(int level, int optKey, const T& value) {
+    void setOpt(int level, int optKey, const T& value) {
       auto optVal = (const char*)&value;
       auto optLen = static_cast<socklen_t>(sizeof(T));
       if (setsockopt(mHandle, level, optKey, optVal, optLen) == -1) {
@@ -349,7 +353,7 @@ namespace mps
   {
   public:
     // Specify whether the socket should use Nagle's algorithm to buffer data flow.
-    void setBuffering(bool value) { setSockOpt(IPPROTO_TCP, TCP_NODELAY, value ? 0 : 1); }
+    void setBuffering(bool value) { setOpt(IPPROTO_TCP, TCP_NODELAY, !value); }
     // Get the definition whether the socket uses Nagle's algorithm to buffer data flow.
     bool isBuffering() const { return getSockOpt(IPPROTO_TCP, TCP_NODELAY) == 0; }
   protected:
@@ -380,7 +384,7 @@ namespace mps
     std::string getRemoteIP() const { return mRemoteAddress.getIP(); }
 
     // Specify whether the socket should send keep-alive messages to keep the connection alive.
-    void setKeepAlive(bool value) { setSockOpt(SOL_SOCKET, SO_KEEPALIVE, value ? 1 : 0); }
+    void setKeepAlive(bool value) { setOpt(SOL_SOCKET, SO_KEEPALIVE, value); }
     // Get the definition whether the socket keeps connection alive by sending keep-alive messages.
     bool isKeepAlive() const { return getSockOpt(SOL_SOCKET, SO_KEEPALIVE) == 1; }
 
@@ -481,7 +485,7 @@ namespace mps
     UDPSocket(const Address& addr) : Socket(addr.getFamily(), SOCK_DGRAM) { bind(addr); }
 
     // Specify whether the socket can be used to broadcast packets in LAN.
-    void setBroadcasting(bool value) { setSockOpt(SOL_SOCKET, SO_BROADCAST, value ? 1 : 0); }
+    void setBroadcasting(bool value) { setOpt(SOL_SOCKET, SO_BROADCAST, value ? 1 : 0); }
     // Get the definition whether the socket can be used to broadcast packets in LAN.
     bool isBroadcasting() const { return getSockOpt(SOL_SOCKET, SO_BROADCAST) == 1; }
 
