@@ -206,14 +206,14 @@ namespace mps
     void setSendBufferSize(int size) { setOpt(SOL_SOCKET, SO_SNDBUF, size); }
 
     // Get the size of the incoming data buffer in bytes.
-    int getReceiveBufferSize() const { return getSockOpt(SOL_SOCKET, SO_RCVBUF); }
+    int getReceiveBufferSize() const { return getOpt(SOL_SOCKET, SO_RCVBUF); }
     // Get the size of the outgoing data buffer in bytes.
-    int getSendBufferSize() const { return getSockOpt(SOL_SOCKET, SO_SNDBUF); }
+    int getSendBufferSize() const { return getOpt(SOL_SOCKET, SO_SNDBUF); }
 
     // Specify whether the socket should route traffic or just directly use the interface.
     void setRouting(bool value) { setOpt(SOL_SOCKET, SO_DONTROUTE, value); }
     // Get the definition whether the socket routes traffic or directly uses the interface.
-    bool isRouting() const { return getSockOpt(SOL_SOCKET, SO_DONTROUTE) == 0; }
+    bool isRouting() const { return getOpt(SOL_SOCKET, SO_DONTROUTE) == 0; }
 
     // Get the locally bound address of the socket.
     const Address& getLocalAddress() const { return mLocalAddress; }
@@ -277,7 +277,7 @@ namespace mps
       }
     }
 
-    int getSockOpt(int level, int optKey) const {
+    int getOpt(int level, int optKey) const {
       auto optVal = 0;
       auto optLen = static_cast<socklen_t>(sizeof(int));
       if (getsockopt(mHandle, level, optKey, (char*)&optVal, &optLen) == -1) {
@@ -355,7 +355,7 @@ namespace mps
     // Specify whether the socket should use Nagle's algorithm to buffer data flow.
     void setBuffering(bool value) { setOpt(IPPROTO_TCP, TCP_NODELAY, !value); }
     // Get the definition whether the socket uses Nagle's algorithm to buffer data flow.
-    bool isBuffering() const { return getSockOpt(IPPROTO_TCP, TCP_NODELAY) == 0; }
+    bool isBuffering() const { return getOpt(IPPROTO_TCP, TCP_NODELAY) == 0; }
   protected:
     // Build a new TCP socket with the given address family.
     TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {}
@@ -386,7 +386,7 @@ namespace mps
     // Specify whether the socket should send keep-alive messages to keep the connection alive.
     void setKeepAlive(bool value) { setOpt(SOL_SOCKET, SO_KEEPALIVE, value); }
     // Get the definition whether the socket keeps connection alive by sending keep-alive messages.
-    bool isKeepAlive() const { return getSockOpt(SOL_SOCKET, SO_KEEPALIVE) == 1; }
+    bool isKeepAlive() const { return getOpt(SOL_SOCKET, SO_KEEPALIVE) == 1; }
 
     // Send the given bytes to connection destination with optional flags.
     void send(const std::vector<uint8_t>& bytes, const std::set<TCPSendFlag>& flags = {}) {
@@ -487,7 +487,7 @@ namespace mps
     // Specify whether the socket can be used to broadcast packets in LAN.
     void setBroadcasting(bool value) { setOpt(SOL_SOCKET, SO_BROADCAST, value ? 1 : 0); }
     // Get the definition whether the socket can be used to broadcast packets in LAN.
-    bool isBroadcasting() const { return getSockOpt(SOL_SOCKET, SO_BROADCAST) == 1; }
+    bool isBroadcasting() const { return getOpt(SOL_SOCKET, SO_BROADCAST) == 1; }
 
     // Send the data from the given packet into the target packet address with optional flags.
     void send(const UDPPacket& packet, const std::set<UDPSendFlag>& flags = {}) {
