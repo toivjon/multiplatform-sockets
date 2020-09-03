@@ -349,17 +349,18 @@ namespace mps
     Peek = MSG_PEEK
   };
 
+  // An abstraction for all TCP sockets which cannot be directly constructed.
   class TCPSocket : public Socket
   {
   public:
-    // Specify whether the socket should use Nagle's algorithm to buffer data flow.
+    // Specify whether the socket uses Nagle's algorithm to buffer data flow.
     void setBuffering(bool value) { setOpt(IPPROTO_TCP, TCP_NODELAY, !value); }
-    // Get the definition whether the socket uses Nagle's algorithm to buffer data flow.
+    // Get the definition whether to use Nagle's algorithm to buffer data flow.
     bool isBuffering() const { return getOpt(IPPROTO_TCP, TCP_NODELAY) == 0; }
   protected:
-    // Build a new TCP socket with the given address family.
+    // Build a new TCP socket base instance with the specified address family.
     TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {}
-    // Build a new TCP socket with the given socket handle and with the given address family.
+    // Build a new TCP socket with the given socket handle and address family.
     TCPSocket(SOCKET handle) : Socket(handle) {}
   };
 
