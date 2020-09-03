@@ -137,33 +137,37 @@ namespace mps
     sockaddr_storage mSockAddr;
   };
 
-  // An exception type for logical exceptions that may arise from the socket operations.
+  // An exception type thrown when logical errors arise from socket operations.
   class SocketException final : public std::exception
   {
   public:
-    // Construct a new exception with the given operation name. Details are resolved automatically.
-    SocketException(const std::string& operation) : mMessage(operation) {
+    // Build an exception about the target operation and auto-resolved details.
+    SocketException(const std::string& operation) : mOperation(operation) {
       #ifdef _WIN32
       auto flags = 0;
-      flags |= FORMAT_MESSAGE_FROM_SYSTEM;     // we want message for the WSAGetLastError() code
-      flags |= FORMAT_MESSAGE_ALLOCATE_BUFFER; // allow formatter to allocate the char buffer
-      flags |= FORMAT_MESSAGE_IGNORE_INSERTS;  // we don't want to use insert sequences
+      flags |= FORMAT_MESSAGE_FROM_SYSTEM;     // we use WSAGetLastError() code
+      flags |= FORMAT_MESSAGE_ALLOCATE_BUFFER; // auto-allocate the char buffer
+      flags |= FORMAT_MESSAGE_IGNORE_INSERTS;  // let's ignore insert sequences
       LPSTR text(nullptr);
-      if (FormatMessage(flags, nullptr, WSAGetLastError(), 0, (LPSTR)&text, 0, nullptr) != 0) {
+      auto error = WSAGetLastError();
+      if (FormatMessage(flags, nullptr, error, 0, text, 0, nullptr) != 0) {
+        mMessage += mOperation;
         mMessage += ": ";
         mMessage += std::string(text);
         LocalFree(text);
       }
       #else
-
       // TODO how to get perror message? check when testing in unix-environment
-
       #endif
     }
 
-    // Print out what actually happened when this exception was issued.
+    // Get the name of the operation that was failed and caused this exception.
+    const std::string& getOperation() const { return mOperation; }
+
+    // Print out what actually happened when this socket exception was issued.
     const char* what() const noexcept override { return mMessage.c_str(); }
   private:
+    std::string mOperation;
     std::string mMessage;
   };
 
