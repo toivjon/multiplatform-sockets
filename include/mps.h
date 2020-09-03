@@ -306,8 +306,6 @@ namespace mps
     }
 
     SOCKET        mHandle;
-    bool          mBlocking;
-    Address       mLocalAddress;
   private:
     #if _WIN32
     // A RAII wrapper for proper initialization and graceful shutdown for the Winsock service.
@@ -333,6 +331,8 @@ namespace mps
       mLocalAddress = rhs.mLocalAddress;
       rhs.mHandle = InvalidSocket;
     }
+    bool          mBlocking;
+    Address       mLocalAddress;
   };
 
   // TCP flags used when sending data.
