@@ -51,13 +51,13 @@ namespace mps
   {
   public:
     // Build a new IPv4 address with a undefined port and IP value definitions.
-    Address() : Address(UndefinedPort, AddressFamily::IPv4) {}
+    Address() : Address(AddressFamily::IPv4, UndefinedPort) {}
 
     // Build a new address with given address family and undefined port and IP.
-    Address(AddressFamily af) : Address(UndefinedPort, af) {}
+    Address(AddressFamily af) : Address(af, UndefinedPort) {}
 
     // Build a new undefined address with the given port and adddress family.
-    Address(uint16_t port, AddressFamily af) : mSockAddr({}) {
+    Address(AddressFamily af, uint16_t port) : mSockAddr({}) {
       if (af == AddressFamily::IPv6) {
         auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
         sockaddr->sin6_family = AF_INET6;
@@ -440,7 +440,7 @@ namespace mps
     // Build a new IPv4 socket with the target port in auto-selected interface.
     TCPServerSocket(uint16_t port) : TCPServerSocket(port, AddressFamily::IPv4) {}
     // Build a new socket with the target address family and port in the auto-selected interface.
-    TCPServerSocket(uint16_t port, AddressFamily af) : TCPServerSocket(Address(port, af)) {}
+    TCPServerSocket(uint16_t port, AddressFamily af) : TCPServerSocket(Address(af, port)) {}
     // Build a new TCP server socket and bind it to target address.
     TCPServerSocket(const Address& address) : TCPSocket(address.getFamily()) {
       bind(address);
@@ -487,7 +487,7 @@ namespace mps
     // Build a new socket with the target address family and auto-selected port.
     UDPSocket(AddressFamily af) : UDPSocket(0, af) {}
     // Build a new socket with the target port and address family.
-    UDPSocket(uint16_t port, AddressFamily af) : UDPSocket(Address(port, af)) {}
+    UDPSocket(uint16_t port, AddressFamily af) : UDPSocket(Address(af, port)) {}
     // Build a new UDP socket and bind it to target address.
     UDPSocket(const Address& addr) : Socket(addr.getFamily(), SOCK_DGRAM) { bind(addr); }
 
