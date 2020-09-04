@@ -50,10 +50,28 @@ namespace mps
   class Address final
   {
   public:
-    // Construct a new IPv4 address with auto-select port definition.
-    Address() : Address(0, AddressFamily::IPv4) {}
+    // Build a new IPv4 address with a undefined port and IP value definitions.
+    Address() : Address(UndefinedPort, AddressFamily::IPv4) {}
 
-    // Construct a new address with the given port and IP address.
+    // Build a new address with undefined port and IP and given address family.
+    Address(AddressFamily af) : Address(UndefinedPort, af) {}
+
+    // Build a new undefined address with the given port and adddress family.
+    Address(uint16_t port, AddressFamily af) : mSockAddr({}) {
+      if (af == AddressFamily::IPv6) {
+        auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
+        sockaddr->sin6_family = AF_INET6;
+        sockaddr->sin6_port = htons(port);
+        sockaddr->sin6_addr = in6addr_any;
+      } else {
+        auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
+        sockaddr->sin_family = AF_INET;
+        sockaddr->sin_port = htons(port);
+        sockaddr->sin_addr.s_addr = INADDR_ANY;
+      }
+    }
+
+    // Build a new address with the specified port and IP address definitions.
     Address(const std::string& ip, uint16_t port) : mSockAddr({}) {
       if (isIPv6String(ip)) {
         auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
@@ -69,21 +87,6 @@ namespace mps
         if (!inet_pton(AF_INET, ip.c_str(), &sockaddr->sin_addr)) {
           throw AddressException(ip);
         }
-      }
-    }
-
-    // Construct a new address with the given port and any-interface.
-    Address(uint16_t port, AddressFamily af) : mSockAddr({}) {
-      if (af == AddressFamily::IPv6) {
-        auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
-        sockaddr->sin6_family = AF_INET6;
-        sockaddr->sin6_port = htons(port);
-        sockaddr->sin6_addr = in6addr_any;
-      } else {
-        auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
-        sockaddr->sin_family = AF_INET;
-        sockaddr->sin_port = htons(port);
-        sockaddr->sin_addr.s_addr = INADDR_ANY;
       }
     }
 
@@ -130,6 +133,9 @@ namespace mps
       }
     }
   private:
+    // An undefined port indicates that the address has not an assigned port.
+    static auto const UndefinedPort = 0;
+
     // Check whether the given string contains IPv6 address.
     static bool isIPv6String(const std::string& val) {
       return val.find(":") != std::string::npos;
