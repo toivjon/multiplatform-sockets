@@ -53,7 +53,7 @@ namespace mps
     // Build a new IPv4 address with a undefined port and IP value definitions.
     Address() : Address(UndefinedPort, AddressFamily::IPv4) {}
 
-    // Build a new address with undefined port and IP and given address family.
+    // Build a new address with given address family and undefined port and IP.
     Address(AddressFamily af) : Address(UndefinedPort, af) {}
 
     // Build a new undefined address with the given port and adddress family.
