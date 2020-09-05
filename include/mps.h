@@ -209,10 +209,10 @@ namespace mps
 
     // The definition which tells whether the socket handles IPv4 or IPv6 communication.
     AddressFamily getAddressFamily() const { return mLocalAddress.getFamily(); }
-    // Get the definition whether the socket uses IPv4 address family.
-    bool isIPv4() const { return mLocalAddress.getFamily() == AddressFamily::IPv4; }
-    // Get the definition whether the socket uses IPv6 address family.
-    bool isIPv6() const { return mLocalAddress.getFamily() == AddressFamily::IPv6; }
+    // Get the definition whether the target socket uses IPv4 address family.
+    bool isIPv4() const { return mLocalAddress.isIPv4(); }
+    // Get the definition whether the target socket uses IPv6 address family.
+    bool isIPv6() const { return mLocalAddress.isIPv6(); }
 
     // Specify the size for the incoming data buffer in bytes.
     void setReceiveBufferSize(int size) { setOpt(SOL_SOCKET, SO_RCVBUF, size); }
