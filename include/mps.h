@@ -258,9 +258,13 @@ namespace mps
   protected:
     #ifdef _WIN32
     static const auto InvalidSocket = INVALID_SOCKET;
+    typedef char Data;
+    typedef int DataSize;
     #else
     static const auto InvalidSocket = -1;
     typedef int SOCKET;
+    typedef void Data;
+    typedef size_t DataSize;
     #endif
 
     Socket(AddressFamily af, int type) : mBlocking(true) {
@@ -405,13 +409,8 @@ namespace mps
 
     // Send the given bytes to connection destination with optional flags.
     void send(const std::vector<uint8_t>& bytes, const std::set<TCPSendFlag>& flags = {}) {
-      #if _WIN32
-      auto data = reinterpret_cast<const char*>(&bytes[0]);
-      auto size = static_cast<int>(bytes.size());
-      #else
-      auto data = reinterpret_cast<const void*>(&bytes[0]);
-      auto size = bytes.size();
-      #endif
+      auto data = reinterpret_cast<const Data*>(&bytes[0]);
+      auto size = static_cast<DataSize>(bytes.size());
       auto flag = buildFlagInt(flags);
       if (::send(mHandle, data, size, flag) == -1) {
         throw SocketException("send");
@@ -423,13 +422,8 @@ namespace mps
     // Receive incoming bytes from the connection with the desired max data amount and flags.
     std::vector<uint8_t> receive(int maxDataSize, const std::set<TCPReceiveFlag>& flags = {}) {
       std::vector<uint8_t> bytes(maxDataSize);
-      #if _WIN32
-      auto data = reinterpret_cast<char*>(&bytes[0]);
-      auto size = static_cast<int>(bytes.size());
-      #else
-      auto data = reinterpret_cast<void*>(&bytes[0]);
-      auto size = bytes.size();
-      #endif
+      auto data = reinterpret_cast<Data*>(&bytes[0]);
+      auto size = static_cast<DataSize>(bytes.size());
       auto flag = buildFlagInt(flags);
       if (recv(mHandle, data, size, flag) == -1) {
         throw SocketException("recv");
@@ -505,13 +499,8 @@ namespace mps
     // Send the data from the given packet into the target packet address with optional flags.
     void send(const UDPPacket& packet, const std::set<UDPSendFlag>& flags = {}) {
       auto addrLen = packet.address.getSize();
-      #if _WIN32
-      auto dataPtr = reinterpret_cast<const char*>(&packet.data[0]);
-      auto dataLen = static_cast<int>(packet.data.size());
-      #else
-      auto dataPtr = reinterpret_cast<const void*>(&packet.data[0]);
-      auto dataLen = packet.data.size();
-      #endif
+      auto dataPtr = reinterpret_cast<const Data*>(&packet.data[0]);
+      auto dataLen = static_cast<DataSize>(packet.data.size());
       auto flag = buildFlagInt(flags);
       if (sendto(mHandle, dataPtr, dataLen, flag, packet.address, addrLen) == -1) {
         throw SocketException("sendto");
@@ -524,13 +513,8 @@ namespace mps
     UDPPacket receive(int maxDataSize, const std::set<UDPReceiveFlag>& flags = {}) {
       UDPPacket packet{ Address(), std::vector<uint8_t>(maxDataSize) };
       auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
-      #ifdef _WIN32
-      auto dataPtr = reinterpret_cast<char*>(&packet.data[0]);
-      auto dataLen = static_cast<int>(packet.data.size());
-      #else
-      auto dataPtr = reinterpret_cast<void*>(&packet.data[0]);
-      auto dataLen = packet.data.size();
-      #endif
+      auto dataPtr = reinterpret_cast<Data*>(&packet.data[0]);
+      auto dataLen = static_cast<DataSize>(packet.data.size());
       auto flag = buildFlagInt(flags);
       auto result = recvfrom(mHandle, dataPtr, dataLen, flag, packet.address, &addrLen);
       if (result == -1) {
