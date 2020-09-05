@@ -10,7 +10,7 @@ constexpr auto SocketPort = 56789;
 int main() {
   try {
     // build and bind a new TCP socket and print out the socket info.
-    TCPServerSocket socket(SocketPort, SocketAddressFamily);
+    TCPServerSocket socket(SocketAddressFamily, SocketPort);
     std::cout << "Bound a new TCP socket with following details:" << std::endl;
     std::cout << "    local-ip: " << socket.getLocalIP() << std::endl;
     std::cout << "  local-port: " << socket.getLocalPort() << std::endl;

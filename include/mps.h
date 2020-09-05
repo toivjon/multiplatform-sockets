@@ -431,10 +431,10 @@ namespace mps
   class TCPServerSocket : public TCPSocket
   {
   public:
-    // Build a new IPv4 socket with the target port in auto-selected interface.
-    TCPServerSocket(uint16_t port) : TCPServerSocket(port, AddressFamily::IPv4) {}
-    // Build a new socket with the target address family and port in the auto-selected interface.
-    TCPServerSocket(uint16_t port, AddressFamily af) : TCPServerSocket(Address(af, port)) {}
+    // Build a new TCP server socket with the specified address family.
+    TCPServerSocket(AddressFamily af) : TCPServerSocket(af, 0) {}
+    // Build a new TCP server socket with the specified address family and port.
+    TCPServerSocket(AddressFamily af, uint16_t port) : TCPServerSocket(Address(af, port)) {}
     // Build a new TCP server socket and bind it to target address.
     TCPServerSocket(const Address& address) : TCPSocket(address.getFamily()) {
       bind(address);
