@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Sending a simple UDP message to remote target:" << std::endl;
     std::cout << "  remote-ip: " << addr.getIP() << std::endl;
     std::cout << "remote-port: " << addr.getPort() << std::endl;
-    std::cout << "       data: " << "hello" << std::endl; // TODO constant
+    std::cout << "       data: " << "hello" << std::endl;
     socket.send(UDPPacket{ addr, { 'h','e','l','l','o', '\0' } });
 
     // wait for the incoming data by blocking and the print datagram info.
