@@ -32,7 +32,7 @@ int main() {
     std::cout << "Echoing the data back to client and closing..." << std::endl;
     socket.send(packet);
   } catch (const SocketException& e) {
-    std::cerr << e.what() << std::endl;
+    std::cerr << "Error: " << e.what() << std::endl;
   }
   return 0;
 }

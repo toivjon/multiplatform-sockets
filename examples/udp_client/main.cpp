@@ -36,12 +36,14 @@ int main(int argc, char* argv[]) {
     socket.send(UDPPacket{ addr, { 'h','e','l','l','o', '\0' } });
 
     // wait for the incoming data by blocking and the print datagram info.
+    std::cout << "Waiting for the remote target to echo back..." << std::endl;
     auto packet = socket.receive();
-    std::cout << "response: " << reinterpret_cast<const char*>(&packet.data[0]) << std::endl;
+    std::cout << "Received a UDP datagram with following details:" << std::endl;
+    std::cout << "  remote-ip: " << packet.address.getIP() << std::endl;
+    std::cout << "remote-port: " << packet.address.getPort() << std::endl;
+    std::cout << "       data: " << reinterpret_cast<const char*>(&packet.data[0]) << std::endl;
   } catch (const SocketException& e) {
     std::cerr << "Error: " << e.what() << std::endl;
-  } catch (const std::exception& e) {
-    // std::cerr << "Error: " << e.what() << std::endl;
   }
   return 0;
 }
