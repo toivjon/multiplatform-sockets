@@ -34,11 +34,15 @@ int main() {
     std::cout << " recvBufSize: " << client.getReceiveBufferSize() << std::endl;
     std::cout << " sendBufSize: " << client.getSendBufferSize() << std::endl;
 
+    // wait for incoming data by blocking and then print the message payload.
+    std::cout << "Waiting for incoming TCP message..." << std::endl;
     auto data = client.receive();
-    std::cout << "echoing data: " << &data[0] << std::endl;
+    std::cout << "Received a TCP message with following content:" << std::endl;
+    std::cout << "data: " << &data[0] << std::endl;
+
+    // echo the received data back to caller to inform that we did receive it.
+    std::cout << "Echoing the data back to client and closing..." << std::endl;
     client.send(data);
-  } catch (const AddressException& e) {
-    std::cerr << "Error: " << e.what() << std::endl;
   } catch (const SocketException& e) {
     std::cerr << "Error: " << e.what() << std::endl;
   }
