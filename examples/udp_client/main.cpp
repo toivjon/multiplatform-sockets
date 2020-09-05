@@ -30,11 +30,20 @@ int main(int argc, char* argv[]) {
     std::cout << " recvBufSize: " << socket.getReceiveBufferSize() << std::endl;
     std::cout << " sendBufSize: " << socket.getSendBufferSize() << std::endl;
 
+    // send a simple datagram to the specified remote host IP address and port.
+    std::cout << "Sending a simple UDP message to remote target:" << std::endl;
+    std::cout << "  remote-ip: " << addr.getIP() << std::endl;
+    std::cout << "remote-port: " << addr.getPort() << std::endl;
+    std::cout << "       data: " << "hello" << std::endl; // TODO constant
     socket.send(UDPPacket{ addr, { 'h','e','l','l','o', '\0' } });
+
+    // wait for the incoming data by blocking and the print datagram info.
     auto packet = socket.receive(BufferSize);
     std::cout << "response: " << reinterpret_cast<const char*>(&packet.data[0]) << std::endl;
   } catch (const SocketException& e) {
-    std::cerr << e.what() << std::endl;
+    std::cerr << "Error: " << e.what() << std::endl;
+  } catch (const std::exception& e) {
+    // std::cerr << "Error: " << e.what() << std::endl;
   }
   return 0;
 }
