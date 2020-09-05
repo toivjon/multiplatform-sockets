@@ -24,11 +24,9 @@ int main(int argc, char* argv[]) {
     std::cout << " Local Address: " << socket.getLocalAddress() << std::endl;
     std::cout << "Remote Address: " << socket.getRemoteAddress() << std::endl;
 
-    socket.send({ 'h','e','l','l','o' });
+    socket.send({ 'h','e','l','l','o', '\0' });
     auto data = socket.receive(BufferSize);
-    std::vector<uint8_t> buffer(data);
-    buffer.push_back('\0');
-    std::cout << "response: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
+    std::cout << "response: " << &data[0] << std::endl;
   } catch (const SocketException& e) {
     std::cerr << e.what() << std::endl;
   }

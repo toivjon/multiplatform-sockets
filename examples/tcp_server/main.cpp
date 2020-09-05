@@ -35,9 +35,7 @@ int main() {
     std::cout << " sendBufSize: " << client.getSendBufferSize() << std::endl;
 
     auto data = client.receive();
-    std::vector<uint8_t> buffer(data);
-    buffer.push_back('\0');
-    std::cout << "echoing data: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
+    std::cout << "echoing data: " << &data[0] << std::endl;
     client.send(data);
   } catch (const AddressException& e) {
     std::cerr << "Error: " << e.what() << std::endl;
