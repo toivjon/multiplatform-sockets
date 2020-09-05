@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <exception>
-#include <iostream>
 #include <set>
 #include <string>
 #include <vector>
@@ -133,11 +132,6 @@ namespace mps
         const auto& sockaddr = reinterpret_cast<const sockaddr_in6*>(&mSockAddr);
         return ntohs(sockaddr->sin6_port);
       }
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const Address& addr) {
-      os << "ip=" << addr.getIP() << " port=" << addr.getPort();
-      return os;
     }
   private:
     // An undefined port indicates that the address has not an assigned port.
