@@ -492,7 +492,7 @@ namespace mps
     UDPSocket(const Address& addr) : Socket(addr.getFamily(), SOCK_DGRAM) { bind(addr); }
 
     // Specify whether the socket can be used to broadcast packets in LAN.
-    void setBroadcasting(bool value) { setOpt(SOL_SOCKET, SO_BROADCAST, value ? 1 : 0); }
+    void setBroadcasting(bool value) { setOpt(SOL_SOCKET, SO_BROADCAST, value); }
     // Get the definition whether the socket can be used to broadcast packets in LAN.
     bool isBroadcasting() const { return getOpt(SOL_SOCKET, SO_BROADCAST) == 1; }
 
