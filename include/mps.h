@@ -56,7 +56,7 @@ namespace mps
     // Build a new address with given address family and undefined port and IP.
     Address(AddressFamily af) : Address(af, UndefinedPort) {}
 
-    // Build a new undefined address with the given port and address family.
+    // Build a new undefined address with a specified port and address family.
     Address(AddressFamily af, uint16_t port) : mSockAddr({}) {
       if (af == AddressFamily::IPv6) {
         auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
