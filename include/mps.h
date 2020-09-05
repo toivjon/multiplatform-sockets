@@ -489,7 +489,7 @@ namespace mps
   {
   public:
     // Build and auto-bind a UDP socket with the specified address family.
-    UDPSocket(AddressFamily af) : UDPSocket(af, 0) {}
+    UDPSocket(AddressFamily af) : UDPSocket(af, UndefinedPort) {}
 
     // Build and bind a UDP socket with the specified adress family and port.
     UDPSocket(AddressFamily af, uint16_t port) : UDPSocket(Address(af, port)) {}
@@ -539,6 +539,9 @@ namespace mps
       packet.data.resize(result);
       return packet;
     }
+  private:
+    // An undefined port indicates that the port can be auto-selected by OS.
+    static auto const UndefinedPort = 0;
   };
 
 }
