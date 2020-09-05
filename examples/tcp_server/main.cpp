@@ -11,7 +11,7 @@ int main() {
   try {
     // build and bind a new TCP socket and print out the socket info.
     TCPServerSocket socket(SocketPort, SocketAddressFamily);
-    std::cout << "Bound a new UDP socket with following details:" << std::endl;
+    std::cout << "Bound a new TCP socket with following details:" << std::endl;
     std::cout << "    local-ip: " << socket.getLocalIP() << std::endl;
     std::cout << "  local-port: " << socket.getLocalPort() << std::endl;
     std::cout << "    blocking: " << socket.isBlocking() << std::endl;
@@ -30,7 +30,7 @@ int main() {
     std::cout << " remote-port: " << client.getRemotePort() << std::endl;
     std::cout << "    blocking: " << client.isBlocking() << std::endl;
     std::cout << "     routing: " << client.isRouting() << std::endl;
-    std::cout << "    bufferin: " << client.isBuffering() << std::endl;
+    std::cout << "   buffering: " << client.isBuffering() << std::endl;
     std::cout << " recvBufSize: " << client.getReceiveBufferSize() << std::endl;
     std::cout << " sendBufSize: " << client.getSendBufferSize() << std::endl;
 
