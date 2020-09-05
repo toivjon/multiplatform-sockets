@@ -488,8 +488,6 @@ namespace mps
   class UDPSocket : public Socket
   {
   public:
-    // Build a new IPv4 socket with auto-selected port.
-    UDPSocket() : UDPSocket(Address()) {};
     // Build a new IPv4 socket with the target port.
     UDPSocket(uint16_t port) : UDPSocket(port, AddressFamily::IPv4) {};
     // Build a new socket with the target address family and auto-selected port.
