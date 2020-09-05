@@ -488,12 +488,10 @@ namespace mps
   class UDPSocket : public Socket
   {
   public:
-    // Build a new IPv4 socket with the target port.
-    UDPSocket(uint16_t port) : UDPSocket(port, AddressFamily::IPv4) {};
     // Build a new socket with the target address family and auto-selected port.
-    UDPSocket(AddressFamily af) : UDPSocket(0, af) {}
+    UDPSocket(AddressFamily af) : UDPSocket(af, 0) {}
     // Build a new socket with the target port and address family.
-    UDPSocket(uint16_t port, AddressFamily af) : UDPSocket(Address(af, port)) {}
+    UDPSocket(AddressFamily af, uint16_t port) : UDPSocket(Address(af, port)) {}
     // Build a new UDP socket and bind it to target address.
     UDPSocket(const Address& addr) : Socket(addr.getFamily(), SOCK_DGRAM) { bind(addr); }
 

@@ -10,7 +10,7 @@ constexpr auto SocketPort = 56789;
 int main() {
   try {
     // build and bind a new UDP socket and print out the socket info.
-    UDPSocket socket(SocketPort, SocketAddressFamily);
+    UDPSocket socket(SocketAddressFamily, SocketPort);
     std::cout << "Bound a new UDP socket with following details:" << std::endl;
     std::cout << "    local-ip: " << socket.getLocalIP() << std::endl;
     std::cout << "  local-port: " << socket.getLocalPort() << std::endl;
