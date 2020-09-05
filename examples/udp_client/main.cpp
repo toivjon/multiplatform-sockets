@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Received a UDP datagram with following details:" << std::endl;
     std::cout << "  remote-ip: " << packet.address.getIP() << std::endl;
     std::cout << "remote-port: " << packet.address.getPort() << std::endl;
-    std::cout << "       data: " << reinterpret_cast<const char*>(&packet.data[0]) << std::endl;
+    std::cout << "       data: " << &packet.data[0] << std::endl;
   } catch (const AddressException& e) {
     std::cerr << "Error: " << e.what() << std::endl;
   } catch (const SocketException& e) {
