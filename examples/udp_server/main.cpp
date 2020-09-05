@@ -22,9 +22,7 @@ int main() {
     std::cout << " sendBufSize: " << socket.getSendBufferSize() << std::endl;
 
     auto packet = socket.receive(BufferSize);
-    std::vector<uint8_t> buffer(packet.data);
-    buffer.push_back('\0');
-    std::cout << "response: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
+    std::cout << "response: " << reinterpret_cast<const char*>(&packet.data[0]) << std::endl;
     socket.send(packet);
   } catch (const SocketException& e) {
     std::cerr << e.what() << std::endl;

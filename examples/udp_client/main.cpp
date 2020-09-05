@@ -30,11 +30,9 @@ int main(int argc, char* argv[]) {
     std::cout << " recvBufSize: " << socket.getReceiveBufferSize() << std::endl;
     std::cout << " sendBufSize: " << socket.getSendBufferSize() << std::endl;
 
-    socket.send(UDPPacket{ addr, { 'h','e','l','l','o' } });
+    socket.send(UDPPacket{ addr, { 'h','e','l','l','o', '\0' } });
     auto packet = socket.receive(BufferSize);
-    std::vector<uint8_t> buffer(packet.data);
-    buffer.push_back('\0');
-    std::cout << "response: " << reinterpret_cast<const char*>(&buffer[0]) << std::endl;
+    std::cout << "response: " << reinterpret_cast<const char*>(&packet.data[0]) << std::endl;
   } catch (const SocketException& e) {
     std::cerr << e.what() << std::endl;
   }
