@@ -431,8 +431,6 @@ namespace mps
   class TCPServerSocket : public TCPSocket
   {
   public:
-    // Build a new IPv4 socket with auto-selected port and auto-selected interface.
-    TCPServerSocket() : TCPServerSocket(Address()) {};
     // Build a new IPv4 socket with the target port in auto-selected interface.
     TCPServerSocket(uint16_t port) : TCPServerSocket(port, AddressFamily::IPv4) {}
     // Build a new socket with the target address family and port in the auto-selected interface.
