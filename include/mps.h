@@ -163,7 +163,8 @@ namespace mps
       flags |= FORMAT_MESSAGE_IGNORE_INSERTS;  // let's ignore insert sequences
       LPSTR text(nullptr);
       auto error = WSAGetLastError();
-      if (FormatMessage(flags, nullptr, error, 0, text, 0, nullptr) != 0) {
+      FormatMessage(flags, nullptr, error, 0, (LPSTR)&text, 0, nullptr);
+      if (text != nullptr) {
         mMessage += mOperation;
         mMessage += ": ";
         mMessage += std::string(text);
