@@ -214,9 +214,9 @@ namespace mps
     // Get the definition whether the target socket uses IPv6 address family.
     bool isIPv6() const { return mLocalAddress.isIPv6(); }
 
-    // Specify the size for the incoming data buffer in bytes.
+    // Specify the size of the incoming data buffer in bytes.
     void setReceiveBufferSize(int size) { setOpt(SOL_SOCKET, SO_RCVBUF, size); }
-    // Specify the size for the outgoing data buffer in bytes.
+    // Specify the size of the outgoing data buffer in bytes.
     void setSendBufferSize(int size) { setOpt(SOL_SOCKET, SO_SNDBUF, size); }
 
     // Get the size of the incoming data buffer in bytes.
@@ -224,7 +224,7 @@ namespace mps
     // Get the size of the outgoing data buffer in bytes.
     int getSendBufferSize() const { return getOpt(SOL_SOCKET, SO_SNDBUF); }
 
-    // Specify whether the socket should route traffic or just directly use the interface.
+    // Specify whether the socket routes or directly uses the interface.
     void setRouting(bool value) { setOpt(SOL_SOCKET, SO_DONTROUTE, value); }
     // Get the definition whether the socket routes traffic or directly uses the interface.
     bool isRouting() const { return getOpt(SOL_SOCKET, SO_DONTROUTE) == 0; }
