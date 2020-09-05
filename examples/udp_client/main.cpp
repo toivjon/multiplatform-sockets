@@ -19,9 +19,16 @@ int main(int argc, char* argv[]) {
   auto addr = Address(host, port);
 
   try {
-    // build a new UDP socket and print out the bound address.
+    // build and bind a new UDP socket and print out the socket info.
     UDPSocket socket(addr.getFamily());
-    std::cout << "Client: " << socket.getLocalAddress() << std::endl;
+    std::cout << "Bound a new UDP socket with following details:" << std::endl;
+    std::cout << "    local-ip: " << socket.getLocalIP() << std::endl;
+    std::cout << "  local-port: " << socket.getLocalPort() << std::endl;
+    std::cout << "    blocking: " << socket.isBlocking() << std::endl;
+    std::cout << "     routing: " << socket.isRouting() << std::endl;
+    std::cout << "broadcasting: " << socket.isBroadcasting() << std::endl;
+    std::cout << " recvBufSize: " << socket.getReceiveBufferSize() << std::endl;
+    std::cout << " sendBufSize: " << socket.getSendBufferSize() << std::endl;
 
     socket.send(UDPPacket{ addr, { 'h','e','l','l','o' } });
     auto packet = socket.receive(BufferSize);
