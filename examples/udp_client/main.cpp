@@ -4,8 +4,6 @@
 
 using namespace mps;
 
-constexpr auto BufferSize = 1024;
-
 int main(int argc, char* argv[]) {
   // sanity check to check that we have enough arguments.
   if (argc != 3) {
@@ -38,7 +36,7 @@ int main(int argc, char* argv[]) {
     socket.send(UDPPacket{ addr, { 'h','e','l','l','o', '\0' } });
 
     // wait for the incoming data by blocking and the print datagram info.
-    auto packet = socket.receive(BufferSize);
+    auto packet = socket.receive();
     std::cout << "response: " << reinterpret_cast<const char*>(&packet.data[0]) << std::endl;
   } catch (const SocketException& e) {
     std::cerr << "Error: " << e.what() << std::endl;
