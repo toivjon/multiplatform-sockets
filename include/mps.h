@@ -488,11 +488,13 @@ namespace mps
   class UDPSocket : public Socket
   {
   public:
-    // Build a new socket with the target address family and auto-selected port.
+    // Build and auto-bind a UDP socket with the specified address family.
     UDPSocket(AddressFamily af) : UDPSocket(af, 0) {}
-    // Build a new socket with the target port and address family.
+
+    // Build and bind a UDP socket with the specified adress family and port.
     UDPSocket(AddressFamily af, uint16_t port) : UDPSocket(Address(af, port)) {}
-    // Build a new UDP socket and bind it to target address.
+
+    // Build and bind a UDP socket with an address (inc. interface and port).
     UDPSocket(const Address& addr) : Socket(addr.getFamily(), SOCK_DGRAM) { bind(addr); }
 
     // Specify whether the socket can be used to broadcast packets in LAN.
