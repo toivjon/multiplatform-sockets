@@ -19,9 +19,10 @@ int main(int argc, char* argv[]) {
   auto addr = Address(host, port);
 
   try {
+    // build and connect the client into destination and print bound addresses.
     TCPClientSocket socket(addr);
-    std::cout << "Local  IP=" << socket.getLocalIP() << " port=" << socket.getLocalPort() << std::endl;
-    std::cout << "Remote IP=" << socket.getRemoteIP() << " port=" << socket.getRemotePort() << std::endl;
+    std::cout << " Local Address: " << socket.getLocalAddress() << std::endl;
+    std::cout << "Remote Address: " << socket.getRemoteAddress() << std::endl;
 
     socket.send({ 'h','e','l','l','o' });
     auto data = socket.receive(BufferSize);

@@ -5,13 +5,15 @@
 using namespace mps;
 
 constexpr auto BufferSize = 1024;
+constexpr auto SocketAddressFamily = AddressFamily::IPv6;
 constexpr auto SocketPort = 56789;
 
 int main() {
   try {
-    UDPSocket socket(SocketPort, AddressFamily::IPv6);
-    std::cout << "Server IP=" << socket.getLocalIP() << " port=" << socket.getLocalPort() << std::endl;
-    
+    // build a new UDP socket and print out the bound address.
+    UDPSocket socket(SocketPort, SocketAddressFamily);
+    std::cout << "Server: " << socket.getLocalAddress() << std::endl;
+
     auto packet = socket.receive(BufferSize);
     std::vector<uint8_t> buffer(packet.data);
     buffer.push_back('\0');

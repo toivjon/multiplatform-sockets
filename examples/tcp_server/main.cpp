@@ -9,8 +9,9 @@ constexpr auto SocketPort = 56789;
 
 int main() {
   try {
+    // build a new TCP socket and print out the bound address.
     TCPServerSocket socket(SocketPort);
-    std::cout << "Server IP=" << socket.getLocalIP() << " port=" << socket.getLocalPort() << std::endl;
+    std::cout << "Server: " << socket.getLocalAddress() << std::endl;
 
     auto client = socket.accept();
     std::cout << "Client local  IP=" << client.getLocalIP() << " port=" << client.getLocalPort() << std::endl;

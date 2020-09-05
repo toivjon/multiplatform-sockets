@@ -19,8 +19,10 @@ int main(int argc, char* argv[]) {
   auto addr = Address(host, port);
 
   try {
+    // build a new UDP socket and print out the bound address.
     UDPSocket socket(addr.getFamily());
-    std::cout << "Local IP=" << socket.getLocalIP() << " port=" << socket.getLocalPort() << std::endl;
+    std::cout << "Client: " << socket.getLocalAddress() << std::endl;
+
     socket.send(UDPPacket{ addr, { 'h','e','l','l','o' } });
     auto packet = socket.receive(BufferSize);
     std::vector<uint8_t> buffer(packet.data);
