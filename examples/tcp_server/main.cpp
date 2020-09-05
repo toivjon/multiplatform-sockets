@@ -16,7 +16,7 @@ int main() {
     std::cout << "  local-port: " << socket.getLocalPort() << std::endl;
     std::cout << "    blocking: " << socket.isBlocking() << std::endl;
     std::cout << "     routing: " << socket.isRouting() << std::endl;
-    std::cout << "    bufferin: " << socket.isBuffering() << std::endl;
+    std::cout << "   buffering: " << socket.isBuffering() << std::endl;
     std::cout << " recvBufSize: " << socket.getReceiveBufferSize() << std::endl;
     std::cout << " sendBufSize: " << socket.getSendBufferSize() << std::endl;
 
