@@ -11,12 +11,12 @@ int main(int argc, char* argv[]) {
     return -1;
   }
 
-  // parse host and port from the commandline arguments.
-  auto host = std::string(argv[1]);
-  auto port = std::stoi(argv[2]);
-  auto addr = Address(host, port);
-
   try {
+    // parse host and port from the commandline arguments.
+    auto host = std::string(argv[1]);
+    auto port = std::stoi(argv[2]);
+    auto addr = Address(host, port);
+
     // build and bind a new UDP socket and print out the socket info.
     UDPSocket socket(addr.getFamily());
     std::cout << "Bound a new UDP socket with following details:" << std::endl;
@@ -42,6 +42,8 @@ int main(int argc, char* argv[]) {
     std::cout << "  remote-ip: " << packet.address.getIP() << std::endl;
     std::cout << "remote-port: " << packet.address.getPort() << std::endl;
     std::cout << "       data: " << reinterpret_cast<const char*>(&packet.data[0]) << std::endl;
+  } catch (const AddressException& e) {
+    std::cerr << "Error: " << e.what() << std::endl;
   } catch (const SocketException& e) {
     std::cerr << "Error: " << e.what() << std::endl;
   }
