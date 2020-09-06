@@ -4,7 +4,7 @@
 
 using namespace mps;
 
-constexpr auto SocketAddressFamily = AddressFamily::IPv6;
+constexpr auto SocketAddressFamily = AddressFamily::IPv4;
 constexpr auto SocketPort = 56789;
 
 int main() {
