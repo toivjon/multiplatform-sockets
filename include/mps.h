@@ -157,7 +157,7 @@ namespace mps
       flags |= FORMAT_MESSAGE_IGNORE_INSERTS;  // let's ignore insert sequences
       LPSTR text(nullptr);
       auto error = WSAGetLastError();
-      FormatMessage(flags, nullptr, error, 0, (LPSTR)&text, 0, nullptr);
+      FormatMessageA(flags, nullptr, error, 0, (LPSTR)&text, 0, nullptr);
       if (text != nullptr) {
         mMessage += mOperation;
         mMessage += ": ";
