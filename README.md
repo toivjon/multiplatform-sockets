@@ -1,5 +1,5 @@
 # multiplatform-sockets
-A simple multiplatform C++ wrapper for sockets.
+A simple multiplatform C++ wrapper for using UDP and TCP sockets.
 
 ## Features
 
