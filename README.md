@@ -19,3 +19,7 @@ There are some interesting additional things that should be noted here.
   UWP applications as they would be in runnin in the same machine. In other words, this
   means that non-UWP clients cannot use loopback to connect UWP servers. However, the
   vice versa seems to work i.e. UWP clients can connect to non-UWP servers with loopback.
+
+- UWP applications require permissions "Internet (Client & Server)", "Internet (Client)"
+  and/or "Private Networks (Client & Server)" based on how the applications wants to
+  handle network operations. See Microsoft's documentation about these permissions.
