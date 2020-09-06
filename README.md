@@ -12,7 +12,7 @@ This library implementation contains the following features:
 TODO
 
 ## Notes
-There are some interesting additional notes that should be noted here.
+There are some interesting additional things that should be noted here.
 
 - UWP applications acting as server cannot be targeted with loopback addresses. This is
   because of the network isolation, which prevents local non-UWP applications to target
