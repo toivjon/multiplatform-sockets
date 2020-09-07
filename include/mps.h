@@ -261,6 +261,18 @@ namespace mps
     typedef size_t DataSize;
     #endif
 
+    /// \brief Build a new socket with the given address family and socket type.
+    ///
+    /// This function is intended for internal use only and therefore it's being
+    /// abstracted as a protected function. Function will also handle the static
+    /// init of the winsockets when running on a Windows/Xbox platform.
+    ///
+    /// \throw SocketException when socket creation fails or if the Winsock init
+    /// fails when running in a Windows environment.
+    ///
+    /// \param af The address family (IPv4 or IPv6) of the socket.
+    /// \param type The type (Stream or Datagram) of the socket.
+    /// 
     Socket(AddressFamily af, int type) : mBlocking(true) {
       #if _WIN32
       static WinsockService winsock(2, 2);
