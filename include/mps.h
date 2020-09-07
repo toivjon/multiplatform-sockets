@@ -300,6 +300,13 @@ namespace mps
       refreshLocalAddress();
     }
 
+    void refreshLocalAddress() {
+      auto addrSize = static_cast<socklen_t>(sizeof(sockaddr_storage));
+      if (getsockname(mHandle, mLocalAddress, &addrSize) == -1) {
+        throw SocketException("getsockname");
+      }
+    }
+
     void setOpt(int level, int optKey, bool value) {
       setOpt(level, optKey, value ? 1 : 0);
     }
@@ -327,13 +334,6 @@ namespace mps
         throw SocketException("bind");
       }
       refreshLocalAddress();
-    }
-
-    void refreshLocalAddress() {
-      auto addrSize = static_cast<socklen_t>(sizeof(sockaddr_storage));
-      if (getsockname(mHandle, mLocalAddress, &addrSize) == -1) {
-        throw SocketException("getsockname");
-      }
     }
 
     template<typename T>
