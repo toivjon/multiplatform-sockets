@@ -1,5 +1,5 @@
 # exclude auto-generated Visual Studio folder
-/.vs
+**/.vs
 
 # exclude auto-generated Visual Studio Code folder
 /.vscode
@@ -9,3 +9,16 @@
 
 # exclude defaut Visual Studio Code CMake compilation folder
 /build
+
+# exclude Visual Studio auto-generated files
+**/Generated\ Files/
+
+# exclude default Visual Studio build result folders (e.g. UWP examples)
+**/[Dd]ebug
+**/[Rr]elease
+
+# exclude Visual Studio packages folder
+**/[Pp]ackages
+
+#exclude Visual Studio user-specific files
+*.user
