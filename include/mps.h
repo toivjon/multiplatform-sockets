@@ -283,8 +283,19 @@ namespace mps
       }
     }
 
-    // TODO check whether we should also pass blocking info here?
-    Socket(SOCKET handle) : mHandle(handle), mBlocking(true) {
+    /// \brief Build a socket with a socket handle and initial blocking state.
+    ///
+    /// This function is intended for internal use only and threfore it's being
+    /// abstracted as a protected function. Function is used to build a Socket
+    /// wrapper around an already existing socket handle with known a blocking
+    /// state. E.g. TCP server socket uses this to wrap new client connections.
+    ///
+    /// \throw SocketException whether the local address refresh fails.
+    /// 
+    /// \param sock The handle of the socket.
+    /// \param blocking The definition whether the socket is in blocking state.
+    /// 
+    Socket(SOCKET sock, bool blocking) : mHandle(sock), mBlocking(blocking) {
       refreshLocalAddress();
     }
 
@@ -385,7 +396,7 @@ namespace mps
     // Build a new TCP socket base instance with the specified address family.
     TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {}
     // Build a new TCP socket with the given socket handle and address family.
-    TCPSocket(SOCKET handle) : Socket(handle) {}
+    TCPSocket(SOCKET sock, bool blocking) : Socket(sock, blocking) {}
   };
 
   class TCPClientSocket : public TCPSocket
@@ -399,7 +410,7 @@ namespace mps
       refreshLocalAddress();
     }
     // Build a new TCP client with the given socket handle and remote address.
-    TCPClientSocket(SOCKET handle, const Address& addr) : TCPSocket(handle), mRemoteAddress(addr) {}
+    TCPClientSocket(SOCKET handle, bool blocking, const Address& addr) : TCPSocket(handle, blocking), mRemoteAddress(addr) {}
 
     // Get the remote address of the established TCP connection.
     const Address& getRemoteAddress() const { return mRemoteAddress; }
@@ -463,7 +474,7 @@ namespace mps
       if (client == InvalidSocket) {
         throw SocketException("accept");
       }
-      return TCPClientSocket(client, address);
+      return TCPClientSocket(client, isBlocking(), address);
     }
   };
 
