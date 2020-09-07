@@ -252,11 +252,12 @@ namespace mps
   protected:
     #ifdef _WIN32
     static const auto InvalidSocket = INVALID_SOCKET;
+    typedef SOCKET Handle;
     typedef char Data;
     typedef int DataSize;
     #else
     static const auto InvalidSocket = -1;
-    typedef int SOCKET;
+    typedef int Handle;
     typedef void Data;
     typedef size_t DataSize;
     #endif
@@ -295,7 +296,7 @@ namespace mps
     /// \param sock The handle of the socket.
     /// \param blocking The definition whether the socket is in blocking state.
     /// 
-    Socket(SOCKET sock, bool blocking) : mHandle(sock), mBlocking(blocking) {
+    Socket(Handle sock, bool blocking) : mHandle(sock), mBlocking(blocking) {
       refreshLocalAddress();
     }
 
@@ -344,7 +345,7 @@ namespace mps
       return result;
     }
 
-    SOCKET        mHandle;
+    Handle        mHandle;
   private:
     #if _WIN32
     // A RAII wrapper for proper initialization and graceful shutdown for the Winsock service.
@@ -396,7 +397,7 @@ namespace mps
     // Build a new TCP socket base instance with the specified address family.
     TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {}
     // Build a new TCP socket with the given socket handle and address family.
-    TCPSocket(SOCKET sock, bool blocking) : Socket(sock, blocking) {}
+    TCPSocket(Handle sock, bool blocking) : Socket(sock, blocking) {}
   };
 
   class TCPClientSocket : public TCPSocket
@@ -410,7 +411,7 @@ namespace mps
       refreshLocalAddress();
     }
     // Build a new TCP client with the given socket handle and remote address.
-    TCPClientSocket(SOCKET handle, bool blocking, const Address& addr) : TCPSocket(handle, blocking), mRemoteAddress(addr) {}
+    TCPClientSocket(Handle handle, bool blocking, const Address& addr) : TCPSocket(handle, blocking), mRemoteAddress(addr) {}
 
     // Get the remote address of the established TCP connection.
     const Address& getRemoteAddress() const { return mRemoteAddress; }
