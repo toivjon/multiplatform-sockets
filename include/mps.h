@@ -286,7 +286,7 @@ namespace mps
 
     /// \brief Build a socket with a socket handle and initial blocking state.
     ///
-    /// This function is intended for internal use only and threfore it's being
+    /// This function is intended for internal use only and therefore its being
     /// abstracted as a protected function. Function is used to build a Socket
     /// wrapper around an already existing socket handle with known a blocking
     /// state. E.g. TCP server socket uses this to wrap new client connections.
