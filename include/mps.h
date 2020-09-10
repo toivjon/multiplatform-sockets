@@ -52,10 +52,12 @@ namespace mps
   {
   public:
     // Build a new IPv4 address with a undefined port and IP value definitions.
-    Address() : Address(AddressFamily::IPv4, UndefinedPort) {}
+    Address() : Address(AddressFamily::IPv4, UndefinedPort) {
+    }
 
     // Build a new address with given address family and undefined port and IP.
-    Address(AddressFamily af) : Address(af, UndefinedPort) {}
+    Address(AddressFamily af) : Address(af, UndefinedPort) {
+    }
 
     // Build a new undefined address with a specified port and address family.
     Address(AddressFamily af, uint16_t port) : mSockAddr({}) {
@@ -92,7 +94,8 @@ namespace mps
     }
 
     // Build a new address from the given socket address descriptor.
-    Address(const sockaddr_storage& addr) : mSockAddr(addr) {}
+    Address(const sockaddr_storage& addr) : mSockAddr(addr) {
+    }
 
     // Get the definition which tells whether the address presents IPv4 or IPv6 address.
     AddressFamily getFamily() const { return isIPv4() ? AddressFamily::IPv4 : AddressFamily::IPv6; }
@@ -404,9 +407,11 @@ namespace mps
     bool isBuffering() const { return getOpt(IPPROTO_TCP, TCP_NODELAY) == 0; }
   protected:
     // Build a new TCP socket base instance with the specified address family.
-    TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {}
+    TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {
+    }
     // Build a new TCP socket with the given socket handle and address family.
-    TCPSocket(Handle sock, bool blocking) : Socket(sock, blocking) {}
+    TCPSocket(Handle sock, bool blocking) : Socket(sock, blocking) {
+    }
   };
 
   class TCPClientSocket : public TCPSocket
@@ -420,7 +425,8 @@ namespace mps
       refreshLocalAddress();
     }
     // Build a new TCP client with the given socket handle and remote address.
-    TCPClientSocket(Handle handle, bool blocking, const Address& addr) : TCPSocket(handle, blocking), mRemoteAddress(addr) {}
+    TCPClientSocket(Handle handle, bool blocking, const Address& addr) : TCPSocket(handle, blocking), mRemoteAddress(addr) {
+    }
 
     // Get the remote address of the established TCP connection.
     const Address& getRemoteAddress() const { return mRemoteAddress; }
@@ -465,9 +471,11 @@ namespace mps
   {
   public:
     // Build a new TCP server socket with the specified address family.
-    TCPServerSocket(AddressFamily af) : TCPServerSocket(af, 0) {}
+    TCPServerSocket(AddressFamily af) : TCPServerSocket(af, 0) {
+    }
     // Build a new TCP server socket with the specified address family and port.
-    TCPServerSocket(AddressFamily af, uint16_t port) : TCPServerSocket(Address(af, port)) {}
+    TCPServerSocket(AddressFamily af, uint16_t port) : TCPServerSocket(Address(af, port)) {
+    }
     // Build a new TCP server socket and bind it to target address.
     TCPServerSocket(const Address& address) : TCPSocket(address.getFamily()) {
       bind(address);
@@ -517,7 +525,8 @@ namespace mps
     ///
     /// \param af The definition whether the socket uses IPv4 or IPv6.
     /// 
-    UDPSocket(AddressFamily af) : UDPSocket(af, UndefinedPort) {}
+    UDPSocket(AddressFamily af) : UDPSocket(af, UndefinedPort) {
+    }
 
     /// \brief Build and bind a UDP socket with given address family and port.
     ///
@@ -528,7 +537,8 @@ namespace mps
     ///
     /// \param af The definition whether the socket uses IPv4 or IPv6.
     /// \param port The port to be assigned for the socket.
-    UDPSocket(AddressFamily af, uint16_t port) : UDPSocket(Address(af, port)) {}
+    UDPSocket(AddressFamily af, uint16_t port) : UDPSocket(Address(af, port)) {
+    }
 
     /// \brief Build and bind a UDP socket with the given address definition.
     ///
