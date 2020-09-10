@@ -300,6 +300,15 @@ namespace mps
       refreshLocalAddress();
     }
 
+    /// \brief Retrieve and refresh the socket's local address information.
+    ///
+    /// This function will fetch the up-to-date information about the currently
+    /// bound port and interface information about the socket. This function is
+    /// being used after the socket has been bound or TCP server has accepted a
+    /// new incoming client connection.
+    ///
+    /// \throw SocketException whether the local address refresh fails.
+    /// 
     void refreshLocalAddress() {
       auto addrSize = static_cast<socklen_t>(sizeof(sockaddr_storage));
       if (getsockname(mHandle, mLocalAddress, &addrSize) == -1) {
