@@ -319,6 +319,24 @@ namespace mps
       }
     }
 
+    /// \brief Bind the socket to the specified interface and port number.
+    ///
+    /// This function will bind the socket to the interface, socket and the
+    /// address family type from the provided address encapsulation. After
+    /// the operation is successfully finished, function will also refresh
+    /// the local address information to contain the bound information.
+    ///
+    /// \throws SocketException whether the bind operation fails.
+    ///
+    /// \param address The address containing the target interface and port.
+    /// 
+    void bind(const Address& address) {
+      if (!::bind(mHandle, address, address.getSize())) {
+        throw SocketException("bind");
+      }
+      refreshLocalAddress();
+    }
+
     void setOpt(int level, int optKey, bool value) {
       setOpt(level, optKey, value ? 1 : 0);
     }
@@ -339,13 +357,6 @@ namespace mps
         throw SocketException("getsockopt(" + std::to_string(optKey) + ")");
       }
       return optVal;
-    }
-
-    void bind(const Address& address) {
-      if (!::bind(mHandle, address, address.getSize())) {
-        throw SocketException("bind");
-      }
-      refreshLocalAddress();
     }
 
     template<typename T>
