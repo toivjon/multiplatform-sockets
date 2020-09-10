@@ -234,13 +234,13 @@ namespace mps
     void setBlocking(bool blocking) {
       #if _WIN32
       auto flag = blocking ? 0lu : 1lu;
-      if (ioctlsocket(mHandle, FIONBIO, &flag) == -1) {
+      if (!ioctlsocket(mHandle, FIONBIO, &flag)) {
         throw SocketException("ioctlsocket(FIONBIO)");
       }
       #else
       auto flags = fcntl(mHandle, F_GETFL, 0);
       flags = blocking ? (flags & ~O_NONBLOCK) : (flags | O_NONBLOCK);
-      if (fcntl(mHandle, F_SETFL, flags) == -1) {
+      if (!fcntl(mHandle, F_SETFL, flags)) {
         throw SocketException("fcntl(F_SETFL)");
       }
       #endif
@@ -311,7 +311,7 @@ namespace mps
     /// 
     void refreshLocalAddress() {
       auto addrSize = static_cast<socklen_t>(sizeof(sockaddr_storage));
-      if (getsockname(mHandle, mLocalAddress, &addrSize) == -1) {
+      if (!getsockname(mHandle, mLocalAddress, &addrSize)) {
         throw SocketException("getsockname");
       }
     }
@@ -324,7 +324,7 @@ namespace mps
     void setOpt(int level, int optKey, const T& value) {
       auto optVal = (const char*)&value;
       auto optLen = static_cast<socklen_t>(sizeof(T));
-      if (setsockopt(mHandle, level, optKey, optVal, optLen) == -1) {
+      if (!setsockopt(mHandle, level, optKey, optVal, optLen)) {
         throw SocketException("setsockopt(" + std::to_string(optKey) + ")");
       }
     }
@@ -332,14 +332,14 @@ namespace mps
     int getOpt(int level, int optKey) const {
       auto optVal = 0;
       auto optLen = static_cast<socklen_t>(sizeof(int));
-      if (getsockopt(mHandle, level, optKey, (char*)&optVal, &optLen) == -1) {
+      if (!getsockopt(mHandle, level, optKey, (char*)&optVal, &optLen)) {
         throw SocketException("getsockopt(" + std::to_string(optKey) + ")");
       }
       return optVal;
     }
 
     void bind(const Address& address) {
-      if (::bind(mHandle, address, address.getSize()) == -1) {
+      if (!::bind(mHandle, address, address.getSize())) {
         throw SocketException("bind");
       }
       refreshLocalAddress();
@@ -414,7 +414,7 @@ namespace mps
   public:
     // Construct a new TCP client by connecting to given server address.
     TCPClientSocket(const Address& addr) : TCPSocket(addr.getFamily()), mRemoteAddress(addr) {
-      if (connect(mHandle, addr, addr.getSize()) == -1) {
+      if (!connect(mHandle, addr, addr.getSize())) {
         throw SocketException("connect");
       }
       refreshLocalAddress();
@@ -471,7 +471,7 @@ namespace mps
     // Build a new TCP server socket and bind it to target address.
     TCPServerSocket(const Address& address) : TCPSocket(address.getFamily()) {
       bind(address);
-      if (listen(mHandle, 4) == -1) {
+      if (!listen(mHandle, 4)) {
         throw SocketException("listen");
       }
     }
