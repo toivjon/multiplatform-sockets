@@ -507,14 +507,41 @@ namespace mps
   class UDPSocket : public Socket
   {
   public:
-    // Build and auto-bind a UDP socket with the specified address family.
+    /// \brief Build and auto-bind a UDP socket with the given address family.
+    ///
+    /// This function will build and bind a new UDP socket and assign it to all
+    /// available local interfaces and allow the system to find a suitable port
+    /// number for the socket.
+    ///
+    /// \throws SocketException if the bind operation fails.
+    ///
+    /// \param af The definition whether the socket uses IPv4 or IPv6.
+    /// 
     UDPSocket(AddressFamily af) : UDPSocket(af, UndefinedPort) {}
 
-    // Build and bind a UDP socket with the specified adress family and port.
+    /// \brief Build and bind a UDP socket with given address family and port.
+    ///
+    /// This function will build and bind a new UDP socket and assign it to all
+    /// available local interfaces and use the specified port number.
+    ///
+    /// \throws SocketException if the bind operation fails.
+    ///
+    /// \param af The definition whether the socket uses IPv4 or IPv6.
+    /// \param port The port to be assigned for the socket.
     UDPSocket(AddressFamily af, uint16_t port) : UDPSocket(Address(af, port)) {}
 
-    // Build and bind a UDP socket with an address (inc. interface and port).
-    UDPSocket(const Address& addr) : Socket(addr.getFamily(), SOCK_DGRAM) { bind(addr); }
+    /// \brief Build and bind a UDP socket with the given address definition.
+    ///
+    /// This function will build and bind a new UDP socket and assign it to the
+    /// interface, port and IP address family from the given address object.
+    ///
+    /// \throws SocketException if the bind operation fails.
+    ///
+    /// \param addr The address containing intergace, port and address family.
+    /// 
+    UDPSocket(const Address& addr) : Socket(addr.getFamily(), SOCK_DGRAM) {
+      bind(addr);
+    }
 
     // Specify whether the socket can be used to broadcast packets in LAN.
     void setBroadcasting(bool value) { setOpt(SOL_SOCKET, SO_BROADCAST, value); }
