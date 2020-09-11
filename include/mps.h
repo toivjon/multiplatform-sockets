@@ -105,9 +105,9 @@ namespace mps
     bool isIPv6() const { return mSockAddr.ss_family == AF_INET6; }
 
     // Get a reference to the wrapped socket address as a sockaddr.
-    operator sockaddr* () { return reinterpret_cast<sockaddr*>(&mSockAddr); }
+    sockaddr* getSockaddr() { return reinterpret_cast<sockaddr*>(&mSockAddr); }
     // Get a constant reference to the wrapped socket address as a sockaddr.
-    operator const sockaddr* () const { return reinterpret_cast<const sockaddr*>(&mSockAddr); }
+    const sockaddr* getSockaddr() const { return reinterpret_cast<const sockaddr*>(&mSockAddr); }
     // Get the size of the wrapped socket address structure.
     socklen_t getSize() const { return isIPv4() ? sizeof(sockaddr_in) : sizeof(sockaddr_in6); }
 
@@ -313,8 +313,9 @@ namespace mps
     /// \throw SocketException whether the local address refresh fails.
     /// 
     void refreshLocalAddress() {
-      auto addrSize = static_cast<socklen_t>(sizeof(sockaddr_storage));
-      if (!getsockname(mHandle, mLocalAddress, &addrSize)) {
+      auto addrPtr = mLocalAddress.getSockaddr();
+      auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
+      if (!getsockname(mHandle, addrPtr, &addrLen)) {
         throw SocketException("getsockname");
       }
     }
@@ -331,7 +332,7 @@ namespace mps
     /// \param address The address containing the target interface and port.
     /// 
     void bind(const Address& address) {
-      if (!::bind(mHandle, address, address.getSize())) {
+      if (!::bind(mHandle, address.getSockaddr(), address.getSize())) {
         throw SocketException("bind");
       }
       refreshLocalAddress();
@@ -407,7 +408,7 @@ namespace mps
   public:
     // Construct a new TCP client by connecting to given server address.
     TCPClientSocket(const Address& addr) : TCPSocket(addr.getFamily()), mRemoteAddress(addr) {
-      if (!connect(mHandle, addr, addr.getSize())) {
+      if (!connect(mHandle, addr.getSockaddr(), addr.getSize())) {
         throw SocketException("connect");
       }
       refreshLocalAddress();
@@ -473,8 +474,9 @@ namespace mps
     // Accept the next incoming client connection.
     TCPClientSocket accept() {
       Address address;
+      auto addrPtr = address.getSockaddr();
       socklen_t addressSize = sizeof(sockaddr_storage);
-      auto client = ::accept(mHandle, address, &addressSize);
+      auto client = ::accept(mHandle, addrPtr, &addressSize);
       if (client == InvalidSocket) {
         throw SocketException("accept");
       }
@@ -566,10 +568,11 @@ namespace mps
     /// \param packet The packet to be sent to target remote address.
     /// 
     void send(const UDPPacket& packet) {
+      auto addrPtr = packet.address.getSockaddr();
       auto addrLen = packet.address.getSize();
       auto dataPtr = reinterpret_cast<const Data*>(&packet.data[0]);
       auto dataLen = static_cast<DataSize>(packet.data.size());
-      if (!sendto(mHandle, dataPtr, dataLen, 0, packet.address, addrLen)) {
+      if (!sendto(mHandle, dataPtr, dataLen, 0, addrPtr, addrLen)) {
         throw SocketException("sendto");
       }
     }
@@ -577,10 +580,11 @@ namespace mps
     // Receive incoming data from the socket. Reads max of the given amount of bytes.
     UDPPacket receive(int maxDataSize = 1024) {
       UDPPacket packet{ Address(), std::vector<uint8_t>(maxDataSize) };
+      auto addrPtr = packet.address.getSockaddr();
       auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
       auto dataPtr = reinterpret_cast<Data*>(&packet.data[0]);
       auto dataLen = static_cast<DataSize>(packet.data.size());
-      auto result = recvfrom(mHandle, dataPtr, dataLen, 0, packet.address, &addrLen);
+      auto result = recvfrom(mHandle, dataPtr, dataLen, 0, addrPtr, &addrLen);
       if (result == -1) {
         throw SocketException("recvfrom");
       }
