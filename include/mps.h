@@ -337,10 +337,6 @@ namespace mps
       refreshLocalAddress();
     }
 
-    void setOpt(int level, int optKey, bool value) {
-      setOpt(level, optKey, value ? 1 : 0);
-    }
-
     template<typename T>
     void setOpt(int level, int optKey, const T& value) {
       auto optVal = (const char*)&value;
@@ -575,7 +571,7 @@ namespace mps
     /// \param value The definition whether to enable or disable broadcasting.
     /// 
     void setBroadcasting(bool value) {
-      setOpt(SOL_SOCKET, SO_BROADCAST, value);
+      setOpt(SOL_SOCKET, SO_BROADCAST, value ? 1 : 0);
     }
 
     /// \brief Check whether the socket is allowed to handle broadcast packets.
