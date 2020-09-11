@@ -443,9 +443,11 @@ namespace mps
       std::vector<uint8_t> bytes(maxDataSize);
       auto data = reinterpret_cast<Data*>(&bytes[0]);
       auto size = static_cast<DataSize>(bytes.size());
-      if (recv(mHandle, data, size, 0) == -1) {
+      auto result = recv(mHandle, data, size, 0);
+      if (result == -1) {
         throw SocketException("recv");
       }
+      // TODO handle graceful close (result=0)
       return bytes;
     }
   private:
@@ -586,6 +588,7 @@ namespace mps
       if (result == -1) {
         throw SocketException("recvfrom");
       }
+      // TODO handle graceful close (result=0)
       packet.data.resize(result);
       return packet;
     }
