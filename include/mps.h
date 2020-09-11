@@ -237,13 +237,13 @@ namespace mps
     void setBlocking(bool blocking) {
       #if _WIN32
       auto flag = blocking ? 0lu : 1lu;
-      if (!ioctlsocket(mHandle, FIONBIO, &flag)) {
+      if (ioctlsocket(mHandle, FIONBIO, &flag) == -1) {
         throw SocketException("ioctlsocket(FIONBIO)");
       }
       #else
       auto flags = fcntl(mHandle, F_GETFL, 0);
       flags = blocking ? (flags & ~O_NONBLOCK) : (flags | O_NONBLOCK);
-      if (!fcntl(mHandle, F_SETFL, flags)) {
+      if (fcntl(mHandle, F_SETFL, flags) == -1) {
         throw SocketException("fcntl(F_SETFL)");
       }
       #endif
@@ -315,7 +315,7 @@ namespace mps
     void refreshLocalAddress() {
       auto addrPtr = mLocalAddress.getSockaddr();
       auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
-      if (!getsockname(mHandle, addrPtr, &addrLen)) {
+      if (getsockname(mHandle, addrPtr, &addrLen) == -1) {
         throw SocketException("getsockname");
       }
     }
@@ -332,7 +332,7 @@ namespace mps
     /// \param address The address containing the target interface and port.
     /// 
     void bind(const Address& address) {
-      if (!::bind(mHandle, address.getSockaddr(), address.getSize())) {
+      if (::bind(mHandle, address.getSockaddr(), address.getSize()) == -1) {
         throw SocketException("bind");
       }
       refreshLocalAddress();
@@ -342,7 +342,7 @@ namespace mps
     void setOpt(int level, int optKey, const T& value) {
       auto optVal = (const char*)&value;
       auto optLen = static_cast<socklen_t>(sizeof(T));
-      if (!setsockopt(mHandle, level, optKey, optVal, optLen)) {
+      if (setsockopt(mHandle, level, optKey, optVal, optLen) == -1) {
         throw SocketException("setsockopt(" + std::to_string(optKey) + ")");
       }
     }
@@ -350,7 +350,7 @@ namespace mps
     int getOpt(int level, int optKey) const {
       auto optVal = 0;
       auto optLen = static_cast<socklen_t>(sizeof(int));
-      if (!getsockopt(mHandle, level, optKey, (char*)&optVal, &optLen)) {
+      if (getsockopt(mHandle, level, optKey, (char*)&optVal, &optLen) == -1) {
         throw SocketException("getsockopt(" + std::to_string(optKey) + ")");
       }
       return optVal;
@@ -408,7 +408,7 @@ namespace mps
   public:
     // Construct a new TCP client by connecting to given server address.
     TCPClientSocket(const Address& addr) : TCPSocket(addr.getFamily()), mRemoteAddress(addr) {
-      if (!connect(mHandle, addr.getSockaddr(), addr.getSize())) {
+      if (connect(mHandle, addr.getSockaddr(), addr.getSize()) == -1) {
         throw SocketException("connect");
       }
       refreshLocalAddress();
@@ -464,7 +464,7 @@ namespace mps
     // Build a new TCP server socket and bind it to target address.
     TCPServerSocket(const Address& address) : TCPSocket(address.getFamily()) {
       bind(address);
-      if (!listen(mHandle, 4)) {
+      if (listen(mHandle, 4) == -1) {
         throw SocketException("listen");
       }
     }
