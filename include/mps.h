@@ -588,7 +588,6 @@ namespace mps
       if (result == -1) {
         throw SocketException("recvfrom");
       }
-      // TODO handle graceful close (result=0)
       packet.data.resize(result);
       return packet;
     }
