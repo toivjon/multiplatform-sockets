@@ -438,10 +438,8 @@ namespace mps
       }
     }
 
-    // Receive incoming bytes from the connection.
-    std::vector<uint8_t> receive() { return receive(1024); }
     // Receive incoming bytes from the connection with the desired max data amount.
-    std::vector<uint8_t> receive(int maxDataSize) {
+    std::vector<uint8_t> receive(int maxDataSize = 1024) {
       std::vector<uint8_t> bytes(maxDataSize);
       auto data = reinterpret_cast<Data*>(&bytes[0]);
       auto size = static_cast<DataSize>(bytes.size());
