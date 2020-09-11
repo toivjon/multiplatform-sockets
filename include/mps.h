@@ -564,10 +564,31 @@ namespace mps
       bind(addr);
     }
 
-    // Specify whether the socket can be used to broadcast packets in LAN.
-    void setBroadcasting(bool value) { setOpt(SOL_SOCKET, SO_BROADCAST, value); }
-    // Get the definition whether the socket can be used to broadcast packets in LAN.
-    bool isBroadcasting() const { return getOpt(SOL_SOCKET, SO_BROADCAST) == 1; }
+    /// \brief Specify whether the socket is allowed handle broadcast packets.
+    ///
+    /// Note that sockets do not automatically listen for broadcasted messages
+    /// and therefore it's necessary to enable broadcasting at the sender and
+    /// receiver side.
+    ///
+    /// \throws SocketException if the configuration fails.
+    ///
+    /// \param value The definition whether to enable or disable broadcasting.
+    /// 
+    void setBroadcasting(bool value) {
+      setOpt(SOL_SOCKET, SO_BROADCAST, value);
+    }
+
+    /// \brief Check whether the socket is allowed to handle broadcast packets.
+    ///
+    /// Note that sockets do not automatically listen for broadcasted messages
+    /// and therefore it's necessary to enable broadcasting at the sender and
+    /// receiver side.
+    ///
+    /// \throws SocketException if the configuration querying fails.
+    /// 
+    bool isBroadcasting() const {
+      return getOpt(SOL_SOCKET, SO_BROADCAST) == 1;
+    }
 
     // Send the data from the given packet into the target packet address with optional flags.
     void send(const UDPPacket& packet, const std::set<UDPSendFlag>& flags = {}) {
