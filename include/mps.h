@@ -355,15 +355,6 @@ namespace mps
       return optVal;
     }
 
-    template<typename T>
-    int buildFlagInt(const std::set<T>& flags) {
-      int result = 0;
-      for (T flag : flags) {
-        result |= static_cast<int>(flag);
-      }
-      return result;
-    }
-
     Handle        mHandle;
   private:
     #if _WIN32
@@ -392,16 +383,6 @@ namespace mps
     }
     bool          mBlocking;
     Address       mLocalAddress;
-  };
-
-  // TCP flags used when sending data.
-  enum class TCPSendFlag {
-    DontRoute = MSG_DONTROUTE
-  };
-
-  // UDP flags used when receiving data.
-  enum class TCPReceiveFlag {
-    Peek = MSG_PEEK
   };
 
   // An abstraction for all TCP sockets which cannot be directly constructed.
@@ -447,25 +428,23 @@ namespace mps
     // Get the definition whether the socket keeps connection alive by sending keep-alive messages.
     bool isKeepAlive() const { return getOpt(SOL_SOCKET, SO_KEEPALIVE) == 1; }
 
-    // Send the given bytes to connection destination with optional flags.
-    void send(const std::vector<uint8_t>& bytes, const std::set<TCPSendFlag>& flags = {}) {
+    // Send the given bytes to connection destination.
+    void send(const std::vector<uint8_t>& bytes) {
       auto data = reinterpret_cast<const Data*>(&bytes[0]);
       auto size = static_cast<DataSize>(bytes.size());
-      auto flag = buildFlagInt(flags);
-      if (::send(mHandle, data, size, flag) == -1) {
+      if (::send(mHandle, data, size, 0) == -1) {
         throw SocketException("send");
       }
     }
 
     // Receive incoming bytes from the connection.
-    std::vector<uint8_t> receive() { return receive(1024, {}); }
-    // Receive incoming bytes from the connection with the desired max data amount and flags.
-    std::vector<uint8_t> receive(int maxDataSize, const std::set<TCPReceiveFlag>& flags = {}) {
+    std::vector<uint8_t> receive() { return receive(1024); }
+    // Receive incoming bytes from the connection with the desired max data amount.
+    std::vector<uint8_t> receive(int maxDataSize) {
       std::vector<uint8_t> bytes(maxDataSize);
       auto data = reinterpret_cast<Data*>(&bytes[0]);
       auto size = static_cast<DataSize>(bytes.size());
-      auto flag = buildFlagInt(flags);
-      if (recv(mHandle, data, size, flag) == -1) {
+      if (recv(mHandle, data, size, 0) == -1) {
         throw SocketException("recv");
       }
       return bytes;
@@ -507,16 +486,6 @@ namespace mps
   {
     Address               address; // The source/target address of the packet.
     std::vector<uint8_t>  data;    // The data associated with the packet.
-  };
-
-  // UDP flags used when sending data.
-  enum class UDPSendFlag {
-    DontRoute = MSG_DONTROUTE
-  };
-
-  // UDP flags used when receiving data.
-  enum class UDPReceiveFlag {
-    Peek = MSG_PEEK
   };
 
   class UDPSocket : public Socket
@@ -586,27 +555,25 @@ namespace mps
       return getOpt(SOL_SOCKET, SO_BROADCAST) == 1;
     }
 
-    // Send the data from the given packet into the target packet address with optional flags.
-    void send(const UDPPacket& packet, const std::set<UDPSendFlag>& flags = {}) {
+    // Send the data from the given packet into the target packet address.
+    void send(const UDPPacket& packet) {
       auto addrLen = packet.address.getSize();
       auto dataPtr = reinterpret_cast<const Data*>(&packet.data[0]);
       auto dataLen = static_cast<DataSize>(packet.data.size());
-      auto flag = buildFlagInt(flags);
-      if (sendto(mHandle, dataPtr, dataLen, flag, packet.address, addrLen) == -1) {
+      if (sendto(mHandle, dataPtr, dataLen, 0, packet.address, addrLen) == -1) {
         throw SocketException("sendto");
       }
     }
 
     // Receive incoming data from the socket. Uses default value for the maximum data bytes.
-    UDPPacket receive() { return receive(1024, {}); }
+    UDPPacket receive() { return receive(1024); }
     // Receive incoming data from the socket. Reads max of the given amount of bytes.
-    UDPPacket receive(int maxDataSize, const std::set<UDPReceiveFlag>& flags = {}) {
+    UDPPacket receive(int maxDataSize) {
       UDPPacket packet{ Address(), std::vector<uint8_t>(maxDataSize) };
       auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
       auto dataPtr = reinterpret_cast<Data*>(&packet.data[0]);
       auto dataLen = static_cast<DataSize>(packet.data.size());
-      auto flag = buildFlagInt(flags);
-      auto result = recvfrom(mHandle, dataPtr, dataLen, flag, packet.address, &addrLen);
+      auto result = recvfrom(mHandle, dataPtr, dataLen, 0, packet.address, &addrLen);
       if (result == -1) {
         throw SocketException("recvfrom");
       }
