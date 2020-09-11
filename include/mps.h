@@ -574,10 +574,8 @@ namespace mps
       }
     }
 
-    // Receive incoming data from the socket. Uses default value for the maximum data bytes.
-    UDPPacket receive() { return receive(1024); }
     // Receive incoming data from the socket. Reads max of the given amount of bytes.
-    UDPPacket receive(int maxDataSize) {
+    UDPPacket receive(int maxDataSize = 1024) {
       UDPPacket packet{ Address(), std::vector<uint8_t>(maxDataSize) };
       auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
       auto dataPtr = reinterpret_cast<Data*>(&packet.data[0]);
