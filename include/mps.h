@@ -560,7 +560,7 @@ namespace mps
       auto addrLen = packet.address.getSize();
       auto dataPtr = reinterpret_cast<const Data*>(&packet.data[0]);
       auto dataLen = static_cast<DataSize>(packet.data.size());
-      if (sendto(mHandle, dataPtr, dataLen, 0, packet.address, addrLen) == -1) {
+      if (!sendto(mHandle, dataPtr, dataLen, 0, packet.address, addrLen)) {
         throw SocketException("sendto");
       }
     }
