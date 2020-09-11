@@ -555,7 +555,16 @@ namespace mps
       return getOpt(SOL_SOCKET, SO_BROADCAST) == 1;
     }
 
-    // Send the data from the given packet into the target packet address.
+    /// \brief Send or broadcast the provided packet to the target address.
+    ///
+    /// The provided packet contains the data to be sent along with remote
+    /// host address and port number. If the message broadcasting have been
+    /// enabled this function can be also used to send broadcast messages.
+    ///
+    /// \throws SocketException whether the send fails.
+    ///
+    /// \param packet The packet to be sent to target remote address.
+    /// 
     void send(const UDPPacket& packet) {
       auto addrLen = packet.address.getSize();
       auto dataPtr = reinterpret_cast<const Data*>(&packet.data[0]);
