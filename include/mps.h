@@ -524,15 +524,44 @@ namespace mps
   class TCPServerSocket : public TCPSocket
   {
   public:
-    // Build a new TCP server socket with the specified address family.
+    /// \brief Build and auto-bind a TCP socket with the given address family.
+    ///
+    /// This function will build and bind a new TCP socket and assign it to all
+    /// available local interfaces and allow the system to find a suitable port
+    /// number for the socket.
+    ///
+    /// \throws SocketException if the bind or listen operation fails.
+    ///
+    /// \param af The definition whether socket uses IPv4 or IPv6.
+    ///
     TCPServerSocket(AddressFamily af) : TCPServerSocket(af, 0) {
     }
-    // Build a new TCP server socket with the specified address family and port.
-    TCPServerSocket(AddressFamily af, uint16_t port) : TCPServerSocket(Address(af, port)) {
+
+    /// \brief Build and bind a TCP socket with given address family and port.
+    ///
+    /// This function will build and bind a new TCP socket and assign it to all
+    /// available local interfaces and use the specified port number.
+    ///
+    /// \throws SocketException if the bind or listen operation fails.
+    ///
+    /// \param af The definition whether socket uses IPv4 or IPv6.
+    /// \param port The port to be assigned for the socket.
+    /// 
+    TCPServerSocket(AddressFamily af, uint16_t port)
+      : TCPServerSocket(Address(af, port)) {
     }
-    // Build a new TCP server socket and bind it to target address.
-    TCPServerSocket(const Address& address) : TCPSocket(address.getFamily()) {
-      bind(address);
+
+    /// \brief Build and bind a TCP socket with the given address definition.
+    ///
+    /// This function will build and bind a new TCP socket and assign it to the
+    /// interface, port and IP address family from the given address object.
+    ///
+    /// \throws SocketException if the bind or listen operation fails.
+    ///
+    /// \param addr The address containing interface, port and address family.
+    TCPServerSocket(const Address& addr) : TCPSocket(addr.getFamily()) {
+      bind(addr);
+      // TODO do we want to move this into separate function?
       if (listen(mHandle, 4) == -1) {
         throw SocketException("listen");
       }
@@ -592,7 +621,7 @@ namespace mps
     ///
     /// \throws SocketException if the bind operation fails.
     ///
-    /// \param addr The address containing intergace, port and address family.
+    /// \param addr The address containing interface, port and address family.
     /// 
     UDPSocket(const Address& addr) : Socket(addr.getFamily(), SOCK_DGRAM) {
       bind(addr);
