@@ -252,6 +252,30 @@ namespace mps
     // Get the definition whether socket operations are set to block or not.
     bool isBlocking() const { return mBlocking; }
 
+    /// \brief Specify the maximum time to block when waiting for incoming I/O.
+    ///
+    /// Note that this definition only affects blocking sockets. Zero indicates
+    /// that the receive operation will not time out.
+    ///
+    /// \throws SocketException whether the configuration fails.
+    ///
+    /// \param timeout The timeout in milliseconds.
+    /// 
+    void setReceiveTimeout(int timeout) {
+      setOpt(SOL_SOCKET, SO_RCVTIMEO, timeout);
+    }
+
+    /// \brief Get the maximum time to block when waiting for incoming I/O.
+    ///
+    /// Note that this definition only affects blocking sockets. Zero indicates
+    /// that the receive operation will not time out.
+    ///
+    /// \throws SocketException whether the configuration query fails.
+    /// 
+    int getReceiveTimeout() {
+      return getOpt(SOL_SOCKET, SO_RCVTIMEO);
+    }
+
   protected:
     #ifdef _WIN32
     static const auto InvalidSocket = INVALID_SOCKET;
