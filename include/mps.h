@@ -453,6 +453,30 @@ namespace mps
     // Get the definition whether the socket keeps connection alive by sending keep-alive messages.
     bool isKeepAlive() const { return getOpt(SOL_SOCKET, SO_KEEPALIVE) == 1; }
 
+    /// \brief Specify the maximum time to block when waiting for outgoing I/O.
+    ///
+    /// Note that this definition only affects blocking sockets. Zero indicates
+    /// that the send operation will not time out.
+    ///
+    /// \throws SocketException whether the configuration fails.
+    ///
+    /// \param timeout The timeout in milliseconds.
+    /// 
+    void setSendTimeout(int timeout) {
+      setOpt(SOL_SOCKET, SO_SNDTIMEO, timeout);
+    }
+
+    /// \brief Get the maximum time to block when waiting for outgoing I/O.
+    ///
+    /// Note that this definition only affects blocking sockets. Zero indicates
+    /// that the send operation will not time out.
+    ///
+    /// \throws SocketException whether the configuration query fails.
+    /// 
+    int getSendTimeout() {
+      return getOpt(SOL_SOCKET, SO_SNDTIMEO);
+    }
+
     // Send the given bytes to connection destination.
     void send(const std::vector<uint8_t>& bytes) {
       auto data = reinterpret_cast<const Data*>(&bytes[0]);
