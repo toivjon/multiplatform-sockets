@@ -491,6 +491,8 @@ namespace mps
     /// that the send operation will not time out.
     ///
     /// \throws SocketException whether the configuration query fails.
+    ///
+    /// \returns The send timeout in milliseconds.
     /// 
     int getSendTimeout() {
       return getOpt(SOL_SOCKET, SO_SNDTIMEO);
