@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
     std::cout << "broadcasting: " << socket.isBroadcasting() << std::endl;
     std::cout << " recvBufSize: " << socket.getReceiveBufferSize() << std::endl;
     std::cout << " sendBufSize: " << socket.getSendBufferSize() << std::endl;
+    std::cout << " recvTimeout: " << socket.getReceiveTimeout() << std::endl;
 
     // send a simple datagram to the specified remote host IP address and port.
     std::cout << "Sending a simple UDP message to remote target:" << std::endl;

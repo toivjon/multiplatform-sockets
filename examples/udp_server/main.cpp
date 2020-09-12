@@ -11,6 +11,11 @@ int main() {
   try {
     // build and bind a new UDP socket and print out the socket info.
     UDPSocket socket(SocketAddressFamily, SocketPort);
+    socket.getReceiveBufferSize();
+    socket.getSendBufferSize();
+    socket.getReceiveTimeout();
+    socket.isBroadcasting();
+
     std::cout << "Bound a new UDP socket with following details:" << std::endl;
     std::cout << "    local-ip: " << socket.getLocalIP() << std::endl;
     std::cout << "  local-port: " << socket.getLocalPort() << std::endl;
@@ -19,6 +24,7 @@ int main() {
     std::cout << "broadcasting: " << socket.isBroadcasting() << std::endl;
     std::cout << " recvBufSize: " << socket.getReceiveBufferSize() << std::endl;
     std::cout << " sendBufSize: " << socket.getSendBufferSize() << std::endl;
+    std::cout << " recvTimeout: " << socket.getReceiveTimeout() << std::endl;
 
     // wait for incoming data by blocking and then print datagram info.
     std::cout << "Waiting for incoming UDP datagram..." << std::endl;
