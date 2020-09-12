@@ -586,10 +586,66 @@ namespace mps
     }
   };
 
-  struct UDPPacket
+  class UDPPacket
   {
-    Address               address; // The source/target address of the packet.
-    std::vector<uint8_t>  data;    // The data associated with the packet.
+  public:
+    /// \brief Build a new UDP packet for receiving packets of given length.
+    ///
+    /// A new packet will be created by allocating the given amount of free
+    /// memory for incoming data. An empty address will be also allocated to
+    /// store the IP address and port of the packet sender.
+    ///
+    /// \param size The buffer size i.e. the maximum number of bytes to read.
+    /// 
+    UDPPacket(int size = 1024) : mData(size) {
+    }
+
+    /// \brief Build a new UDP packet with the given data and target address.
+    ///
+    /// A new packet will be created by adding the given address as the remote
+    /// machine address and attaching the given data as the packet payload.
+    ///
+    /// \param addr The address of the remote machine.
+    /// \param data The data to be sent to remote machine.
+    /// 
+    UDPPacket(const Address& addr, const std::vector<uint8_t>& data)
+    : mAddress(addr), mData(data) {
+    }
+
+    /// \brief Get the address of the source or target machine of the packet.
+    ///
+    /// \returns The address where this packet is being sent or is coming from.
+    /// 
+    const Address& getAddress() const {
+      return mAddress;
+    }
+
+    /// \brief Get the address of the source or target machine of the packet.
+    ///
+    /// \returns The address where this packet is being sent or is coming from.
+    ///
+    Address& getAddress() {
+      return mAddress;
+    }
+
+    /// \brief Get the data buffer that is associated with this packet.
+    ///
+    /// \returns The data buffer currently being associated with the packet.
+    /// 
+    const std::vector<uint8_t>& getData() const {
+      return mData;
+    }
+
+    /// \brief Get the data buffer that is associated with this packet.
+    ///
+    /// \returns The data buffer currently being associated with the packet.
+    /// 
+    std::vector<uint8_t>& getData() {
+      return mData;
+    }
+  private:
+    Address              mAddress;
+    std::vector<uint8_t> mData;
   };
 
   class UDPSocket : public Socket
@@ -670,28 +726,26 @@ namespace mps
     /// \param packet The packet to be sent to target remote address.
     /// 
     void send(const UDPPacket& packet) {
-      auto addrPtr = packet.address.getSockaddr();
-      auto addrLen = packet.address.getSize();
-      auto dataPtr = reinterpret_cast<const Data*>(&packet.data[0]);
-      auto dataLen = static_cast<DataSize>(packet.data.size());
+      auto addrPtr = packet.getAddress().getSockaddr();
+      auto addrLen = packet.getAddress().getSize();
+      auto dataPtr = reinterpret_cast<const Data*>(&packet.getData()[0]);
+      auto dataLen = static_cast<DataSize>(packet.getData().size());
       if (sendto(mHandle, dataPtr, dataLen, 0, addrPtr, addrLen) == -1) {
         throw SocketException("sendto");
       }
     }
 
     // Receive incoming data from the socket. Reads max of the given amount of bytes.
-    UDPPacket receive(int maxDataSize = 1024) {
-      UDPPacket packet{ Address(), std::vector<uint8_t>(maxDataSize) };
-      auto addrPtr = packet.address.getSockaddr();
+    void receive(UDPPacket& packet) {
+      auto addrPtr = packet.getAddress().getSockaddr();
       auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
-      auto dataPtr = reinterpret_cast<Data*>(&packet.data[0]);
-      auto dataLen = static_cast<DataSize>(packet.data.size());
+      auto dataPtr = reinterpret_cast<Data*>(&packet.getData()[0]);
+      auto dataLen = static_cast<DataSize>(packet.getData().size());
       auto result = recvfrom(mHandle, dataPtr, dataLen, 0, addrPtr, &addrLen);
       if (result == -1) {
         throw SocketException("recvfrom");
       }
-      packet.data.resize(result);
-      return packet;
+      packet.getData().resize(result); // TODO fix this
     }
   private:
     // An undefined port indicates that the port can be auto-selected by OS.

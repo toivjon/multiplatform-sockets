@@ -23,11 +23,12 @@ int main() {
 
     // wait for incoming data by blocking and then print datagram info.
     std::cout << "Waiting for incoming UDP datagram..." << std::endl;
-    auto packet = socket.receive();
+    UDPPacket packet;
+    socket.receive(packet);
     std::cout << "Received a UDP datagram with following details:" << std::endl;
-    std::cout << "  remote-ip: " << packet.address.getIP() << std::endl;
-    std::cout << "remote-port: " << packet.address.getPort() << std::endl;
-    std::cout << "       data: " << &packet.data[0] << std::endl;
+    std::cout << "  remote-ip: " << packet.getAddress().getIP() << std::endl;
+    std::cout << "remote-port: " << packet.getAddress().getPort() << std::endl;
+    std::cout << "       data: " << &packet.getData()[0] << std::endl;
 
     // echo the received data back to caller to inform that we did receive it.
     std::cout << "Echoing the data back to client and closing..." << std::endl;

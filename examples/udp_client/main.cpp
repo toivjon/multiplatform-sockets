@@ -38,11 +38,12 @@ int main(int argc, char* argv[]) {
 
     // wait for the incoming data by blocking and the print datagram info.
     std::cout << "Waiting for the remote target to echo back..." << std::endl;
-    auto packet = socket.receive();
+    UDPPacket packet;
+    socket.receive(packet);
     std::cout << "Received a UDP datagram with following details:" << std::endl;
-    std::cout << "  remote-ip: " << packet.address.getIP() << std::endl;
-    std::cout << "remote-port: " << packet.address.getPort() << std::endl;
-    std::cout << "       data: " << &packet.data[0] << std::endl;
+    std::cout << "  remote-ip: " << packet.getAddress().getIP() << std::endl;
+    std::cout << "remote-port: " << packet.getAddress().getPort() << std::endl;
+    std::cout << "       data: " << &packet.getData()[0] << std::endl;
   } catch (const AddressException& e) {
     std::cerr << "Error: " << e.what() << std::endl;
   } catch (const SocketException& e) {

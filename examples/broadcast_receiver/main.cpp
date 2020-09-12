@@ -32,10 +32,11 @@ int main(int argc, char* argv[]) {
     std::cout << "Waiting for UDP message from port ";
     std::cout << socket.getLocalPort();
     std::cout << std::endl;
-    auto packet = socket.receive();
+    UDPPacket packet;
+    socket.receive(packet);
     std::cout << "Received a UDP datagram with the following details:" << std::endl;
-    std::cout << "  remote-ip: " << packet.address.getIP() << std::endl;
-    std::cout << "remote-port: " << packet.address.getPort() << std::endl;
+    std::cout << "  remote-ip: " << packet.getAddress().getIP() << std::endl;
+    std::cout << "remote-port: " << packet.getAddress().getPort() << std::endl;
     std::cout << "       data: " << "hello" << std::endl;
   } catch (const AddressException& e) {
     std::cerr << "Error: " << e.what() << std::endl;
