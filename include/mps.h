@@ -136,6 +136,17 @@ namespace mps
         return ntohs(sockaddr->sin6_port);
       }
     }
+
+    // Set the port for the address.
+    void setPort(uint16_t port) {
+      if (isIPv4()) {
+        auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
+        sockaddr->sin_port = htons(port);
+      } else {
+        auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
+        sockaddr->sin6_port = htons(port);
+      }
+    }
   private:
     // An undefined port indicates that the address has not an assigned port.
     static auto const UndefinedPort = 0;
