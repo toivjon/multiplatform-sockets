@@ -735,7 +735,16 @@ namespace mps
       }
     }
 
-    // Receive incoming data from the socket. Reads max of the given amount of bytes.
+    /// \brief Receive incoming data from a remote machine.
+    ///
+    /// The max amount of data to be read is based on the size of the provided
+    /// packet. After this function returns, the provided package contains info
+    /// about the remote machine address and the actual data that was received.
+    ///
+    /// \throws SocketException whether the receive fails.
+    ///
+    /// \param packet The packet to be filled with incoming data.
+    /// 
     void receive(UDPPacket& packet) {
       auto addrPtr = packet.getAddress().getSockaddr();
       auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
