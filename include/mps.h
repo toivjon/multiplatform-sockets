@@ -567,16 +567,22 @@ namespace mps
       }
     }
 
-    // Accept the next incoming client connection.
+    /// \brief Accept a new TCP client connection from the connection queue.
+    ///
+    /// Accept will accept a client from the connection queue and wrap the new
+    /// client into a TCP client socket instance.
+    ///
+    /// \throws SocketException if the accept operation fails.
+    ///
     TCPClientSocket accept() {
       Address address;
       auto addrPtr = address.getSockaddr();
-      socklen_t addressSize = sizeof(sockaddr_storage);
-      auto client = ::accept(mHandle, addrPtr, &addressSize);
-      if (client == InvalidSocket) {
+      auto addrLen = static_cast<socklen_t>(sizeof(sockaddr_storage));
+      auto handle = ::accept(mHandle, addrPtr, &addrLen);
+      if (handle == InvalidSocket) {
         throw SocketException("accept");
       }
-      return TCPClientSocket(client, isBlocking(), address);
+      return TCPClientSocket(handle, isBlocking(), address);
     }
   };
 
