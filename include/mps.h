@@ -233,7 +233,16 @@ namespace mps
     // Get the locally bound IP of the socket.
     std::string getLocalIP() const { return mLocalAddress.getIP(); }
 
-    // Specify whether the socket should block on blocking calls (e.g. receive etc.).
+    /// \brief Specify whether the socket should use blocking I/O operations.
+    ///
+    /// Block operation timeouts can be specified by corresponding timeout
+    /// setters. Blocking TCP socket blocks with send and receive, while UDP
+    /// sockets only block with receive function.
+    ///
+    /// \throws SocketException whether the configuration fails.
+    ///
+    /// \param blocking Definition to enable or disable blocking.
+    /// 
     void setBlocking(bool blocking) {
       #if _WIN32
       auto flag = blocking ? 0lu : 1lu;
@@ -249,8 +258,18 @@ namespace mps
       #endif
       mBlocking = blocking;
     }
-    // Get the definition whether socket operations are set to block or not.
-    bool isBlocking() const { return mBlocking; }
+
+    /// \brief Check whether the socket currently uses blocking I/O operations.
+    /// 
+    /// Block operation timeouts can be specified by corresponding timeout
+    /// setters. Blocking TCP socket blocks with send and receive, while UDP
+    /// sockets only block with receive function.
+    ///
+    /// \throws SocketException whether the configuration query fails.
+    /// 
+    bool isBlocking() const {
+      return mBlocking;
+    }
 
     /// \brief Specify the maximum time to block when waiting for incoming I/O.
     ///
