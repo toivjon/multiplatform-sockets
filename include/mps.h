@@ -498,9 +498,9 @@ namespace mps
 
     // Send the given bytes to connection destination.
     void send(const std::vector<uint8_t>& bytes) {
-      auto data = reinterpret_cast<const Data*>(&bytes[0]);
-      auto size = static_cast<DataSize>(bytes.size());
-      if (::send(mHandle, data, size, 0) == -1) {
+      auto dataPtr = reinterpret_cast<const Data*>(&bytes[0]);
+      auto dataLen = static_cast<DataSize>(bytes.size());
+      if (::send(mHandle, dataPtr, dataLen, 0) == -1) {
         throw SocketException("send");
       }
     }
@@ -508,9 +508,9 @@ namespace mps
     // Receive incoming bytes from the connection with the desired max data amount.
     std::vector<uint8_t> receive(int maxDataSize = 1024) {
       std::vector<uint8_t> bytes(maxDataSize);
-      auto data = reinterpret_cast<Data*>(&bytes[0]);
-      auto size = static_cast<DataSize>(bytes.size());
-      auto result = recv(mHandle, data, size, 0);
+      auto dataPtr = reinterpret_cast<Data*>(&bytes[0]);
+      auto dataLen = static_cast<DataSize>(bytes.size());
+      auto result = recv(mHandle, dataPtr, dataLen, 0);
       if (result == -1) {
         throw SocketException("recv");
       }
