@@ -11,11 +11,6 @@ int main() {
   try {
     // build and bind a new UDP socket and print out the socket info.
     UDPSocket socket(SocketAddressFamily, SocketPort);
-    socket.getReceiveBufferSize();
-    socket.getSendBufferSize();
-    socket.getReceiveTimeout();
-    socket.isBroadcasting();
-
     std::cout << "Bound a new UDP socket with following details:" << std::endl;
     std::cout << "    local-ip: " << socket.getLocalIP() << std::endl;
     std::cout << "  local-port: " << socket.getLocalPort() << std::endl;
