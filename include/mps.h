@@ -222,11 +222,6 @@ namespace mps
     // Get the definition whether the target socket uses IPv6 address family.
     bool isIPv6() const { return mLocalAddress.isIPv6(); }
 
-    // Specify whether the socket routes or directly uses the interface.
-    void setRouting(bool value) { setOpt(SOL_SOCKET, SO_DONTROUTE, value); }
-    // Get the definition whether the socket routes traffic or directly uses the interface.
-    bool isRouting() const { return getOpt(SOL_SOCKET, SO_DONTROUTE) == 0; }
-
     // Get the locally bound address of the socket.
     const Address& getLocalAddress() const { return mLocalAddress; }
     // Get the locally bound port of the socket.
@@ -331,8 +326,29 @@ namespace mps
     /// \throws SocketException whether the configuration query fails.
     ///
     /// \returns The size of the send buffer in bytes.
+    /// 
     int getSendBufferSize() const {
       return getOpt(SOL_SOCKET, SO_SNDBUF);
+    }
+
+    /// \brief Specify whether the socket should allow message routing.
+    ///
+    /// \throws SocketException whether the configuration fails.
+    ///
+    /// \param value The definition whether to allow routing or not.
+    /// 
+    void setRouting(bool value) {
+      setOpt(SOL_SOCKET, SO_DONTROUTE, value);
+    }
+
+    /// \brief Get the definition whether the socket allows message routing.
+    ///
+    /// \throws SocketException whether the configuration query fails.
+    ///
+    /// \returns The definition whether the socket allows message routing.
+    /// 
+    bool isRouting() const {
+      return getOpt(SOL_SOCKET, SO_DONTROUTE) == 0;
     }
 
   protected:
