@@ -535,13 +535,24 @@ namespace mps
   class TCPClientSocket : public TCPSocket
   {
   public:
-    // Construct a new TCP client by connecting to given server address
-    TCPClientSocket(const Address& addr) : TCPSocket(addr.getFamily()), mRemoteAddress(addr) {
+    /// \brief Build a new TCP client and connect to the target remote address.
+    ///
+    /// The given address must contain the IP and port of the target machine or
+    /// this function will fail. After the connection has been established this
+    /// function will ensure that the local address will also be refreshed.
+    ///
+    /// \throws SocketException When connect or the local address refresh fail.
+    /// 
+    /// \param addr The address of the remote machine (inc. IP address & port).
+    /// 
+    TCPClientSocket(const Address& addr)
+      : TCPSocket(addr.getFamily()), mRemoteAddress(addr) {
       if (connect(mHandle, addr.getSockaddr(), addr.getSize()) == -1) {
         throw SocketException("connect");
       }
       refreshLocalAddress();
     }
+
     // Build a new TCP client with the given socket handle and remote address.
     TCPClientSocket(Handle handle, bool blocking, const Address& addr) : TCPSocket(handle, blocking), mRemoteAddress(addr) {
     }
