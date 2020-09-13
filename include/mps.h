@@ -392,6 +392,18 @@ namespace mps
       refreshLocalAddress();
     }
 
+    /// \brief Specify a socket option to configure the socket behavior.
+    ///
+    /// This function is used as a utility function to utilize the setsockopt
+    /// functionality. Socket options are given with triplets containing the
+    /// definition level along with the configuration key and value.
+    ///
+    /// \throws SocketException whether the configuration fails.
+    ///
+    /// \param level The level of the option (e.g. SOL_SOCKET).
+    /// \param optKey The key of the configuration value.
+    /// \param value The value for the configuration.
+    /// 
     template<typename T>
     void setOpt(int level, int optKey, const T& value) {
       auto optVal = (const char*)&value;
@@ -460,7 +472,7 @@ namespace mps
   class TCPClientSocket : public TCPSocket
   {
   public:
-    // Construct a new TCP client by connecting to given server address.
+    // Construct a new TCP client by connecting to given server address
     TCPClientSocket(const Address& addr) : TCPSocket(addr.getFamily()), mRemoteAddress(addr) {
       if (connect(mHandle, addr.getSockaddr(), addr.getSize()) == -1) {
         throw SocketException("connect");
