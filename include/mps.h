@@ -422,7 +422,7 @@ namespace mps
       return optVal;
     }
 
-    Handle        mHandle;
+    Handle mHandle;
   private:
     #if _WIN32
     // A RAII wrapper for proper initialization and graceful shutdown for the Winsock service.
