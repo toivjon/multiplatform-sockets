@@ -126,6 +126,24 @@ namespace mps
       }
     }
 
+    void setIP(const std::string& ip) {
+      if (isIPv6String(ip)) {
+        auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
+        sockaddr->sin6_family = AF_INET6;
+        sockaddr->sin6_port = htons(getPort());
+        if (!inet_pton(AF_INET6, ip.c_str(), &sockaddr->sin6_addr)) {
+          throw AddressException(ip);
+        }
+      } else {
+        auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
+        sockaddr->sin_family = AF_INET;
+        sockaddr->sin_port = htons(getPort());
+        if (!inet_pton(AF_INET, ip.c_str(), &sockaddr->sin_addr)) {
+          throw AddressException(ip);
+        }
+      }
+    }
+
     // Get the port of the address.
     uint16_t getPort() const {
       if (isIPv4()) {
@@ -721,6 +739,46 @@ namespace mps
       return mAddress;
     }
 
+    /// \brief Specify the source or the remote target address for the packet.
+    ///
+    /// \param addr The address where the packat came from or being headed to.
+    /// 
+    void setAddress(const Address& addr) {
+      mAddress = addr;
+    }
+
+    /// \brief Get the port of remote source or target address of the packet.
+    ///
+    /// \returns The port of the address packet is being send or received.
+    /// 
+    uint16_t getPort() const {
+      return mAddress.getPort();
+    }
+
+    /// \brief Set the port of remote source or target address of the packet.
+    ///
+    /// \param The port of the address packet is being send or received.
+    /// 
+    void setPort(uint16_t port) {
+      mAddress.setPort(port);
+    }
+
+    /// \brief Get the IP address of the remote source or target address.
+    ///
+    /// \returns The IP address of the remote source or target address.
+    /// 
+    std::string getIP() const {
+      return mAddress.getIP();
+    }
+
+    /// \brief Set the IP address of the remote source or target address.
+    ///
+    /// \param ip The IP address of the remote source or target address.
+    /// 
+    void setIP(const std::string& ip) {
+      mAddress.setIP(ip);
+    }
+
     /// \brief Get the data buffer that is associated with this packet.
     ///
     /// \returns The data buffer currently being associated with the packet.
@@ -735,6 +793,14 @@ namespace mps
     /// 
     std::vector<uint8_t>& getData() {
       return mData;
+    }
+
+    /// \brief Set the received or the data to be sent along with this packet.
+    ///
+    /// \param data The data to be associated with the packet.
+    /// 
+    void setData(const std::vector<uint8_t>& data) {
+      mData = data;
     }
   private:
     Address              mAddress;

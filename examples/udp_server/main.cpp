@@ -26,8 +26,8 @@ int main() {
     UDPPacket packet;
     socket.receive(packet);
     std::cout << "Received a UDP datagram with following details:" << std::endl;
-    std::cout << "  remote-ip: " << packet.getAddress().getIP() << std::endl;
-    std::cout << "remote-port: " << packet.getAddress().getPort() << std::endl;
+    std::cout << "  remote-ip: " << packet.getIP() << std::endl;
+    std::cout << "remote-port: " << packet.getPort() << std::endl;
     std::cout << "       data: " << &packet.getData()[0] << std::endl;
 
     // echo the received data back to caller to inform that we did receive it.

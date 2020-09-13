@@ -35,8 +35,8 @@ int main(int argc, char* argv[]) {
     UDPPacket packet;
     socket.receive(packet);
     std::cout << "Received a UDP datagram with the following details:" << std::endl;
-    std::cout << "  remote-ip: " << packet.getAddress().getIP() << std::endl;
-    std::cout << "remote-port: " << packet.getAddress().getPort() << std::endl;
+    std::cout << "  remote-ip: " << packet.getIP() << std::endl;
+    std::cout << "remote-port: " << packet.getPort() << std::endl;
     std::cout << "       data: " << "hello" << std::endl;
   } catch (const AddressException& e) {
     std::cerr << "Error: " << e.what() << std::endl;
