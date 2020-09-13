@@ -5,6 +5,8 @@ A simple multiplatform header-only C++ library wrapper for using UDP and TCP soc
 
 This library implementation contains the following features:
 
+- A support for TCP and UDP communication.
+- A support for IPv4 and IPv6 address families.
 - TODO
 
 ## Compilation
