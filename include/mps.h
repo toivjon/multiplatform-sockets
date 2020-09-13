@@ -478,10 +478,33 @@ namespace mps
     // Get the IP of the remote address of the established TCP connection.
     std::string getRemoteIP() const { return mRemoteAddress.getIP(); }
 
-    // Specify whether the socket should send keep-alive messages to keep the connection alive.
-    void setKeepAlive(bool value) { setOpt(SOL_SOCKET, SO_KEEPALIVE, value); }
-    // Get the definition whether the socket keeps connection alive by sending keep-alive messages.
-    bool isKeepAlive() const { return getOpt(SOL_SOCKET, SO_KEEPALIVE) == 1; }
+    /// \brief Specify whether the socket should send keep-alive messsages.
+    ///
+    /// When this option is enabled, the TCP connection will send keep-alive
+    /// messages when no data or acknowledgements have been received within an
+    /// interval.
+    ///
+    /// \throws SocketException whether the configuration fails.
+    ///
+    /// \param value Definition whether the socket uses keep-alive messages.
+    /// 
+    void setKeepAlive(bool value) {
+      setOpt(SOL_SOCKET, SO_KEEPALIVE, value);
+    }
+
+    /// \brief Get the definition whether the socket sends keep-alive messages.
+    ///
+    /// When this option is enabled, the TCP connection will send keep-alive
+    /// messages when no data or acknowledgements have been received within an
+    /// interval.
+    ///
+    /// \throws SocketException whether the configuration query fails.
+    ///
+    /// \returns The definition whether the socket uses keep-alive messages.
+    /// 
+    bool isKeepAlive() const {
+      return getOpt(SOL_SOCKET, SO_KEEPALIVE) == 1;
+    }
 
     /// \brief Specify the maximum time to block when waiting for outgoing I/O.
     ///
