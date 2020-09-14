@@ -488,7 +488,12 @@ namespace mps
     Handle mHandle;
   private:
     #if _WIN32
-    // A RAII wrapper for proper initialization and graceful shutdown for the Winsock service.
+    /// \brief RAII wrapper for auto-startup and shutdown of Windows Sockets 2.
+    ///
+    /// Windows based systems (Windows OSes and XBoxes) use Windows Sockets for
+    /// the socket management. This class encapsulates necessary logic required
+    /// to initialize and automatically cleanup the Windows Sockets service.
+    /// 
     class WinsockService final
     {
     public:
