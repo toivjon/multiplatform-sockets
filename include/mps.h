@@ -214,15 +214,28 @@ namespace mps
   class Socket
   {
   public:
-    // Copy semantics are disabled as we use RAII to handle our wrapped socket handle.
+    /// \brief Copy-constructor is disabled to evade socket handle corruption.
+    /// \param rhs The righthand side of the assignment.
     Socket(const Socket& rhs) = delete;
-    // Copy semantics are disabled as we use RAII to handle our wrapped socket handle.
+
+    /// \brief Copy-assignment is disabled to evade socket handle corruption.
+    /// \param rhs The righthand side of the assignment.
+    /// \returns A reference to this socket.
     Socket& operator=(const Socket& rhs) = delete;
 
-    // Move semantics are supported by using the swap functionality.
-    Socket(Socket&& rhs) noexcept { swap(rhs); }
-    // Move semantics are supported by using the swap functionality.
-    Socket& operator=(Socket&& rhs) noexcept { swap(rhs); return *this; }
+    /// \brief Move-constructor implements move-sematic constructor with swap.
+    /// \param rhs The righthand side of the construction.
+    Socket(Socket&& rhs) noexcept {
+      swap(rhs);
+    }
+
+    /// \brief Move-assignment implements move-semantic assignment with swap.
+    /// \param rhs The righthand side of the assignment.
+    /// \returns A reference to this socket.
+    Socket& operator=(Socket&& rhs) noexcept {
+      swap(rhs);
+      return *this;
+    }
 
     /// \brief Destructor is being used to automatically close the socket.
     ///
