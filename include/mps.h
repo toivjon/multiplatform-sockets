@@ -224,21 +224,45 @@ namespace mps
     // Move semantics are supported by using the swap functionality.
     Socket& operator=(Socket&& rhs) noexcept { swap(rhs); return *this; }
 
-    // Destructor handles the automatic closing of the socket handle in a RAII way.
+    /// \brief Destructor is being used to automatically close the socket.
+    ///
+    /// This destructor implements the socket management in RAII way where the
+    /// underlying socket handle is automatically being closed when the socket
+    /// instance is being destructed.
+    /// 
     virtual ~Socket() {
-      #if _WIN32
-      closesocket(mHandle);
-      #else
-      close(mHandle);
-      #endif
+      if (mHandle != InvalidSocket) {
+        #if _WIN32
+        closesocket(mHandle);
+        #else
+        close(mHandle);
+        #endif
+      }
+    }
+    
+    /// \brief Get the definition whether socket uses IPv4 or IPv6 addresses.
+    ///
+    /// \returns The address value indicating the sockets address family.
+    /// 
+    AddressFamily getAddressFamily() const {
+      return mLocalAddress.getFamily();
     }
 
-    // The definition which tells whether the socket handles IPv4 or IPv6 communication.
-    AddressFamily getAddressFamily() const { return mLocalAddress.getFamily(); }
-    // Get the definition whether the target socket uses IPv4 address family.
-    bool isIPv4() const { return mLocalAddress.isIPv4(); }
-    // Get the definition whether the target socket uses IPv6 address family.
-    bool isIPv6() const { return mLocalAddress.isIPv6(); }
+    /// \brief Get the definition whether the socket uses IPv4 address family.
+    ///
+    /// \returns Boolean indicating whether IPv4 is being used.
+    /// 
+    bool isIPv4() const {
+      return mLocalAddress.isIPv4();
+    }
+
+    /// \brief Get the definition whether the socket uses IPv6 address family.
+    ///
+    /// \returns Boolean indicating whether IPv6 is being used.
+    /// 
+    bool isIPv6() const {
+      return mLocalAddress.isIPv6();
+    }
 
     /// \brief Get the currently bound local address of the socket.
     ///
