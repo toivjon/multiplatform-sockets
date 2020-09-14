@@ -490,7 +490,7 @@ namespace mps
     #if _WIN32
     /// \brief RAII wrapper for auto-startup and shutdown of Windows Sockets 2.
     ///
-    /// Windows based systems (Windows OSes and XBoxes) use Windows Sockets for
+    /// Windows based systems (Windows OSes and Xboxes) use Windows Sockets for
     /// the socket management. This class encapsulates necessary logic required
     /// to initialize and automatically cleanup the Windows Sockets service.
     /// 
