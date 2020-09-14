@@ -396,7 +396,7 @@ namespace mps
     /// 
     Socket(AddressFamily af, int type) : mBlocking(true) {
       #if _WIN32
-      static WinsockService winsock(2, 2);
+      static WinsockService winsock;
       #endif
       mHandle = socket(static_cast<int>(af), type, 0);
       if (mHandle == InvalidSocket) {
@@ -497,8 +497,9 @@ namespace mps
     class WinsockService final
     {
     public:
-      WinsockService(int verMajor, int verMinor) {
-        if (WSAStartup(MAKEWORD(verMajor, verMinor), &mData) != 0) {
+      static const auto Version = MAKEWORD(2, 2);
+      WinsockService() {
+        if (WSAStartup(Version, &mData) != 0) {
           throw SocketException("WSAStartup");
         }
       }
