@@ -511,6 +511,12 @@ namespace mps
     };
     #endif
 
+    /// \brief Swap the contents of the current socket with an another socket.
+    ///
+    /// Swap functionality is currently only being used with move-constructors
+    /// and move-assignment operators to perform the the logical moving of the
+    /// information and the actual underlying socket handle instance.
+    /// 
     void swap(Socket& rhs) noexcept {
       mHandle = rhs.mHandle;
       mBlocking = rhs.mBlocking;
