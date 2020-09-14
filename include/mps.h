@@ -532,6 +532,7 @@ namespace mps
     }
   };
 
+  // TODO expand move-constructor and move-assignment as we store remote addr?
   class TCPClientSocket : public TCPSocket
   {
   public:
