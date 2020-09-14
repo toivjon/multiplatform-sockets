@@ -516,8 +516,9 @@ namespace mps
       mLocalAddress = rhs.mLocalAddress;
       rhs.mHandle = InvalidSocket;
     }
-    bool          mBlocking;
-    Address       mLocalAddress;
+
+    bool    mBlocking;
+    Address mLocalAddress;
   };
 
   // An abstraction for all TCP sockets which cannot be directly constructed.
