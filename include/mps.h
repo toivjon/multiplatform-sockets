@@ -553,16 +553,48 @@ namespace mps
       refreshLocalAddress();
     }
 
-    // Build a new TCP client with the given socket handle and remote address.
-    TCPClientSocket(Handle handle, bool blocking, const Address& addr) : TCPSocket(handle, blocking), mRemoteAddress(addr) {
+    // TODO this should be moved as private and use via friend TCPServerSocket.
+    /// \brief Build a new TCP client by wrapping up the given socket handle.
+    ///
+    /// The given handle should be a valid socket handle or this function will
+    /// will throw an exception. Function also requires the blocking definition
+    /// as some OSes (e.g. Windows) doesn't seem to allow us to query the state
+    /// whether the socket uses blocking operations. We also should provide the
+    /// peer address so it can be queried directly from the client socket.
+    ///
+    /// \throws SocketException If local address refresh fails.
+    ///
+    /// \param handle A valid socket handle received with accept(...).
+    /// \param blocking The definition whether the socket uses blocking ops.
+    /// \param addr The address of the remote machine.
+    ///
+    TCPClientSocket(Handle handle, bool blocking, const Address& addr)
+      : TCPSocket(handle, blocking), mRemoteAddress(addr) {
     }
 
-    // Get the remote address of the established TCP connection.
-    const Address& getRemoteAddress() const { return mRemoteAddress; }
-    // Get the port of the remote address of the established TCP connection.
-    uint16_t getRemotePort() const { return mRemoteAddress.getPort(); }
-    // Get the IP of the remote address of the established TCP connection.
-    std::string getRemoteIP() const { return mRemoteAddress.getIP(); }
+    /// \brief Get the full address of the currently connected remote machine.
+    ///
+    /// \returns The address of the remote machine.
+    /// 
+    const Address& getRemoteAddress() const {
+      return mRemoteAddress;
+    }
+    
+    /// \brief Get the port number of the currently connected remote machine.
+    ///
+    /// \returns The port number of the remote machine.
+    /// 
+    uint16_t getRemotePort() const {
+      return mRemoteAddress.getPort();
+    }
+
+    /// \brief Get the IP address of the currently connected remote machine.
+    ///
+    /// \returns The IP address of the remote machine.
+    /// 
+    std::string getRemoteIP() const {
+      return mRemoteAddress.getIP();
+    }
 
     /// \brief Specify whether the socket should send keep-alive messsages.
     ///
