@@ -240,12 +240,29 @@ namespace mps
     // Get the definition whether the target socket uses IPv6 address family.
     bool isIPv6() const { return mLocalAddress.isIPv6(); }
 
-    // Get the locally bound address of the socket.
-    const Address& getLocalAddress() const { return mLocalAddress; }
-    // Get the locally bound port of the socket.
-    uint16_t getLocalPort() const { return mLocalAddress.getPort(); }
-    // Get the locally bound IP of the socket.
-    std::string getLocalIP() const { return mLocalAddress.getIP(); }
+    /// \brief Get the currently bound local address of the socket.
+    ///
+    /// \returns The locally bound address.
+    /// 
+    const Address& getLocalAddress() const {
+      return mLocalAddress;
+    }
+    
+    /// \brief Get the port number of the currently bound local address.
+    ///
+    /// \returns The port number of the locally bound address.
+    /// 
+    uint16_t getLocalPort() const {
+      return mLocalAddress.getPort();
+    }
+
+    /// \brief Get the IP address of the currently bound local interface.
+    ///
+    /// \returns The IP address of the locally bound network interface.
+    /// 
+    std::string getLocalIP() const {
+      return mLocalAddress.getIP();
+    }
 
     /// \brief Specify whether the socket should use blocking I/O operations.
     ///
