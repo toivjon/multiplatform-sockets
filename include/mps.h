@@ -524,11 +524,28 @@ namespace mps
     // Get whether the socket uses Nagle's algorithm to buffer data flow.
     bool isBuffering() const { return getOpt(IPPROTO_TCP, TCP_NODELAY) == 0; }
   protected:
-    // Build a new TCP socket base instance with the specified address family.
+    /// \brief Build a new TCP socket supporting the specified address family.
+    ///
+    /// \throws SocketException Whether the construction fails.
+    /// 
+    /// \param af The definition whether the socket uses TCP or UDP addresses.
+    /// 
     TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {
     }
-    // Build a new TCP socket with the given socket handle and address family.
-    TCPSocket(Handle sock, bool blocking) : Socket(sock, blocking) {
+
+    /// \brief Build a new TCP socket by wrapping up the given socket handle.
+    ///
+    /// The given handle should be a valid socket handle or this function will
+    /// will throw an exception. Function also requires the blocking definition
+    /// as some OSes (e.g. Windows) doesn't seem to allow us to query the state
+    /// whether the socket uses blocking operations.
+    ///
+    /// \throws SocketException If refreshing the local address fails.
+    ///
+    /// \param handle A valid socket handle received with accept(...).
+    /// \param blocking The definition whether the socket uses blocking ops.
+    /// 
+    TCPSocket(Handle handle, bool blocking) : Socket(handle, blocking) {
     }
   };
 
@@ -563,7 +580,7 @@ namespace mps
     /// whether the socket uses blocking operations. We also should provide the
     /// peer address so it can be queried directly from the client socket.
     ///
-    /// \throws SocketException If local address refresh fails.
+    /// \throws SocketException If refreshing the local address fails.
     ///
     /// \param handle A valid socket handle received with accept(...).
     /// \param blocking The definition whether the socket uses blocking ops.
