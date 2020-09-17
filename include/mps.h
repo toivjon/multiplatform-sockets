@@ -161,12 +161,24 @@ namespace mps
         }
       }
     }
-    // Get a reference to the wrapped socket address as a sockaddr.
-    sockaddr* getSockaddr() { return reinterpret_cast<sockaddr*>(&mSockAddr); }
-    // Get a constant reference to the wrapped socket address as a sockaddr.
-    const sockaddr* getSockaddr() const { return reinterpret_cast<const sockaddr*>(&mSockAddr); }
-    // Get the size of the wrapped socket address structure.
-    socklen_t getSize() const { return isIPv4() ? sizeof(sockaddr_in) : sizeof(sockaddr_in6); }
+
+    // \brief Get a reference to the wrapped socket address as a sockaddr.
+    // \returns A sockaddr reference to wrapped socket address.
+    sockaddr* getSockaddr() {
+      return reinterpret_cast<sockaddr*>(&mSockAddr);
+    }
+
+    // \brief Get a reference to the wrapped socket address as a sockaddr.
+    // \returns A constant sockaddr reference to wrapped socket address.
+    const sockaddr* getSockaddr() const {
+      return reinterpret_cast<const sockaddr*>(&mSockAddr);
+    }
+
+    // \brief Get the size of the underlying socket address wrapper.
+    // \returns The size of the wrapped socket address.
+    socklen_t getSize() const {
+      return isIPv4() ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
+    }
 
   private:
     // An undefined port indicates that the address has not an assigned port.
