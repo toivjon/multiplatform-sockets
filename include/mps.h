@@ -52,16 +52,18 @@ namespace mps
   class Address final
   {
   public:
-    // Build a new IPv4 address with a undefined port and IP value definitions.
-    Address() : Address(AddressFamily::IPv4, UndefinedPort) {
+    Address() noexcept : Address(AddressFamily::IPv4, UndefinedPort) {
     }
 
-    // Build a new address with given address family and undefined port and IP.
-    Address(AddressFamily af) : Address(af, UndefinedPort) {
+    // \brief Build a undefined socket address with the given address family.
+    // \param aft The address family for the socket address.
+    Address(AddressFamily af) noexcept : Address(af, UndefinedPort) {
     }
 
-    // Build a new undefined address with a specified port and address family.
-    Address(AddressFamily af, uint16_t port) : mSockAddr({}) {
+    // \brief Build a undefined address with the given family and port number.
+    // \param af The address family for the socket address.
+    // \param port The port number for the socket address.
+    Address(AddressFamily af, uint16_t port) noexcept : mSockAddr({}) {
       if (af == AddressFamily::IPv6) {
         auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
         sockaddr->sin6_family = AF_INET6;
@@ -75,23 +77,13 @@ namespace mps
       }
     }
 
-    // Build a new address with the specified port and IP address definitions.
-    Address(const std::string& ip, uint16_t port) : mSockAddr({}) {
-      if (isIPv6String(ip)) {
-        auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
-        sockaddr->sin6_family = AF_INET6;
-        sockaddr->sin6_port = htons(port);
-        if (!inet_pton(AF_INET6, ip.c_str(), &sockaddr->sin6_addr)) {
-          throw AddressException(ip);
-        }
-      } else {
-        auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
-        sockaddr->sin_family = AF_INET;
-        sockaddr->sin_port = htons(port);
-        if (!inet_pton(AF_INET, ip.c_str(), &sockaddr->sin_addr)) {
-          throw AddressException(ip);
-        }
-      }
+    // \brief Build a new address with the given IP address and port number.
+    // \throws AddressException whether an invalid address was given.
+    // \param address The IP address for the socket address.
+    // \param port The port number for the socket address.
+    Address(const std::string& address, uint16_t port) : mSockAddr({}) {
+      setAddress(address);
+      setPort(port);
     }
 
     // \brief Get the address family (IPv4 or IPv6) of the wrapped address.
