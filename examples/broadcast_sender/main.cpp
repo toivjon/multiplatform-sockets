@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 
     // broadcast messages N-times with the provided interval.
     std::cout << "Starting UDP broadcast to ";
-    std::cout << broadcastAddr.getIP();
+    std::cout << broadcastAddr.getAddress();
     std::cout << ":";
     std::cout << broadcastAddr.getPort();
     std::cout << std::endl;

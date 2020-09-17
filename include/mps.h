@@ -300,7 +300,7 @@ namespace mps
     /// \returns The IP address of the locally bound network interface.
     /// 
     std::string getLocalIP() const noexcept {
-      return mLocalAddress.getIP();
+      return mLocalAddress.getAddress();
     }
 
     /// \brief Specify whether the socket should use blocking I/O operations.
@@ -680,7 +680,7 @@ namespace mps
     /// \returns The IP address of the remote machine.
     /// 
     std::string getRemoteIP() const {
-      return mRemoteAddress.getIP();
+      return mRemoteAddress.getAddress();
     }
 
     /// \brief Specify whether the socket should send keep-alive messsages.
@@ -898,7 +898,7 @@ namespace mps
     /// \returns The IP address of the remote source or target address.
     /// 
     std::string getIP() const {
-      return mAddress.getIP();
+      return mAddress.getAddress();
     }
 
     /// \brief Set the IP address of the remote source or target address.
@@ -906,7 +906,7 @@ namespace mps
     /// \param ip The IP address of the remote source or target address.
     /// 
     void setIP(const std::string& ip) {
-      mAddress.setIP(ip);
+      mAddress.setAddress(ip);
     }
 
     /// \brief Get the data buffer that is associated with this packet.

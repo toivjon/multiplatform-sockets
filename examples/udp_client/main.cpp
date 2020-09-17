@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
 
     // send a simple datagram to the specified remote host IP address and port.
     std::cout << "Sending a simple UDP message to remote target:" << std::endl;
-    std::cout << "  remote-ip: " << addr.getIP() << std::endl;
+    std::cout << "  remote-ip: " << addr.getAddress() << std::endl;
     std::cout << "remote-port: " << addr.getPort() << std::endl;
     std::cout << "       data: " << "hello" << std::endl;
     socket.send(UDPPacket{ addr, { 'h','e','l','l','o', '\0' } });
