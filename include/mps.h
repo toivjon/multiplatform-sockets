@@ -120,7 +120,7 @@ namespace mps
         : reinterpret_cast<const sockaddr_in6*>(&mSockAddr)->sin6_port);
     }
 
-    // \brief Set the port number to be associated with the address.
+    // \brief Set the port number to be associated with the socket address.
     // \param port The port number for the address.
     void setPort(uint16_t port) noexcept {
       if (isIPv4()) {
@@ -130,6 +130,44 @@ namespace mps
       }
     }
 
+    // \brief Get the currently associated IP address of the socket address.
+    // \throws AddressException whether the IP address cannot be queried.
+    // \returns The IP address of the socket address.
+    std::string getAddress() const {
+      if (isIPv4()) {
+        char buffer[16];
+        auto addr = reinterpret_cast<const sockaddr_in*>(&mSockAddr);
+        if (!inet_ntop(AF_INET, &addr->sin_addr, buffer, sizeof(buffer))) {
+          throw AddressException("TODO");
+        }
+        return buffer;
+      } else {
+        char buffer[46];
+        auto addr = reinterpret_cast<const sockaddr_in6*>(&mSockAddr);
+        if (!inet_ntop(AF_INET6, &addr->sin6_addr, buffer, sizeof(buffer))) {
+          throw AddressException("TODO");
+        }
+        return buffer;
+      }
+    }
+
+    void setAddress(const std::string& address) {
+      if (isIPv6String(address)) {
+        auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
+        sockaddr->sin6_family = AF_INET6;
+        sockaddr->sin6_port = htons(getPort());
+        if (!inet_pton(AF_INET6, address.c_str(), &sockaddr->sin6_addr)) {
+          throw AddressException(address);
+        }
+      } else {
+        auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
+        sockaddr->sin_family = AF_INET;
+        sockaddr->sin_port = htons(getPort());
+        if (!inet_pton(AF_INET, address.c_str(), &sockaddr->sin_addr)) {
+          throw AddressException(address);
+        }
+      }
+    }
     // Get a reference to the wrapped socket address as a sockaddr.
     sockaddr* getSockaddr() { return reinterpret_cast<sockaddr*>(&mSockAddr); }
     // Get a constant reference to the wrapped socket address as a sockaddr.
@@ -137,38 +175,6 @@ namespace mps
     // Get the size of the wrapped socket address structure.
     socklen_t getSize() const { return isIPv4() ? sizeof(sockaddr_in) : sizeof(sockaddr_in6); }
 
-    // Get the IP address of the address.
-    std::string getIP() const {
-      if (isIPv4()) {
-        char buffer[16];
-        auto addr = reinterpret_cast<const sockaddr_in*>(&mSockAddr);
-        inet_ntop(AF_INET, &addr->sin_addr, buffer, sizeof(buffer));
-        return buffer;
-      } else {
-        char buffer[46];
-        auto addr = reinterpret_cast<const sockaddr_in6*>(&mSockAddr);
-        inet_ntop(AF_INET6, &addr->sin6_addr, buffer, sizeof(buffer));
-        return buffer;
-      }
-    }
-
-    void setIP(const std::string& ip) {
-      if (isIPv6String(ip)) {
-        auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
-        sockaddr->sin6_family = AF_INET6;
-        sockaddr->sin6_port = htons(getPort());
-        if (!inet_pton(AF_INET6, ip.c_str(), &sockaddr->sin6_addr)) {
-          throw AddressException(ip);
-        }
-      } else {
-        auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
-        sockaddr->sin_family = AF_INET;
-        sockaddr->sin_port = htons(getPort());
-        if (!inet_pton(AF_INET, ip.c_str(), &sockaddr->sin_addr)) {
-          throw AddressException(ip);
-        }
-      }
-    }
   private:
     // An undefined port indicates that the address has not an assigned port.
     static auto const UndefinedPort = 0;
