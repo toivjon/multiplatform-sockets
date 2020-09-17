@@ -264,13 +264,13 @@ namespace mps
 
     // \brief Get the definition whether the socket uses IPv4 address family.
     // \returns True if the socket uses IPv4 and false otherwise.
-    bool isIPv4() const {
+    bool isIPv4() const noexcept {
       return mLocalAddress.isIPv4();
     }
 
     // \brief Get the definition whether the socket uses IPv4 address family.
     // \returns True if the socket uses IPv6 and false otherwise.
-    bool isIPv6() const {
+    bool isIPv6() const noexcept {
       return mLocalAddress.isIPv6();
     }
 
