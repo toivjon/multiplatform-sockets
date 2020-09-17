@@ -256,26 +256,20 @@ namespace mps
       }
     }
     
-    /// \brief Get the definition whether socket uses IPv4 or IPv6 addresses.
-    ///
-    /// \returns The address value indicating the sockets address family.
-    /// 
-    AddressFamily getAddressFamily() const {
+    // \brief Get the definition whether the socket uses IPv4 or IPv6 address.
+    // \returns The address value indicating the address family of the socket.
+    AddressFamily getAddressFamily() const noexcept {
       return mLocalAddress.getFamily();
     }
 
-    /// \brief Get the definition whether the socket uses IPv4 address family.
-    ///
-    /// \returns Boolean indicating whether IPv4 is being used.
-    /// 
+    // \brief Get the definition whether the socket uses IPv4 address family.
+    // \returns True if the socket uses IPv4 and false otherwise.
     bool isIPv4() const {
       return mLocalAddress.isIPv4();
     }
 
-    /// \brief Get the definition whether the socket uses IPv6 address family.
-    ///
-    /// \returns Boolean indicating whether IPv6 is being used.
-    /// 
+    // \brief Get the definition whether the socket uses IPv4 address family.
+    // \returns True if the socket uses IPv6 and false otherwise.
     bool isIPv6() const {
       return mLocalAddress.isIPv6();
     }
