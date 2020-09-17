@@ -102,19 +102,19 @@ namespace mps
 
     // \brief Get the definition whether the address presents an IPv4 address.
     // \returns True if the address is an IPv4 address and false otherwise.
-    bool isIPv4() const {
+    bool isIPv4() const noexcept {
       return mSockAddr.ss_family == AF_INET;
     }
 
     // \brief Get the definition whether the address presents an IPv6 address.
     // \returns True if the address is an IPv6 address and false otherwise.
-    bool isIPv6() const {
+    bool isIPv6() const noexcept {
       return mSockAddr.ss_family == AF_INET6;
     }
 
     // \brief Get the port number that has been associated with the address.
     // \returns The port number of the address.
-    uint16_t getPort() const {
+    uint16_t getPort() const noexcept {
       return ntohs(isIPv4()
         ? reinterpret_cast<const sockaddr_in*>(&mSockAddr)->sin_port
         : reinterpret_cast<const sockaddr_in6*>(&mSockAddr)->sin6_port);
@@ -122,7 +122,7 @@ namespace mps
 
     // \brief Set the port number to be associated with the address.
     // \param port The port number for the address.
-    void setPort(uint16_t port) {
+    void setPort(uint16_t port) noexcept {
       if (isIPv4()) {
         reinterpret_cast<sockaddr_in*>(&mSockAddr)->sin_port = htons(port);
       } else {
