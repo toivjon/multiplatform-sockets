@@ -301,7 +301,7 @@ namespace mps
     ///
     /// \returns The IP address of the locally bound network interface.
     /// 
-    std::string getLocalIP() const {
+    std::string getLocalIP() const noexcept {
       return mLocalAddress.getIP();
     }
 
