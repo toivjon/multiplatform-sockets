@@ -112,6 +112,24 @@ namespace mps
       return mSockAddr.ss_family == AF_INET6;
     }
 
+    // \brief Get the port number that has been associated with the address.
+    // \returns The port number of the address.
+    uint16_t getPort() const {
+      return ntohs(isIPv4()
+        ? reinterpret_cast<const sockaddr_in*>(&mSockAddr)->sin_port
+        : reinterpret_cast<const sockaddr_in6*>(&mSockAddr)->sin6_port);
+    }
+
+    // \brief Set the port number to be associated with the address.
+    // \param port The port number for the address.
+    void setPort(uint16_t port) {
+      if (isIPv4()) {
+        reinterpret_cast<sockaddr_in*>(&mSockAddr)->sin_port = htons(port);
+      } else {
+        reinterpret_cast<sockaddr_in6*>(&mSockAddr)->sin6_port = htons(port);
+      }
+    }
+
     // Get a reference to the wrapped socket address as a sockaddr.
     sockaddr* getSockaddr() { return reinterpret_cast<sockaddr*>(&mSockAddr); }
     // Get a constant reference to the wrapped socket address as a sockaddr.
@@ -149,28 +167,6 @@ namespace mps
         if (!inet_pton(AF_INET, ip.c_str(), &sockaddr->sin_addr)) {
           throw AddressException(ip);
         }
-      }
-    }
-
-    // Get the port of the address.
-    uint16_t getPort() const {
-      if (isIPv4()) {
-        const auto& sockaddr = reinterpret_cast<const sockaddr_in*>(&mSockAddr);
-        return ntohs(sockaddr->sin_port);
-      } else {
-        const auto& sockaddr = reinterpret_cast<const sockaddr_in6*>(&mSockAddr);
-        return ntohs(sockaddr->sin6_port);
-      }
-    }
-
-    // Set the port for the address.
-    void setPort(uint16_t port) {
-      if (isIPv4()) {
-        auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
-        sockaddr->sin_port = htons(port);
-      } else {
-        auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
-        sockaddr->sin6_port = htons(port);
       }
     }
   private:
