@@ -52,11 +52,12 @@ namespace mps
   class Address final
   {
   public:
+    // \brief Build a undefined IPv4 socket address with undefined port number.
     Address() noexcept : Address(AddressFamily::IPv4, UndefinedPort) {
     }
 
     // \brief Build a undefined socket address with the given address family.
-    // \param aft The address family for the socket address.
+    // \param af The address family for the socket address.
     Address(AddressFamily af) noexcept : Address(af, UndefinedPort) {
     }
 
