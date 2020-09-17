@@ -96,12 +96,23 @@ namespace mps
     Address(const sockaddr_storage& addr) : mSockAddr(addr) {
     }
 
-    // Get the definition which tells whether the address presents IPv4 or IPv6 address.
-    AddressFamily getFamily() const { return isIPv4() ? AddressFamily::IPv4 : AddressFamily::IPv6; }
-    // Get the definition whether the address presents a IPv4 address.
-    bool isIPv4() const { return mSockAddr.ss_family == AF_INET; }
-    // Get the definition whether the address presents a IPv6 address.
-    bool isIPv6() const { return mSockAddr.ss_family == AF_INET6; }
+    // \brief Get the address family (IPv4 or IPv6) of the wrapped address.
+    // \returns The address family being used by the address.
+    AddressFamily getFamily() const {
+      return isIPv4() ? AddressFamily::IPv4 : AddressFamily::IPv6;
+    }
+
+    // \brief Get the definition whether the address presents an IPv4 address.
+    // \returns True if the address is an IPv4 address and false otherwise.
+    bool isIPv4() const {
+      return mSockAddr.ss_family == AF_INET;
+    }
+
+    // \brief Get the definition whether the address presents an IPv6 address.
+    // \returns True if the address is an IPv6 address and false otherwise.
+    bool isIPv6() const {
+      return mSockAddr.ss_family == AF_INET6;
+    }
 
     // Get a reference to the wrapped socket address as a sockaddr.
     sockaddr* getSockaddr() { return reinterpret_cast<sockaddr*>(&mSockAddr); }
