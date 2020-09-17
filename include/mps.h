@@ -290,7 +290,7 @@ namespace mps
     ///
     /// \returns The locally bound address.
     /// 
-    const Address& getLocalAddress() const {
+    const Address& getLocalAddress() const noexcept {
       return mLocalAddress;
     }
     
@@ -298,7 +298,7 @@ namespace mps
     ///
     /// \returns The port number of the locally bound address.
     /// 
-    uint16_t getLocalPort() const {
+    uint16_t getLocalPort() const noexcept {
       return mLocalAddress.getPort();
     }
 
@@ -306,7 +306,7 @@ namespace mps
     ///
     /// \returns The IP address of the locally bound network interface.
     /// 
-    std::string getLocalIP() const noexcept {
+    std::string getLocalIP() const {
       return mLocalAddress.getAddress();
     }
 
