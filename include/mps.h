@@ -1,6 +1,8 @@
 #ifndef MPS_H
 #define MPS_H
 
+// TODO add noexcept's to correponding places
+
 #include <cstdint>
 #include <exception>
 #include <string>
