@@ -96,7 +96,7 @@ namespace mps
 
     // \brief Get the address family (IPv4 or IPv6) of the wrapped address.
     // \returns The address family being used by the address.
-    AddressFamily getFamily() const {
+    AddressFamily getFamily() const noexcept {
       return isIPv4() ? AddressFamily::IPv4 : AddressFamily::IPv6;
     }
 
