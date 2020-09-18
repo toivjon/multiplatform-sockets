@@ -947,6 +947,17 @@ namespace mps
   class UDPSocket : public Socket
   {
   public:
+    /// \brief Build and auto-bind a new IPv4 UDP socket with automatic binds.
+    ///
+    /// This function will build and bind a new UDP socket and assign it to all
+    /// available local interfaces and allow the system to find a suitable port
+    /// number for the socket.
+    ///
+    /// \throws SocketException if the bind operation fails.
+    /// 
+    UDPSocket() : UDPSocket(AddressFamily::IPv4) {
+    }
+
     /// \brief Build and auto-bind a UDP socket with the given address family.
     ///
     /// This function will build and bind a new UDP socket and assign it to all
