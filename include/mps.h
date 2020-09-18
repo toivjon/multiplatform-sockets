@@ -207,7 +207,9 @@ namespace mps
       FormatMessageA(flags, nullptr, error, 0, (LPSTR)&text, 0, nullptr);
       if (text != nullptr) {
         mMessage += mOperation;
-        mMessage += " failed: ";
+        mMessage += " failed: (";
+        mMessage += std::to_string(error);
+        mMessage += ") ";
         mMessage += std::string(text);
         LocalFree(text);
       }
