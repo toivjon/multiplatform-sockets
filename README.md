@@ -1,5 +1,6 @@
 # multiplatform-sockets
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
 A simple multiplatform header-only C++ library wrapper for using UDP and TCP sockets.
 
 ## Features
