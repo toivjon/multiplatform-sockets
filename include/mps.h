@@ -2,6 +2,7 @@
 #define MPS_H
 
 // TODO add noexcept's to correponding places
+// TODO replace inet_ntop/inet_pton:s with getnameinfo/getaddrinfo:s.
 
 #include <cstdint>
 #include <exception>
