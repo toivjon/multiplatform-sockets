@@ -1,4 +1,6 @@
 # multiplatform-sockets
+[![Build Status](https://img.shields.io/travis/toivjon/multiplatform-sockets/master.svg)](https://travis-ci.org/toivjon/multiplatform-sockets)
+[![Coverage Status](https://coveralls.io/repos/github/toivjon/multiplatform-sockets/badge.svg?branch=master)](https://coveralls.io/github/toivjon/multiplatform-sockets?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 A simple multiplatform header-only C++ library wrapper for using UDP and TCP sockets.
