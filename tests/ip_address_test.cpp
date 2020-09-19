@@ -7,4 +7,5 @@ TEST(example, foobar)
 {
   auto addr = Address();
   ASSERT_EQ(AddressFamily::IPv4, addr.getFamily());
+  ASSERT_EQ(0, addr.getPort());
 }
