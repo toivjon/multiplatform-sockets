@@ -17,7 +17,7 @@ jobs:
         - gem install coveralls-lcov
       before-script:
         - cd ${TRAVIS_BUILD_DIR}
-        - lcov --directory ./include --zerocounters
+        - lcov --directory . --zerocounters
       scripts:
         - cd ${TRAVIS_BUILD_DIR}
         - cppcheck --quiet --enable=warning,performance,portability,style --error-exitcode=1 .
@@ -28,7 +28,7 @@ jobs:
         - ctest
       after_success:
         - cd ${TRAVIS_BUILD_DIR}
-        - lcov --directory ./include --capture --output-file coverage.info
+        - lcov --directory . --capture --output-file coverage.info
         - lcov --remove coverage.info 'tests/*' 'CMakeFiles/*' '_deps/*' '/usr/*' 'examples/*' 'build/*' --output-file coverage.info
         - coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info
     - stage: test
