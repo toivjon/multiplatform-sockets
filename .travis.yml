@@ -23,7 +23,7 @@ jobs:
         - cppcheck --quiet --enable=warning,performance,portability,style --error-exitcode=1 .
         - mkdir build
         - cd build
-        - cmake .. -DCMAKE_CXX_FLAGS="-g -O0 --coverage"
+        - cmake .. -DCMAKE_CXX_FLAGS="-Wall -Werror -g -O0 --coverage"
         - cmake --build .
         - ctest
       after_success:
