@@ -29,7 +29,7 @@ jobs:
       after_success:
         - cd ${TRAVIS_BUILD_DIR}
         - lcov --directory . --capture --output-file coverage.info
-        - lcov -r 'build/*' -o coverage.info
+        - lcov -r coverage.info 'build/*' -o coverage.info
         - coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info
     - stage: test
       os: osx
