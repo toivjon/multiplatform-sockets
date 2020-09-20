@@ -17,7 +17,7 @@ jobs:
         - gem install coveralls-lcov
       before-script:
         - cd ${TRAVIS_BUILD_DIR}
-        - lcov --directory . --zerocounters
+        - lcov --directory ./include --zerocounters
       scripts:
         - cd ${TRAVIS_BUILD_DIR}
         - cppcheck --quiet --enable=warning,performance,portability,style --error-exitcode=1 .
