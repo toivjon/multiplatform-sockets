@@ -3,7 +3,7 @@
 
 using namespace mps;
 
-TEST(example, foobar)
+TEST(AddressTest, DefaultConstructor)
 {
   auto addr = Address();
   ASSERT_EQ(AddressFamily::IPv4, addr.getFamily());

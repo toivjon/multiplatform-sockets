@@ -25,7 +25,7 @@ if(NOT googletest_POPULATED)
 endif()
 
 # specify the files included in the test binaries.
-add_executable(mps_test ip_address_test.cpp)
+add_executable(mps_test "address_test.cpp" "address_exception_test.cpp" "socket_exception_test.cpp" "tcp_client_socket_test.cpp" "tcp_server_socket_test.cpp" "udp_socket_test.cpp")
 
 # define which libraries we want to link with our unit tests.
 target_link_libraries(mps_test PRIVATE gtest_main)
