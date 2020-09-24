@@ -34,17 +34,17 @@ jobs:
     - stage: test
       os: osx
       osx_image: xcode12u
-      install:
-        - cd ${TRAVIS_BUILD_DIR}
-        - export CC=clang
-        - export CXX=clang++
-      script:
-        - cd ${TRAVIS_BUILD_DIR}
-        - mkdir build
-        - cd build
-        - cmake ..
-        - cmake --build .
-        - ctest
+      # install:
+#        - cd ${TRAVIS_BUILD_DIR}
+#        - export CC=clang
+#        - export CXX=clang++
+# script:
+#        - cd ${TRAVIS_BUILD_DIR}
+#        - mkdir build
+#        - cd build
+#        - cmake ..
+#        - cmake --build .
+#        - ctest
 
 notifications:
   email: false
