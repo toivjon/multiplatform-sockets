@@ -15,7 +15,6 @@ jobs:
       before-script:
         - lcov -c -i -d . -o coverage.baseline
       scripts:
-        - cd ${TRAVIS_BUILD_DIR}
         - cppcheck --quiet --enable=warning,performance,portability,style --error-exitcode=1 .
         - mkdir build
         - cd build
