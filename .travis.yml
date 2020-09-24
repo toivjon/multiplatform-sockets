@@ -29,9 +29,7 @@ jobs:
     - stage: test
       os: osx
       osx_image: xcode12u
-      install:
-        - export CC=clang
-        - export CXX=clang++
+      compiler: clang
       script:
         - mkdir build
         - cd build
