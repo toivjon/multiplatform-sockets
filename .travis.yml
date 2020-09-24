@@ -13,7 +13,6 @@ jobs:
             - lcov
             - cppcheck
       install:
-        - cd ${TRAVIS_BUILD_DIR}
         - gem install coveralls-lcov
       before-script:
         - cd ${TRAVIS_BUILD_DIR}
