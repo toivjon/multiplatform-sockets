@@ -3,11 +3,11 @@ os:
 - linux
 - osx
 - windows
+dist: focal
+osx_image: xcode12
 script:
-- mkdir build
-- cd build
-- cmake ..
-- cmake --build .
+- cmake -S . -B build
+- cmake --build build
 - ctest
 notifications:
   email: false
