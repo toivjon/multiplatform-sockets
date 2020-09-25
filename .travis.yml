@@ -9,6 +9,7 @@ jobs:
           packages:
             - cppcheck
       after_script:
+        - cd ..
         - cppcheck -q -i _deps -i CMakeFiles --enable=all --error-exitcode=1 .
     - name: macOS (10.15.5)
       os: osx
