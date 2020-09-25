@@ -3,18 +3,21 @@ os:
   - linux
   - osx
   - windows
-dist: focal
-osx_image: xcode12
-before_script:
-  if: os = linux
-  - apt-get install -y cppcheck
+jobs:
+  include:
+    - os: linux
+      dist: focal
+      before_script:
+        - apt-get install -y cppcheck
+      after_script:
+        - cppcheck -q --enable=warning,performance,portability,style --error-exitcode=1 .
+    - os: osx
+      osx_image: xcode12
+    - os: windows2
 script:
   - cmake -S . -B build
   - cmake --build build
   - cd build
   - ctest
-after_script:
-  if: os = linux
-  - cppcheck -q --enable=warning,performance,portability,style --error-exitcode=1 .
 notifications:
   email: false
