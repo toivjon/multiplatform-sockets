@@ -1,17 +1,19 @@
 language: cpp
 jobs:
   include:
-    - name: Ubuntu Linux
+    - name: Ubuntu Linux (Focal 20.04)
       os: linux
       dist: focal
-      before_script:
-        - apt-get install -y cppcheck
+      addons:
+        apt:
+          packages:
+            - cppcheck
       after_script:
         - cppcheck -q --enable=warning,performance,portability,style --error-exitcode=1 .
-    - name: macOS
+    - name: macOS (10.15.5)
       os: osx
       osx_image: xcode12
-    - name: Windows Server
+    - name: Windows Server (1809)
       os: windows
 script:
   - cmake -S . -B build
