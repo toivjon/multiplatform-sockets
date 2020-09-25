@@ -3,42 +3,11 @@ os:
 - linux
 - osx
 - windows
-jobs:
-  include:
-    - stage: test
-      os: linux
-      dist: bionic
-      addons:
-        apt:
-          packages:
-            - lcov
-            - cppcheck
-      install:
-        - gem install coveralls-lcov
-      before-script:
-        - lcov -c -i -d . -o coverage.baseline
-      scripts:
-        - cppcheck --quiet --enable=warning,performance,portability,style --error-exitcode=1 .
-        - mkdir build
-        - cd build
-        - cmake .. -DCMAKE_CXX_FLAGS="-Wall -Werror -g -O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
-        - cmake --build .
-        - ctest
-      after_success:
-        - cd ${TRAVIS_BUILD_DIR}
-        - lcov -c -d . -o coverage.out
-        - lcov -a coverage.baseline -a coverage.out -o coverage.info
-        - lcov -r coverage.info '/usr/**' ${TRAVIS_BUILD_DIR}'/build/**' ${TRAVIS_BUILD_DIR}'/tests/**' -o coverage.info
-        - coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info
-    - stage: test
-      os: osx
-      osx_image: xcode12u
-      compiler: clang
-      script:
-        - mkdir build
-        - cd build
-        - cmake ..
-        - cmake --build .
-        - ctest
+script:
+- mkdir build
+- cd build
+- cmake ..
+- cmake --build .
+- ctest
 notifications:
   email: false
