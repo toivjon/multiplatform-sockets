@@ -1,19 +1,18 @@
 language: cpp
-os:
-  - linux
-  - osx
-  - windows
 jobs:
   include:
-    - os: linux
+    - name: Ubuntu Linux
+      os: linux
       dist: focal
       before_script:
         - apt-get install -y cppcheck
       after_script:
         - cppcheck -q --enable=warning,performance,portability,style --error-exitcode=1 .
-    - os: osx
+    - name: macOS
+      os: osx
       osx_image: xcode12
-    - os: windows2
+    - name: Windows Server
+      os: windows
 script:
   - cmake -S . -B build
   - cmake --build build
