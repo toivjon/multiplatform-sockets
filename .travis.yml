@@ -15,6 +15,6 @@ script:
   - ctest
 after_script:
   if: os = linux
-  - cppcheck --quiet --enable=warning,performance,portability,style --error-exitcode=1 .
+  - cppcheck -q --enable=warning,performance,portability,style --error-exitcode=1 .
 notifications:
   email: false
