@@ -1,14 +1,14 @@
 language: cpp
 os:
-- linux
-- osx
-- windows
+  - linux
+  - osx
+  - windows
 dist: focal
 osx_image: xcode12
 script:
-- cmake -S . -B build
-- cmake --build build
-- cd build
-- ctest
+  - cmake -S . -B build
+  - cmake --build build
+  - cd build
+  - ctest
 notifications:
   email: false
