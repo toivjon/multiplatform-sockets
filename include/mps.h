@@ -136,14 +136,14 @@ namespace mps
       if (isIPv4()) {
         char buffer[16];
         auto addr = reinterpret_cast<const sockaddr_in*>(&mSockAddr);
-        if (!inet_ntop(AF_INET, &addr->sin_addr, buffer, sizeof(buffer))) {
+        if (inet_ntop(AF_INET, &addr->sin_addr, buffer, sizeof(buffer)) == nullptr) {
           throw AddressException("TODO");
         }
         address = buffer;
       } else {
         char buffer[46];
         auto addr = reinterpret_cast<const sockaddr_in6*>(&mSockAddr);
-        if (!inet_ntop(AF_INET6, &addr->sin6_addr, buffer, sizeof(buffer))) {
+        if (inet_ntop(AF_INET6, &addr->sin6_addr, buffer, sizeof(buffer)) == nullptr) {
           throw AddressException("TODO");
         }
         address = buffer;
@@ -156,14 +156,14 @@ namespace mps
         auto sockaddr = reinterpret_cast<sockaddr_in6*>(&mSockAddr);
         sockaddr->sin6_family = AF_INET6;
         sockaddr->sin6_port = htons(getPort());
-        if (!inet_pton(AF_INET6, address.c_str(), &sockaddr->sin6_addr)) {
+        if (inet_pton(AF_INET6, address.c_str(), &sockaddr->sin6_addr) == 0) {
           throw AddressException(address);
         }
       } else {
         auto sockaddr = reinterpret_cast<sockaddr_in*>(&mSockAddr);
         sockaddr->sin_family = AF_INET;
         sockaddr->sin_port = htons(getPort());
-        if (!inet_pton(AF_INET, address.c_str(), &sockaddr->sin_addr)) {
+        if (inet_pton(AF_INET, address.c_str(), &sockaddr->sin_addr) == 0) {
           throw AddressException(address);
         }
       }
