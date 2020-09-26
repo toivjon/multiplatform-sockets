@@ -35,8 +35,8 @@ namespace mps
   {
   public:
     // Build a new address exception which tells that given address is invalid.
-    AddressException(const std::string& address) : mAddress(address) {
-      mMessage = "The '" + address + "' is not a valid IPv4 or IPv6 address.";
+    explicit AddressException(const std::string& address) : mAddress(address),
+      mMessage("The '" + address + "' is not a valid IPv4 or IPv6 address.") {
     }
 
     // Get the original address that was used when this exception was thrown.
@@ -59,7 +59,7 @@ namespace mps
 
     // \brief Build a undefined socket address with the given address family.
     // \param af The address family for the socket address.
-    Address(AddressFamily af) noexcept : Address(af, UndefinedPort) {
+    explicit Address(AddressFamily af) noexcept : Address(af, UndefinedPort) {
     }
 
     // \brief Build a undefined address with the given family and port number.
@@ -199,7 +199,7 @@ namespace mps
   {
   public:
     // Build an exception about the target operation and auto-resolved details.
-    SocketException(const std::string& operation) : mOperation(operation) {
+    explicit SocketException(const std::string& operation) : mOperation(operation) {
       #ifdef _WIN32
       auto flags = 0;
       flags |= FORMAT_MESSAGE_FROM_SYSTEM;     // we use WSAGetLastError() code
@@ -611,7 +611,7 @@ namespace mps
     /// 
     /// \param af The definition whether the socket uses TCP or UDP addresses.
     /// 
-    TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {
+    explicit TCPSocket(AddressFamily af) : Socket(af, SOCK_STREAM) {
     }
 
     /// \brief Build a new TCP socket by wrapping up the given socket handle.
@@ -644,7 +644,7 @@ namespace mps
     /// 
     /// \param addr The address of the remote machine (inc. IP address & port).
     /// 
-    TCPClientSocket(const Address& addr)
+    explicit TCPClientSocket(const Address& addr)
       : TCPSocket(addr.getFamily()), mRemoteAddress(addr) {
       if (connect(mHandle, addr.getSockaddr(), addr.getSize()) == -1) {
         throw SocketException("connect");
@@ -787,7 +787,7 @@ namespace mps
     ///
     /// \param af The definition whether socket uses IPv4 or IPv6.
     ///
-    TCPServerSocket(AddressFamily af) : TCPServerSocket(af, 0) {
+    explicit TCPServerSocket(AddressFamily af) : TCPServerSocket(af, 0) {
     }
 
     /// \brief Build and bind a TCP socket with given address family and port.
@@ -812,7 +812,7 @@ namespace mps
     /// \throws SocketException if the bind or listen operation fails.
     ///
     /// \param addr The address containing interface, port and address family.
-    TCPServerSocket(const Address& addr) : TCPSocket(addr.getFamily()) {
+    explicit TCPServerSocket(const Address& addr) : TCPSocket(addr.getFamily()) {
       bind(addr);
       // TODO do we want to move this into separate function?
       if (listen(mHandle, 4) == -1) {
@@ -850,7 +850,7 @@ namespace mps
     ///
     /// \param size The buffer size i.e. the maximum number of bytes to read.
     /// 
-    UDPPacket(int size = 1024) : mData(size) {
+    explicit UDPPacket(int size = 1024) : mData(size) {
     }
 
     /// \brief Build a new UDP packet with the given data and target address.
@@ -973,7 +973,7 @@ namespace mps
     ///
     /// \param af The definition whether the socket uses IPv4 or IPv6.
     /// 
-    UDPSocket(AddressFamily af) : UDPSocket(af, UndefinedPort) {
+    explicit UDPSocket(AddressFamily af) : UDPSocket(af, UndefinedPort) {
     }
 
     /// \brief Build and bind a UDP socket with given address family and port.
@@ -997,7 +997,7 @@ namespace mps
     ///
     /// \param addr The address containing interface, port and address family.
     /// 
-    UDPSocket(const Address& addr) : Socket(addr.getFamily(), SOCK_DGRAM) {
+    explicit UDPSocket(const Address& addr) : Socket(addr.getFamily(), SOCK_DGRAM) {
       bind(addr);
     }
 
