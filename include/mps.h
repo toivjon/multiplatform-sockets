@@ -440,14 +440,14 @@ namespace mps
   protected:
     #ifdef _WIN32
     static const auto InvalidSocket = INVALID_SOCKET;
-    typedef SOCKET Handle;
-    typedef char Data;
-    typedef int DataSize;
+    using Handle = SOCKET;
+    using Data = char;
+    using DataSize = int;
     #else
     static const auto InvalidSocket = -1;
-    typedef int Handle;
-    typedef void Data;
-    typedef size_t DataSize;
+    using Handle = int;
+    using Data = void;
+    using DataSize = size_t;
     #endif
 
     /// \brief Build a new socket with the given address family and socket type.
