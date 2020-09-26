@@ -1077,6 +1077,6 @@ namespace mps
     static auto const UndefinedPort = 0;
   };
 
-}
+} // namespace mps
 
 #endif
