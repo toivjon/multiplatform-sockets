@@ -203,7 +203,7 @@ namespace mps
   {
   public:
     // Build an exception about the target operation and auto-resolved details.
-    explicit SocketException(const std::string& operation) : mOperation(operation) {
+    explicit SocketException(const std::string& operation) : mOperation(std::move(operation)) {
       #ifdef _WIN32
       auto flags = 0;
       flags |= FORMAT_MESSAGE_FROM_SYSTEM;     // we use WSAGetLastError() code
