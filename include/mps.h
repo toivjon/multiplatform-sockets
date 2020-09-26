@@ -206,6 +206,9 @@ namespace mps
   class SocketException final : public std::exception
   {
   public:
+    explicit SocketException(const char* operation) : SocketException(std::string(operation)) {
+    }
+
     // Build an exception about the target operation and auto-resolved details.
     explicit SocketException(const std::string& operation) : mOperation(std::move(operation)) {
       #ifdef _WIN32
