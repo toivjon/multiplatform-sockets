@@ -193,7 +193,7 @@ namespace mps
 
     // Check whether the given string contains IPv6 address.
     static bool isIPv6String(const std::string& val) {
-      return val.find(":") != std::string::npos;
+      return val.find(':') != std::string::npos;
     }
     sockaddr_storage mSockAddr;
   };
