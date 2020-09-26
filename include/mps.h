@@ -555,7 +555,8 @@ namespace mps
     int getOpt(int level, int optKey) const {
       auto optVal = 0;
       auto optLen = static_cast<socklen_t>(sizeof(int));
-      if (getsockopt(mHandle, level, optKey, (char*)&optVal, &optLen) == -1) {
+      auto optPtr = reinterpret_cast<char*>(&optVal);
+      if (getsockopt(mHandle, level, optKey, optPtr, &optLen) == -1) {
         throw SocketException("getsockopt(" + std::to_string(optKey) + ")");
       }
       return optVal;
