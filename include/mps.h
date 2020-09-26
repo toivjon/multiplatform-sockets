@@ -34,6 +34,10 @@ namespace mps
   class AddressException final : public std::exception
   {
   public:
+
+    explicit AddressException(const char* address) : AddressException(std::string(address)) {
+    }
+
     // Build a new address exception which tells that given address is invalid.
     explicit AddressException(const std::string& address) : mAddress(address),
       mMessage("The '" + address + "' is not a valid IPv4 or IPv6 address.") {
