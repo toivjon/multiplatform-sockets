@@ -16,6 +16,7 @@ jobs:
       osx_image: xcode12
     - name: Windows Server (1809)
       os: windows
+before_install: chmod +x ./scripts/run-tests.sh
 script: ./scripts/run-tests.sh
 notifications:
   email: false
