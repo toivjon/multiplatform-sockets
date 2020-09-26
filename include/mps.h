@@ -143,14 +143,14 @@ namespace mps
         if (inet_ntop(AF_INET, &addr->sin_addr, buffer, sizeof(buffer)) == nullptr) {
           throw AddressException("TODO");
         }
-        address = buffer;
+        address = std::string(buffer);
       } else {
         char buffer[46];
         auto addr = reinterpret_cast<const sockaddr_in6*>(&mSockAddr);
         if (inet_ntop(AF_INET6, &addr->sin6_addr, buffer, sizeof(buffer)) == nullptr) {
           throw AddressException("TODO");
         }
-        address = buffer;
+        address = std::string(buffer);
       }
       return address;
     }
