@@ -462,7 +462,7 @@ namespace mps
     /// \param af The address family (IPv4 or IPv6) of the socket.
     /// \param type The type (Stream or Datagram) of the socket.
     /// 
-    Socket(AddressFamily af, int type) : mBlocking(true) {
+    Socket(AddressFamily af, int type) : mBlocking(true), mHandle(InvalidSocket) {
       #if _WIN32
       static WinsockService winsock;
       #endif
