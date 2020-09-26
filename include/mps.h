@@ -877,8 +877,8 @@ namespace mps
     /// \param addr The address of the remote machine.
     /// \param data The data to be sent to remote machine.
     /// 
-    UDPPacket(const Address& addr, const std::vector<uint8_t>& data)
-    : mAddress(addr), mData(data) {
+    UDPPacket(const Address& addr, std::vector<uint8_t> data)
+    : mAddress(addr), mData(std::move(data)) {
     }
 
     /// \brief Get the address of the source or target machine of the packet.
