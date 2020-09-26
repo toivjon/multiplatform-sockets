@@ -253,7 +253,7 @@ namespace mps
 
     /// \brief Move-constructor implements move-sematic constructor with swap.
     /// \param rhs The righthand side of the construction.
-    Socket(Socket&& rhs) noexcept {
+    Socket(Socket&& rhs) noexcept : mHandle(InvalidSocket), mBlocking(true) {
       swap(rhs);
     }
 
