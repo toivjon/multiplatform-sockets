@@ -132,21 +132,23 @@ namespace mps
     // \throws AddressException whether the IP address cannot be queried.
     // \returns The IP address of the socket address.
     std::string getAddress() const {
+      std::string address;
       if (isIPv4()) {
         char buffer[16];
         auto addr = reinterpret_cast<const sockaddr_in*>(&mSockAddr);
         if (!inet_ntop(AF_INET, &addr->sin_addr, buffer, sizeof(buffer))) {
           throw AddressException("TODO");
         }
-        return buffer;
+        address = buffer;
       } else {
         char buffer[46];
         auto addr = reinterpret_cast<const sockaddr_in6*>(&mSockAddr);
         if (!inet_ntop(AF_INET6, &addr->sin6_addr, buffer, sizeof(buffer))) {
           throw AddressException("TODO");
         }
-        return buffer;
+        address = buffer;
       }
+      return address;
     }
 
     void setAddress(const std::string& address) {
