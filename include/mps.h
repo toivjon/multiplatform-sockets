@@ -466,7 +466,7 @@ namespace mps
     /// \param af The address family (IPv4 or IPv6) of the socket.
     /// \param type The type (Stream or Datagram) of the socket.
     /// 
-    Socket(AddressFamily af, int type) : mBlocking(true), mHandle(createHandle(af, type)) {
+    Socket(AddressFamily af, int type) : mHandle(createHandle(af, type)), mBlocking(true) {
     }
 
     /// \brief Build a socket with a socket handle and initial blocking state.
