@@ -1,8 +1,8 @@
 #ifndef MPS_H
 #define MPS_H
 
-// TODO add noexcept's to correponding places
-// TODO replace inet_ntop/inet_pton:s with getnameinfo/getaddrinfo:s.
+// TODO(toivjon) add noexcept's to correponding places
+// TODO(toivjon) replace inet_ntop/inet_pton:s with getnameinfo/getaddrinfo:s.
 
 #include <cstdint>
 #include <exception>
@@ -217,7 +217,7 @@ namespace mps
         LocalFree(text);
       }
       #else
-      // TODO how to get perror message? check when testing in unix-environment
+      // TODO(toivjon) how to get perror message? check when testing in unix-environment
       #endif
     }
 
@@ -634,7 +634,7 @@ namespace mps
     }
   };
 
-  // TODO expand move-constructor and move-assignment as we store remote addr?
+  // TODO(toivjon) expand move-constructor and move-assignment as we store remote addr?
   class TCPClientSocket : public TCPSocket
   {
   public:
@@ -656,7 +656,7 @@ namespace mps
       refreshLocalAddress();
     }
 
-    // TODO this should be moved as private and use via friend TCPServerSocket.
+    // TODO(toivjon) this should be moved as private and use via friend TCPServerSocket.
     /// \brief Build a new TCP client by wrapping up the given socket handle.
     ///
     /// The given handle should be a valid socket handle or this function will
@@ -771,7 +771,7 @@ namespace mps
       if (result == -1) {
         throw SocketException("recv");
       }
-      // TODO handle graceful close (result=0)
+      // TODO(toivjon) handle graceful close (result=0)
       return bytes;
     }
   private:
@@ -818,7 +818,7 @@ namespace mps
     /// \param addr The address containing interface, port and address family.
     explicit TCPServerSocket(const Address& addr) : TCPSocket(addr.getFamily()) {
       bind(addr);
-      // TODO do we want to move this into separate function?
+      // TODO(toivjon) do we want to move this into separate function?
       if (listen(mHandle, 4) == -1) {
         throw SocketException("listen");
       }
@@ -1070,7 +1070,7 @@ namespace mps
       if (result == -1) {
         throw SocketException("recvfrom");
       }
-      packet.getData().resize(result); // TODO fix this
+      packet.getData().resize(result); // TODO(toivjon) fix this
     }
   private:
     // An undefined port indicates that the port can be auto-selected by OS.
