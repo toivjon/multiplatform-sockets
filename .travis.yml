@@ -16,10 +16,6 @@ jobs:
       osx_image: xcode12
     - name: Windows Server (1809)
       os: windows
-script:
-  - cmake -S . -B build
-  - cmake --build build
-  - cd build
-  - ctest
+script: ./scripts/run-test.sh
 notifications:
   email: false
