@@ -109,11 +109,13 @@ namespace mps
     // \brief Get the port number that has been associated with the address.
     // \returns The port number of the address.
     uint16_t getPort() const noexcept {
+      uint16_t port(0);
       if (isIPv4()) {
-        return reinterpret_cast<const sockaddr_in*>(&mSockAddr)->sin_port;
+        port = reinterpret_cast<const sockaddr_in*>(&mSockAddr)->sin_port;
       } else {
-        return reinterpret_cast<const sockaddr_in6*>(&mSockAddr)->sin6_port;
+        port = reinterpret_cast<const sockaddr_in6*>(&mSockAddr)->sin6_port;
       }
+      return port;
     }
 
     // \brief Set the port number to be associated with the socket address.
