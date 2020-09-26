@@ -16,6 +16,6 @@ jobs:
       osx_image: xcode12
     - name: Windows Server (1809)
       os: windows
-script: ./scripts/run-test.sh
+script: ./scripts/run-tests.sh
 notifications:
   email: false
