@@ -462,14 +462,7 @@ namespace mps
     /// \param af The address family (IPv4 or IPv6) of the socket.
     /// \param type The type (Stream or Datagram) of the socket.
     /// 
-    Socket(AddressFamily af, int type) : mBlocking(true), mHandle(InvalidSocket) {
-      #if _WIN32
-      static WinsockService winsock;
-      #endif
-      mHandle = socket(static_cast<int>(af), type, 0);
-      if (mHandle == InvalidSocket) {
-        throw SocketException("socket");
-      }
+    Socket(AddressFamily af, int type) : mBlocking(true), mHandle(createHandle(af, type)) {
     }
 
     /// \brief Build a socket with a socket handle and initial blocking state.
@@ -486,6 +479,17 @@ namespace mps
     /// 
     Socket(Handle sock, bool blocking) : mHandle(sock), mBlocking(blocking) {
       refreshLocalAddress();
+    }
+
+    static Handle createHandle(AddressFamily af, int type) {
+      #if _WIN32
+      static WinsockService winsock;
+      #endif
+      auto handle = socket(static_cast<int>(af), type, 0);
+      if (handle == InvalidSocket) {
+        throw SocketException("socket");
+      }
+      return handle;
     }
 
     /// \brief Retrieve and refresh the socket's local address information.
