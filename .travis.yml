@@ -9,7 +9,6 @@ jobs:
           packages:
             - cppcheck
       after_script:
-        - cd ..
         - cppcheck -q -I include -i build -i examples --enable=all --suppress=missingIncludeSystem --error-exitcode=1 . 
     - name: macOS (10.15.5)
       os: osx
