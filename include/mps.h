@@ -541,7 +541,7 @@ namespace mps
     /// 
     template<typename T>
     void setOpt(int level, int optKey, const T& value) {
-      auto optVal = (const char*)&value;
+      auto optVal = reinterpret_cast<const char*>(&value);
       auto optLen = static_cast<socklen_t>(sizeof(T));
       if (setsockopt(mHandle, level, optKey, optVal, optLen) == -1) {
         throw SocketException("setsockopt(" + std::to_string(optKey) + ")");
